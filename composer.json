@@ -1,0 +1,13 @@
+﻿{
+    "name": "techmire-solutions/dynamic-online-services",
+    "description": "A custom plugin for managing Dynamic Online Services and their categories with a combined, sortable selection field and customizable styles.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Techmire Solutions",
+            "homepage": "http://techmiresolutions.com/"
+        }
+    ],
+    "require": {}
+}

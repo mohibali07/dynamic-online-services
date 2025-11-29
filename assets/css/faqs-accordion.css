@@ -1,0 +1,59 @@
+/**
+ * FAQs Accordion Styles
+ *
+ * @package Shia_Online_Services
+ * @subpackage Assets
+ */
+
+.service-faqs-accordion {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.faq-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.faq-question {
+    background-color: #f7f7f7;
+    padding: 15px 20px;
+    margin: 0;
+    font-size: 1.15rem;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.faq-question:hover {
+    background-color: #eee;
+}
+
+.faq-icon {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+    font-weight: bold;
+}
+
+.faq-question.active .faq-icon {
+    transform: rotate(45deg);
+}
+
+.faq-answer {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+}
+
+.faq-answer.show {
+    max-height: 500px;
+    padding: 20px;
+}
+

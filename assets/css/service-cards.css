@@ -1,0 +1,102 @@
+/**
+ * Service Cards Styles
+ *
+ * @package Shia_Online_Services
+ * @subpackage Assets
+ */
+
+.service-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    column-gap: 20px;
+    row-gap: 40px;
+}
+
+.service-card {
+    border-radius: 18px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-card-image-link {
+    display: block;
+    height: 232px;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.service-card-image {
+    width: 100%;
+    height: 232px;
+    object-fit: cover;
+    display: block;
+    z-index: 10;
+    position: relative;
+    border-radius: 18px;
+}
+
+.service-card-content {
+    padding: 24px 10px 0;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-top: -16px;
+    border-radius: 0 0 18px 18px;
+    align-items: center;
+}
+
+.service-card-title {
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.service-card-title a {
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.service-card-title a:hover {
+    color: #ffffff !important;
+}
+
+.service-card-description {
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 10px;
+    flex-grow: 1;
+    line-height: 1.5;
+}
+
+.service-card-link {
+    display: inline-block;
+    padding: 10px 28px;
+    text-decoration: none;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+    width: auto;
+    margin-top: auto;
+    margin-bottom: -20px;
+}
+
+.service-card-link:hover {
+    background-color: #fff !important;
+}
+
