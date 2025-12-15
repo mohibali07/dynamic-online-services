@@ -16,7 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Include settings components
-require_once DYNOS_PLUGIN_DIR . 'includes/settings/defaults.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/settings/sanitization.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/settings/field-renderers.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/settings/page-renderer.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/class-config.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/class-defaults.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/class-sanitization.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/class-field-renderers.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/class-page-renderer.php';

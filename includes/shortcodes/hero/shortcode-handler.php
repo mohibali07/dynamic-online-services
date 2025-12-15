@@ -26,8 +26,8 @@ if (!defined('ABSPATH')) {
 function dynos_process_hero_shortcode($atts, $hero_data, $shortcode_tag): string
 {
 	// Get default height from settings
-	$options = \DynamicOnlineServices\Helpers\Options::get();
-	$default_height = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_height', '50vh');
+	$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
+	$default_height = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_height', '50vh');
 
 	// Parse shortcode attributes using consolidated helper
 	$atts = dynos_parse_shortcode_attributes(

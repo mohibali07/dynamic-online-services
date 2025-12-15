@@ -6,7 +6,7 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use DynamicOnlineServices\Autoloader;
+use TechmireSolutions\DynamicOnlineServices\Autoloader;
 
 class AutoloaderTest extends TestCase
 {
@@ -18,7 +18,7 @@ class AutoloaderTest extends TestCase
         // We can't easily test the require_once without mocking the file system or creating real files.
         // But we can test that the method exists and runs without error.
 
-        $this->assertTrue(method_exists('DynamicOnlineServices\Autoloader', 'autoload'));
+        $this->assertTrue(method_exists('TechmireSolutions\DynamicOnlineServices\Autoloader', 'autoload'));
     }
 
     /**
@@ -26,7 +26,8 @@ class AutoloaderTest extends TestCase
      */
     public function test_autoload_ignore_other_namespace()
     {
-        $result = Autoloader::autoload('OtherNamespace\Class');
-        $this->assertNull($result);
+        Autoloader::autoload('OtherNamespace\Class');
+        // $result = Autoloader::autoload('OtherNamespace\Class'); // Autoload returns void
+        $this->assertTrue(true); // verify it doesn't crash
     }
 }

@@ -23,10 +23,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function dynos_enqueue_faqs_admin_scripts( $hook_suffix ): void {
 	// Only load on service post edit screens
-	$settings     = function_exists( 'dynos_sanitize_cpt_settings' ) ? dynos_sanitize_cpt_settings() : array();
+	$settings = \TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization::sanitize_cpt_settings();
 	$service_slug = isset( $settings['service_slug'] ) ? $settings['service_slug'] : 'service';
 
 	if ( ! dynos_is_post_edit_screen( $service_slug ) ) {
+		return;
+	}
+
+	// Check user capabilities
+	if ( ! current_user_can( 'edit_posts' ) ) {
 		return;
 	}
 

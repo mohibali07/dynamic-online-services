@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
 function dynos_render_faqs_accordion($faqs, $post_id, $title = ''): string
 {
 	// Enqueue accordion scripts and styles using dedicated helper
-	dynos_enqueue_faq_accordion_assets();
+	\TechmireSolutions\DynamicOnlineServices\Styles\FaqStyles::enqueue(true);
 
 	// Allow filtering the title
 	$title = apply_filters('dynos_faqs_title', $title, $post_id);

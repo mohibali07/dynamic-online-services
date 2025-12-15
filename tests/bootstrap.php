@@ -9,9 +9,7 @@ if (!defined('ABSPATH')) {
     define('ABSPATH', sys_get_temp_dir() . '/wordpress/');
 }
 
-echo "Requiring vendor autoload...\n";
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-echo "Vendor autoload required.\n";
 
 // Define plugin constants
 if (!defined('DYNOS_PLUGIN_DIR')) {
@@ -19,8 +17,8 @@ if (!defined('DYNOS_PLUGIN_DIR')) {
 }
 
 // Manually require the Autoloader since we're not loading the main plugin file entirely
-require_once DYNOS_PLUGIN_DIR . 'includes/Autoloader.php';
-\DynamicOnlineServices\Autoloader::run();
+require_once DYNOS_PLUGIN_DIR . 'includes/class-autoloader.php';
+\TechmireSolutions\DynamicOnlineServices\Autoloader::run();
 
 // Mock WordPress functions if not available
 if (!function_exists('add_action')) {

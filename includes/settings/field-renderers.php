@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param array $args Field arguments.
  */
 function dynos_color_field_callback( $args ): void {
-	\DynamicOnlineServices\Settings\FieldRenderers::color_field_callback( $args );
+	\TechmireSolutions\DynamicOnlineServices\Settings\FieldRenderers::color_field_callback( $args );
 }
 
 /**
@@ -31,7 +31,7 @@ function dynos_color_field_callback( $args ): void {
  * @param array $args Field arguments.
  */
 function dynos_font_family_field_callback( $args ): void {
-	\DynamicOnlineServices\Settings\FieldRenderers::font_family_field_callback( $args );
+	\TechmireSolutions\DynamicOnlineServices\Settings\FieldRenderers::font_family_field_callback( $args );
 }
 
 /**
@@ -41,7 +41,7 @@ function dynos_font_family_field_callback( $args ): void {
  * @param array $args Field arguments.
  */
 function dynos_number_field_callback( $args ): void {
-	\DynamicOnlineServices\Settings\FieldRenderers::number_field_callback( $args );
+	\TechmireSolutions\DynamicOnlineServices\Settings\FieldRenderers::number_field_callback( $args );
 }
 
 /**
@@ -51,5 +51,25 @@ function dynos_number_field_callback( $args ): void {
  * @param array $args Field arguments.
  */
 function dynos_text_field_callback( $args ): void {
-	\DynamicOnlineServices\Settings\FieldRenderers::text_field_callback( $args );
+	\TechmireSolutions\DynamicOnlineServices\Settings\FieldRenderers::text_field_callback( $args );
+}
+
+/**
+ * Render checkbox field callback.
+ *
+ * @since 1.1.0
+ * @param array $args Field arguments.
+ */
+function dynos_checkbox_field_callback( $args ): void {
+	\TechmireSolutions\DynamicOnlineServices\Settings\FieldRenderers::checkbox_field_callback( $args );
+}
+
+/**
+ * Render radio field callback.
+ *
+ * @since 1.1.0
+ * @param array $args Field arguments with 'options' array.
+ */
+function dynos_radio_field_callback( $args ): void {
+	\TechmireSolutions\DynamicOnlineServices\Settings\FieldRenderers::radio_field_callback( $args );
 }

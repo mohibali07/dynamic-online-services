@@ -18,6 +18,10 @@ class ComposerStaticInit6fb3867b276b26929956deb26e73df23
         array (
             'WP_Mock\\' => 8,
         ),
+        'T' =>
+        array (
+            'TechmireSolutions\\DynamicOnlineServices\\' => 40,
+        ),
         'P' =>
         array (
             'PhpParser\\' => 10,
@@ -29,7 +33,6 @@ class ComposerStaticInit6fb3867b276b26929956deb26e73df23
         ),
         'D' =>
         array (
-            'DynamicOnlineServices\\' => 22,
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
         ),
@@ -39,6 +42,10 @@ class ComposerStaticInit6fb3867b276b26929956deb26e73df23
         'WP_Mock\\' =>
         array (
             0 => __DIR__ . '/..' . '/10up/wp_mock/php/WP_Mock',
+        ),
+        'TechmireSolutions\\DynamicOnlineServices\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/includes',
         ),
         'PhpParser\\' =>
         array (
@@ -51,10 +58,6 @@ class ComposerStaticInit6fb3867b276b26929956deb26e73df23
         'Mockery\\' =>
         array (
             0 => __DIR__ . '/..' . '/mockery/mockery/library/Mockery',
-        ),
-        'DynamicOnlineServices\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/includes',
         ),
         'Doctrine\\Instantiator\\' =>
         array (

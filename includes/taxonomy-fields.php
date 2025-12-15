@@ -15,5 +15,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Include taxonomy field components
-require_once DYNOS_PLUGIN_DIR . 'includes/taxonomy/fields-renderer.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/taxonomy/fields-saver.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/taxonomies/taxonomy/fields-renderer.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/taxonomies/taxonomy/fields-saver.php';

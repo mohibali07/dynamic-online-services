@@ -37,15 +37,15 @@ function dynos_render_category_shortcode_items($items, $term, $atts): string
 	ob_start();
 
 	// Get grid settings from options or shortcode attributes
-	$options = \DynamicOnlineServices\Helpers\Options::get();
-	$grid_min_width = !empty($atts['min_width']) ? \DynamicOnlineServices\Helpers\Sanitization::escape_css_value($atts['min_width'], 'min-width') : \DynamicOnlineServices\Helpers\Options::get_option($options, 'card_grid_min_width', DYNOS_DEFAULT_GRID_MIN_WIDTH);
-	$grid_min_width = \DynamicOnlineServices\Helpers\Sanitization::escape_css_value($grid_min_width, 'min-width');
+	$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
+	$grid_min_width = !empty($atts['min_width']) ? \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($atts['min_width'], 'min-width') : \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'card_grid_min_width', DYNOS_DEFAULT_GRID_MIN_WIDTH);
+	$grid_min_width = \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($grid_min_width, 'min-width');
 	if (empty($grid_min_width)) {
 		$grid_min_width = DYNOS_DEFAULT_GRID_MIN_WIDTH;
 	}
 
-	$grid_column_gap = \DynamicOnlineServices\Helpers\Options::get_option($options, 'card_grid_column_gap', '20px');
-	$grid_row_gap = \DynamicOnlineServices\Helpers\Options::get_option($options, 'card_grid_row_gap', '40px');
+	$grid_column_gap = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'card_grid_column_gap', '20px');
+	$grid_row_gap = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'card_grid_row_gap', '40px');
 
 	// Handle columns attribute
 	$columns = $atts['columns'];
@@ -59,8 +59,8 @@ function dynos_render_category_shortcode_items($items, $term, $atts): string
 	}
 
 	// Sanitize gap values (they come from options, already safe but double-check)
-	$grid_column_gap = \DynamicOnlineServices\Helpers\Sanitization::escape_css_value($grid_column_gap, 'width');
-	$grid_row_gap = \DynamicOnlineServices\Helpers\Sanitization::escape_css_value($grid_row_gap, 'height');
+	$grid_column_gap = \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($grid_column_gap, 'width');
+	$grid_row_gap = \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($grid_row_gap, 'height');
 	if (empty($grid_column_gap)) {
 		$grid_column_gap = '20px';
 	}
@@ -71,7 +71,7 @@ function dynos_render_category_shortcode_items($items, $term, $atts): string
 	$grid_class = apply_filters('dynos_category_content_grid_class', 'service-card-grid', $term);
 
 	// Build inline style using dedicated style builder helper
-	$grid_style_value = \DynamicOnlineServices\Helpers\StyleBuilder::build_grid_style(
+	$grid_style_value = \TechmireSolutions\DynamicOnlineServices\Helpers\StyleBuilder::build_grid_style(
 		array(
 			'grid_style' => $grid_style,
 			'column_gap' => $grid_column_gap,
@@ -80,12 +80,12 @@ function dynos_render_category_shortcode_items($items, $term, $atts): string
 	);
 	$grid_style_attr = !empty($grid_style_value) ? 'style="' . esc_attr($grid_style_value) . '"' : '';
 
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Constructed with esc_attr
-	echo '<ul class="' . esc_attr($grid_class) . '" ' . $grid_style_attr . '>';
+	// Output with proper escaping
+	echo '<ul class="' . esc_attr($grid_class) . '" ' . wp_kses_post($grid_style_attr) . '>';
 
 	foreach ($items as $index => $item) {
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Function returns safe HTML
-		echo dynos_render_category_shortcode_item($item, $index, $term);
+		// Function returns safe HTML with internal escaping
+		echo wp_kses_post(dynos_render_category_shortcode_item($item, $index, $term));
 	}
 
 	echo '</ul>';
@@ -125,7 +125,8 @@ function dynos_render_category_shortcode_item($item, $index, $term = null): stri
 
 	// Use placeholder if no image URL is available
 	if (empty($image_url)) {
-		$image_url = dynos_get_placeholder_image_url();
+		$image_url = \TechmireSolutions\DynamicOnlineServices\Helpers\Images::get_placeholder_url();
+
 		if (empty($image_alt) && isset($item['title'])) {
 			$image_alt = esc_attr($item['title']);
 		}
@@ -135,7 +136,7 @@ function dynos_render_category_shortcode_item($item, $index, $term = null): stri
 	$item = apply_filters('dynos_category_content_item', $item, $index, $term);
 
 	// Ensure required fields exist after filtering
-	if (!is_array($item) || !isset($item['type']) || !isset($item['url']) || !isset($item['title'])) {
+	if (! is_array($item) || ! isset($item['type']) || ! isset($item['url']) || ! isset($item['title'])) {
 		return '';
 	}
 

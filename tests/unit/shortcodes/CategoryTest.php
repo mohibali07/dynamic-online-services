@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DynamicOnlineServices\Tests\Unit\Shortcodes;
 
-use DynamicOnlineServices\Shortcodes\Category;
+use TechmireSolutions\DynamicOnlineServices\Shortcodes\Category;
 use WP_Mock;
 use WP_Mock\Tools\TestCase;
 
@@ -46,7 +46,7 @@ class CategoryTest extends TestCase
             'return' => ['posts_per_page' => 10],
         ]);
 
-        WP_Mock::userFunction('DynamicOnlineServices\Shortcodes\is_tax', [
+        WP_Mock::userFunction('TechmireSolutions\DynamicOnlineServices\Shortcodes\is_tax', [
             'return' => false,
         ]);
 
@@ -75,7 +75,7 @@ class CategoryTest extends TestCase
             'return' => ['hide_empty' => false, 'pagination' => false, 'posts_per_page' => 5],
         ]);
 
-        WP_Mock::userFunction('DynamicOnlineServices\Shortcodes\is_tax', [
+        WP_Mock::userFunction('TechmireSolutions\DynamicOnlineServices\Shortcodes\is_tax', [
             'return' => true,
         ]);
 

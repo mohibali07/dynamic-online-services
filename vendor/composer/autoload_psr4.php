@@ -7,10 +7,10 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'WP_Mock\\' => array($vendorDir . '/10up/wp_mock/php/WP_Mock'),
+    'TechmireSolutions\\DynamicOnlineServices\\' => array($baseDir . '/includes'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => array($vendorDir . '/dealerdirect/phpcodesniffer-composer-installer/src'),
     'Mockery\\' => array($vendorDir . '/mockery/mockery/library/Mockery'),
-    'DynamicOnlineServices\\' => array($baseDir . '/includes'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
 );

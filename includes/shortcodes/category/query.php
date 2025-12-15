@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function dynos_get_category_shortcode_child_categories( $term, $hide_empty ): array {
 	$items = array();
 
-	$settings      = function_exists( 'dynos_sanitize_cpt_settings' ) ? dynos_sanitize_cpt_settings() : array();
+	$settings = \TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization::sanitize_cpt_settings();
 	$taxonomy_slug = isset( $settings['taxonomy_slug'] ) ? $settings['taxonomy_slug'] : 'services_category';
 
 	$child_categories = get_terms(
@@ -37,13 +37,38 @@ function dynos_get_category_shortcode_child_categories( $term, $hide_empty ): ar
 	);
 
 	if ( ! is_wp_error( $child_categories ) && ! empty( $child_categories ) ) {
+		// FIX: Batch-fetch all term meta to avoid N+1 query problem
+		// Instead of calling get_term_meta() inside the loop (1 query per term),
+		// we fetch all thumbnails at once (1 single query for all terms)
+		$term_ids = wp_list_pluck( $child_categories, 'term_id' );
+		$thumbnails_map = array();
+
+		if ( ! empty( $term_ids ) ) {
+			global $wpdb;
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT term_id, meta_value FROM {$wpdb->termmeta}
+					WHERE term_id IN (" . implode( ',', array_map( 'absint', $term_ids ) ) . ")
+					AND meta_key = %s",
+					'service_cat_thumbnail'
+				)
+			);
+
+			// Build a map of term_id => thumbnail_id for fast lookup
+			foreach ( $results as $row ) {
+				$thumbnails_map[ $row->term_id ] = $row->meta_value;
+			}
+		}
+
 		foreach ( $child_categories as $category ) {
-			$thumbnail_id = get_term_meta( $category->term_id, 'service_cat_thumbnail', true );
+			// Use pre-fetched thumbnail from map (no additional query)
+			$thumbnail_id = isset( $thumbnails_map[ $category->term_id ] ) ? $thumbnails_map[ $category->term_id ] : '';
 			$term_link    = get_term_link( $category );
 
 			// Skip if term link is an error
 			if ( is_wp_error( $term_link ) ) {
-				dynos_log_error(
+				\TechmireSolutions\DynamicOnlineServices\Helpers\AdminNotices::log_error(
 					sprintf(
 						'Failed to get term link for term ID %d (%s): %s',
 						$category->term_id,
@@ -89,7 +114,7 @@ function dynos_get_category_shortcode_services( $term, $atts ): array {
 	$pagination     = $atts['pagination'];
 	$paged          = $atts['paged'];
 
-	$settings      = function_exists( 'dynos_sanitize_cpt_settings' ) ? dynos_sanitize_cpt_settings() : array();
+	$settings = \TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization::sanitize_cpt_settings();
 	$service_slug  = isset( $settings['service_slug'] ) ? $settings['service_slug'] : 'service';
 	$taxonomy_slug = isset( $settings['taxonomy_slug'] ) ? $settings['taxonomy_slug'] : 'services_category';
 
@@ -140,8 +165,8 @@ function dynos_get_category_shortcode_services( $term, $atts ): array {
 	$items = array();
 	foreach ( $services as $service_post ) {
 		// Get banner image and description using consolidated helper functions
-		$image_array = dynos_get_service_banner_image( $service_post->ID );
-		$description = dynos_get_service_description( $service_post->ID );
+		$image_array = \TechmireSolutions\DynamicOnlineServices\Helpers\Images::get_service_banner_image( $service_post->ID );
+		$description = \TechmireSolutions\DynamicOnlineServices\Helpers\Images::get_service_description( $service_post->ID );
 
 		$image_url = '';
 		$image_alt = esc_attr( $service_post->post_title );

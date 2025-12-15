@@ -104,18 +104,18 @@ function dynos_get_pagination_html($current_page, $total_pages): string
 			// Show page range
 			for ($i = $start; $i <= $end; $i++) {
 				if ($i === $current_page) {
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe integer output
+					// Safe integer output with absint
 					printf(
 						'<li class="sos-pagination-item sos-pagination-current"><span aria-current="page">%d</span></li>',
-						$i // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						absint($i)
 					);
 				} else {
 					$page_url = add_query_arg('paged', $i, $base_term_link);
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe integer output
+					// Safe integer output with absint
 					printf(
 						'<li class="sos-pagination-item"><a href="%s">%d</a></li>',
 						esc_url($page_url),
-						$i // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						absint($i)
 					);
 				}
 			}
@@ -126,11 +126,11 @@ function dynos_get_pagination_html($current_page, $total_pages): string
 					echo '<li class="sos-pagination-item sos-pagination-ellipsis"><span>…</span></li>';
 				}
 				$last_url = add_query_arg('paged', $total_pages, $base_term_link);
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe integer output
+				// Safe integer output with absint
 				printf(
 					'<li class="sos-pagination-item"><a href="%s">%d</a></li>',
 					esc_url($last_url),
-					$total_pages // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					absint($total_pages)
 				);
 			}
 

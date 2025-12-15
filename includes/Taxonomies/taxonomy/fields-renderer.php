@@ -93,7 +93,7 @@ function dynos_edit_service_category_custom_fields($term): void
  */
 function dynos_init_service_category_fields_renderer(): void
 {
-	$settings = function_exists('dynos_sanitize_cpt_settings') ? dynos_sanitize_cpt_settings() : array();
+	$settings = \TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization::sanitize_cpt_settings();
 	$taxonomy_slug = isset($settings['taxonomy_slug']) ? $settings['taxonomy_slug'] : 'services_category';
 
 	add_action($taxonomy_slug . '_add_form_fields', 'dynos_add_service_category_custom_fields', 10, 1);

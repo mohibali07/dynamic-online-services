@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace DynamicOnlineServices\Tests\Unit;
 
 use WP_Mock\Tools\TestCase;
-use DynamicOnlineServices\Helpers\Sanitization as SanitizationHelper;
+use TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization as SanitizationHelper;
 
 /**
  * Test sanitization helper functions.
@@ -28,7 +28,7 @@ class SanitizationTest extends TestCase
 
         // Load the sanitization functions
         // Updated to point to new Class file location
-        require_once dirname(__DIR__, 2) . '/includes/Helpers/Sanitization.php';
+        require_once dirname(__DIR__, 2) . '/includes/helpers/sanitization.php';
     }
 
     /**

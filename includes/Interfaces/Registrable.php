@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace DynamicOnlineServices\Interfaces;
+namespace TechmireSolutions\DynamicOnlineServices\Interfaces;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

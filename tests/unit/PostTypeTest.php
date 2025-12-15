@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace DynamicOnlineServices\Tests\Unit;
 
 use WP_Mock\Tools\TestCase;
-use DynamicOnlineServices\PostTypes\ServicePostType;
+use TechmireSolutions\DynamicOnlineServices\PostTypes\ServicePostType;
 
 /**
  * Test ServicePostType class.

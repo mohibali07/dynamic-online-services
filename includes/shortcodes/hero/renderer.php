@@ -57,8 +57,8 @@ function dynos_render_hero_html($args): string
 	$data_value = esc_attr($args['data_value']);
 
 	// Build style attributes using dedicated style builder helpers
-	$hero_inner_style_value = \DynamicOnlineServices\Helpers\StyleBuilder::build_hero_inner_style($height, $image_url);
-	$hero_content_style_value = \DynamicOnlineServices\Helpers\StyleBuilder::build_hero_content_style($title_color, $font_family);
+	$hero_inner_style_value = \TechmireSolutions\DynamicOnlineServices\Helpers\StyleBuilder::build_hero_inner_style($height, $image_url);
+	$hero_content_style_value = \TechmireSolutions\DynamicOnlineServices\Helpers\StyleBuilder::build_hero_content_style($title_color, $font_family);
 
 	ob_start();
 	?>

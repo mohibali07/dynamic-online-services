@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
  */
 function dynos_get_category_hero_data($term): array
 {
-	$settings = function_exists('dynos_sanitize_cpt_settings') ? dynos_sanitize_cpt_settings() : array();
+	$settings = \TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization::sanitize_cpt_settings();
 	$taxonomy_slug = isset($settings['taxonomy_slug']) ? $settings['taxonomy_slug'] : 'services_category';
 
 	// Validate term object
@@ -32,7 +32,7 @@ function dynos_get_category_hero_data($term): array
 		return array();
 	}
 
-	$options = \DynamicOnlineServices\Helpers\Options::get();
+	$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
 
 	// Get thumbnail with validation
 	$thumbnail_id = get_term_meta($term->term_id, 'service_cat_thumbnail', true);
@@ -48,10 +48,10 @@ function dynos_get_category_hero_data($term): array
 	}
 
 	// Get settings
-	$hero_title_color = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_title_color', '#FFFFFF');
-	$hero_overlay_color = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_overlay_color', '#000000');
-	$hero_font_family = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_font_family', 'Helvetica');
-	$hero_height = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_height', '50vh');
+	$hero_title_color = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_title_color', '#FFFFFF');
+	$hero_overlay_color = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_overlay_color', '#000000');
+	$hero_font_family = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_font_family', 'Helvetica');
+	$hero_height = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_height', '50vh');
 
 	// Allow filtering values
 	$hero_title_color = apply_filters('dynos_category_hero_title_color', $hero_title_color, $term);
@@ -82,12 +82,12 @@ function dynos_get_category_hero_data($term): array
  */
 function dynos_get_service_hero_data($post): array
 {
-	$options = \DynamicOnlineServices\Helpers\Options::get();
+	$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
 	$post_id = $post->ID;
 
 	// Get banner image and description using consolidated helper functions
-	$image_array = dynos_get_service_banner_image($post_id);
-	$description = dynos_get_service_description($post_id);
+	$image_array = \TechmireSolutions\DynamicOnlineServices\Helpers\Images::get_service_banner_image($post_id);
+	$description = \TechmireSolutions\DynamicOnlineServices\Helpers\Images::get_service_description($post_id);
 	$post_title = get_the_title($post_id);
 
 	$image_url = '';
@@ -96,10 +96,10 @@ function dynos_get_service_hero_data($post): array
 	}
 
 	// Get settings
-	$hero_title_color = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_title_color', '#FFFFFF');
-	$hero_overlay_color = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_overlay_color', '#000000');
-	$hero_font_family = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_font_family', 'Helvetica');
-	$hero_height = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_height', '50vh');
+	$hero_title_color = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_title_color', '#FFFFFF');
+	$hero_overlay_color = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_overlay_color', '#000000');
+	$hero_font_family = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_font_family', 'Helvetica');
+	$hero_height = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_height', '50vh');
 
 	// Allow filtering values
 	$hero_title_color = apply_filters('dynos_service_hero_title_color', $hero_title_color, $post);

@@ -15,10 +15,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Include settings registration files
-require_once DYNOS_PLUGIN_DIR . 'includes/settings/hero-settings.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/settings/cards-settings.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/settings/faq-settings.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/settings/post-type-settings.php';
+// Include settings registration files
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/sections/class-hero-settings.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/sections/class-cards-settings.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/sections/class-faq-settings.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/sections/class-post-type-settings.php';
 
 /**
  * Initialize plugin settings.
@@ -32,8 +33,8 @@ function dynos_settings_init(): void {
 		'dynos_options',
 		array(
 			'type'              => 'array',
-			'sanitize_callback' => 'dynos_sanitize_options',
-			'default'           => dynos_get_default_options(),
+			'sanitize_callback' => array( '\TechmireSolutions\DynamicOnlineServices\Settings\Sanitization', 'sanitize' ),
+			'default'           => \TechmireSolutions\DynamicOnlineServices\Settings\Defaults::get_options(),
 		)
 	);
 
@@ -45,7 +46,7 @@ function dynos_settings_init(): void {
 		'Dynamic_Online_Services'
 	);
 
-	dynos_register_hero_settings();
+	\TechmireSolutions\DynamicOnlineServices\Settings\Sections\HeroSettings::register();
 
 	// Service Cards Settings
 	add_settings_section(
@@ -55,7 +56,7 @@ function dynos_settings_init(): void {
 		'Dynamic_Online_Services'
 	);
 
-	dynos_register_cards_settings();
+	\TechmireSolutions\DynamicOnlineServices\Settings\Sections\CardsSettings::register();
 
 	// FAQ Accordion Settings
 	add_settings_section(
@@ -65,7 +66,7 @@ function dynos_settings_init(): void {
 		'Dynamic_Online_Services'
 	);
 
-	dynos_register_faq_settings();
+	\TechmireSolutions\DynamicOnlineServices\Settings\Sections\FaqSettings::register();
 
 	// Post Type & Taxonomy Settings
 	add_settings_section(
@@ -75,6 +76,6 @@ function dynos_settings_init(): void {
 		'Dynamic_Online_Services'
 	);
 
-	dynos_register_post_type_settings();
+	\TechmireSolutions\DynamicOnlineServices\Settings\Sections\PostTypeSettings::register();
 }
 add_action( 'admin_init', 'dynos_settings_init' );

@@ -15,7 +15,8 @@
         "lint:php": "composer lint",
         "lint:php:fix": "composer lint:fix",
         "test": "composer test",
-        "test:coverage": "composer test:coverage"
+        "test:coverage": "composer test:coverage",
+        "test:e2e": "playwright test"
     },
     "repository": {
         "type": "git",
@@ -31,6 +32,7 @@
     "author": "Techmire Solutions",
     "license": "GPL-2.0-or-later",
     "devDependencies": {
+        "@playwright/test": "^1.57.0",
         "@wordpress/api-fetch": "^7.36.0",
         "@wordpress/components": "^30.9.0",
         "@wordpress/element": "^6.36.0",

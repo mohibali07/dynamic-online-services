@@ -5,6 +5,8 @@ trigger: always_on
 WordPress Plugin Development Rule Book.
 This manual codifies the current industry standards into strict rules to ensure security, performance, and maintainability.
 
+Keep in mind this plugin will be used in linix server and linix is case-sensitive
+
 Make sure the plugin must be 100 Dynamic
 
 Make sure the plugin must be 100% compataiable with light speed cashe plugin
