@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Settings Renderer
  *
@@ -9,12 +9,14 @@
  * @subpackage Settings
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+declare(strict_types=1);
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 // Include settings components
-require_once DOC_PLUGIN_DIR . 'includes/settings/defaults.php';
-require_once DOC_PLUGIN_DIR . 'includes/settings/sanitization.php';
-require_once DOC_PLUGIN_DIR . 'includes/settings/field-renderers.php';
-require_once DOC_PLUGIN_DIR . 'includes/settings/page-renderer.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/defaults.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/sanitization.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/field-renderers.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/settings/page-renderer.php';

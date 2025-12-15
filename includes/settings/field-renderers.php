@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Settings Field Renderers
  *
@@ -8,8 +8,10 @@
  * @subpackage Settings
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+declare(strict_types=1);
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
@@ -18,9 +20,8 @@ if (!defined('ABSPATH')) {
  * @since 1.1.0
  * @param array $args Field arguments.
  */
-function doc_color_field_callback($args): void
-{
-    \DynamicOnlineServices\Settings\FieldRenderers::color_field_callback($args);
+function dynos_color_field_callback( $args ): void {
+	\DynamicOnlineServices\Settings\FieldRenderers::color_field_callback( $args );
 }
 
 /**
@@ -29,9 +30,8 @@ function doc_color_field_callback($args): void
  * @since 1.1.0
  * @param array $args Field arguments.
  */
-function doc_font_family_field_callback($args): void
-{
-    \DynamicOnlineServices\Settings\FieldRenderers::font_family_field_callback($args);
+function dynos_font_family_field_callback( $args ): void {
+	\DynamicOnlineServices\Settings\FieldRenderers::font_family_field_callback( $args );
 }
 
 /**
@@ -40,9 +40,8 @@ function doc_font_family_field_callback($args): void
  * @since 1.1.0
  * @param array $args Field arguments.
  */
-function doc_number_field_callback($args): void
-{
-    \DynamicOnlineServices\Settings\FieldRenderers::number_field_callback($args);
+function dynos_number_field_callback( $args ): void {
+	\DynamicOnlineServices\Settings\FieldRenderers::number_field_callback( $args );
 }
 
 /**
@@ -51,8 +50,6 @@ function doc_number_field_callback($args): void
  * @since 1.1.0
  * @param array $args Field arguments.
  */
-function doc_text_field_callback($args): void
-{
-    \DynamicOnlineServices\Settings\FieldRenderers::text_field_callback($args);
+function dynos_text_field_callback( $args ): void {
+	\DynamicOnlineServices\Settings\FieldRenderers::text_field_callback( $args );
 }
-

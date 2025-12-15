@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Hero Shortcode Data Retrieval
  *
@@ -8,8 +8,10 @@
  * @subpackage Shortcodes
  */
 
+declare(strict_types=1);
+
 if (!defined('ABSPATH')) {
-    exit;
+	exit;
 }
 
 /**
@@ -19,52 +21,56 @@ if (!defined('ABSPATH')) {
  * @param WP_Term $term Term object.
  * @return array Hero data array.
  */
-function doc_get_category_hero_data($term): array {
-    // Validate term object
-    $term = doc_validate_term_object($term, 'services_category');
-    if (false === $term) {
-        return array();
-    }
-    
-    $options = doc_get_options();
-    
-    // Get thumbnail with validation
-    $thumbnail_id = get_term_meta($term->term_id, 'service_cat_thumbnail', true);
-    $image_url    = '';
-    if ($thumbnail_id) {
-        $validated_thumbnail_id = doc_validate_attachment_id($thumbnail_id);
-        if (false !== $validated_thumbnail_id) {
-            $attachment_url = wp_get_attachment_image_url($validated_thumbnail_id, 'full');
-            if ($attachment_url) {
-                $image_url = esc_url($attachment_url);
-            }
-        }
-    }
+function dynos_get_category_hero_data($term): array
+{
+	$settings = function_exists('dynos_sanitize_cpt_settings') ? dynos_sanitize_cpt_settings() : array();
+	$taxonomy_slug = isset($settings['taxonomy_slug']) ? $settings['taxonomy_slug'] : 'services_category';
 
-    // Get settings
-    $hero_title_color  = doc_get_option($options, 'hero_title_color', '#FFFFFF');
-    $hero_overlay_color = doc_get_option($options, 'hero_overlay_color', '#000000');
-    $hero_font_family  = doc_get_option($options, 'hero_font_family', 'Helvetica');
-    $hero_height       = doc_get_option($options, 'hero_height', '50vh');
+	// Validate term object
+	$term = dynos_validate_term_object($term, $taxonomy_slug);
+	if (false === $term) {
+		return array();
+	}
 
-    // Allow filtering values
-    $hero_title_color  = apply_filters('doc_category_hero_title_color', $hero_title_color, $term);
-    $hero_font_family  = apply_filters('doc_category_hero_font_family', $hero_font_family, $term);
-    $image_url         = apply_filters('doc_category_hero_image_url', $image_url, $term);
-    $hero_height       = apply_filters('doc_category_hero_height', $hero_height, $term);
-    $title             = apply_filters('doc_category_hero_title', $term->name, $term);
+	$options = \DynamicOnlineServices\Helpers\Options::get();
 
-    return array(
-        'image_url'      => $image_url,
-        'height'         => $hero_height,
-        'title_color'    => $hero_title_color,
-        'font_family'    => $hero_font_family,
-        'title'          => $title,
-        'description'    => '',
-        'data_attribute' => 'data-term-id',
-        'data_value'     => $term->term_id,
-        'overlay_color'  => $hero_overlay_color,
-    );
+	// Get thumbnail with validation
+	$thumbnail_id = get_term_meta($term->term_id, 'service_cat_thumbnail', true);
+	$image_url = '';
+	if ($thumbnail_id) {
+		$validated_thumbnail_id = dynos_validate_attachment_id($thumbnail_id);
+		if (false !== $validated_thumbnail_id) {
+			$attachment_url = wp_get_attachment_image_url($validated_thumbnail_id, 'full');
+			if ($attachment_url) {
+				$image_url = esc_url($attachment_url);
+			}
+		}
+	}
+
+	// Get settings
+	$hero_title_color = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_title_color', '#FFFFFF');
+	$hero_overlay_color = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_overlay_color', '#000000');
+	$hero_font_family = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_font_family', 'Helvetica');
+	$hero_height = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_height', '50vh');
+
+	// Allow filtering values
+	$hero_title_color = apply_filters('dynos_category_hero_title_color', $hero_title_color, $term);
+	$hero_font_family = apply_filters('dynos_category_hero_font_family', $hero_font_family, $term);
+	$image_url = apply_filters('dynos_category_hero_image_url', $image_url, $term);
+	$hero_height = apply_filters('dynos_category_hero_height', $hero_height, $term);
+	$title = apply_filters('dynos_category_hero_title', $term->name, $term);
+
+	return array(
+		'image_url' => $image_url,
+		'height' => $hero_height,
+		'title_color' => $hero_title_color,
+		'font_family' => $hero_font_family,
+		'title' => $title,
+		'description' => '',
+		'data_attribute' => 'data-term-id',
+		'data_value' => $term->term_id,
+		'overlay_color' => $hero_overlay_color,
+	);
 }
 
 /**
@@ -74,44 +80,44 @@ function doc_get_category_hero_data($term): array {
  * @param WP_Post $post Post object.
  * @return array Hero data array.
  */
-function doc_get_service_hero_data($post): array {
-    $options = doc_get_options();
-    $post_id = $post->ID;
-    
-    // Get banner image and description using consolidated helper functions
-    $image_array = doc_get_service_banner_image($post_id);
-    $description = doc_get_service_description($post_id);
-    $post_title  = get_the_title($post_id);
+function dynos_get_service_hero_data($post): array
+{
+	$options = \DynamicOnlineServices\Helpers\Options::get();
+	$post_id = $post->ID;
 
-    $image_url = '';
-    if (is_array($image_array) && isset($image_array['url'])) {
-        $image_url = esc_url($image_array['url']);
-    }
+	// Get banner image and description using consolidated helper functions
+	$image_array = dynos_get_service_banner_image($post_id);
+	$description = dynos_get_service_description($post_id);
+	$post_title = get_the_title($post_id);
 
-    // Get settings
-    $hero_title_color  = doc_get_option($options, 'hero_title_color', '#FFFFFF');
-    $hero_overlay_color = doc_get_option($options, 'hero_overlay_color', '#000000');
-    $hero_font_family  = doc_get_option($options, 'hero_font_family', 'Helvetica');
-    $hero_height       = doc_get_option($options, 'hero_height', '50vh');
+	$image_url = '';
+	if (is_array($image_array) && isset($image_array['url'])) {
+		$image_url = esc_url($image_array['url']);
+	}
 
-    // Allow filtering values
-    $hero_title_color  = apply_filters('doc_service_hero_title_color', $hero_title_color, $post);
-    $hero_font_family  = apply_filters('doc_service_hero_font_family', $hero_font_family, $post);
-    $image_url         = apply_filters('doc_service_hero_image_url', $image_url, $post);
-    $hero_height       = apply_filters('doc_service_hero_height', $hero_height, $post);
-    $post_title        = apply_filters('doc_service_hero_title', $post_title, $post);
-    $description       = apply_filters('doc_service_hero_description', $description, $post);
+	// Get settings
+	$hero_title_color = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_title_color', '#FFFFFF');
+	$hero_overlay_color = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_overlay_color', '#000000');
+	$hero_font_family = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_font_family', 'Helvetica');
+	$hero_height = \DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_height', '50vh');
 
-    return array(
-        'image_url'      => $image_url,
-        'height'         => $hero_height,
-        'title_color'    => $hero_title_color,
-        'font_family'    => $hero_font_family,
-        'title'          => $post_title,
-        'description'    => $description,
-        'data_attribute' => 'data-post-id',
-        'data_value'     => $post->ID,
-        'overlay_color'  => $hero_overlay_color,
-    );
+	// Allow filtering values
+	$hero_title_color = apply_filters('dynos_service_hero_title_color', $hero_title_color, $post);
+	$hero_font_family = apply_filters('dynos_service_hero_font_family', $hero_font_family, $post);
+	$image_url = apply_filters('dynos_service_hero_image_url', $image_url, $post);
+	$hero_height = apply_filters('dynos_service_hero_height', $hero_height, $post);
+	$post_title = apply_filters('dynos_service_hero_title', $post_title, $post);
+	$description = apply_filters('dynos_service_hero_description', $description, $post);
+
+	return array(
+		'image_url' => $image_url,
+		'height' => $hero_height,
+		'title_color' => $hero_title_color,
+		'font_family' => $hero_font_family,
+		'title' => $post_title,
+		'description' => $description,
+		'data_attribute' => 'data-post-id',
+		'data_value' => $post->ID,
+		'overlay_color' => $hero_overlay_color,
+	);
 }
-

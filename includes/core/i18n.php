@@ -8,8 +8,10 @@
  * @subpackage Core
  */
 
+declare(strict_types=1);
+
 if (!defined('ABSPATH')) {
-    exit;
+	exit;
 }
 
 /**
@@ -17,12 +19,12 @@ if (!defined('ABSPATH')) {
  *
  * @since 1.1.0
  */
-function doc_load_textdomain(): void {
-    load_plugin_textdomain(
-        'dynamic-online-services',
-        false,
-        dirname(DOC_PLUGIN_BASENAME) . '/languages'
-    );
+function dynos_load_textdomain(): void
+{
+	load_plugin_textdomain(
+		'dynamic-online-services',
+		false,
+		dirname(DYNOS_PLUGIN_BASENAME) . '/languages'
+	);
 }
-add_action('plugins_loaded', 'doc_load_textdomain');
-
+add_action('plugins_loaded', 'dynos_load_textdomain');

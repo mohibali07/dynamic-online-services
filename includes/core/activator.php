@@ -1,81 +1,123 @@
-﻿<?php
+<?php
 /**
  * Plugin Activator
- *
- * Handles plugin activation tasks.
  *
  * @package Dynamic_Online_Services
  * @subpackage Core
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+declare(strict_types=1);
+
+namespace DynamicOnlineServices\Core;
+
+use DynamicOnlineServices\Settings\Defaults;
+use DynamicOnlineServices\PostTypes\ServicePostType;
+use DynamicOnlineServices\Taxonomies\ServiceCategoryTaxonomy;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
- * Plugin activation hook - migrate old options to new option name.
- *
- * @since 1.1.0
+ * Class Activator
  */
-function doc_activate_plugin(): void
-{
-    // Load error handler if not already loaded
-    if (!function_exists('doc_handle_activation_error')) {
-        require_once DOC_PLUGIN_DIR . 'includes/core/exception.php';
-        require_once DOC_PLUGIN_DIR . 'includes/core/error-handler.php';
-    }
+class Activator {
 
-    // Check requirements before activation
-    if (!doc_check_requirements()) {
-        deactivate_plugins(DOC_PLUGIN_BASENAME);
-        // Set error transient instead of outputting (no output during activation)
-        set_transient('doc_activation_error', esc_html__('Dynamic Online Services could not be activated. Please check the system requirements.', 'dynamic-online-services'), 30);
-        return;
-    }
+	/**
+	 * Activate the plugin.
+	 *
+	 * @return void
+	 */
+	public static function activate(): void {
+		// Load error handler if not already loaded
+		if ( ! function_exists( 'dynos_handle_activation_error' ) ) {
+			$plugin_dir = defined( 'DYNOS_PLUGIN_DIR' ) ? DYNOS_PLUGIN_DIR : plugin_dir_path( dirname( __DIR__, 2 ) );
+			if ( file_exists( $plugin_dir . 'includes/core/exception.php' ) ) {
+				require_once $plugin_dir . 'includes/core/exception.php';
+			}
+			if ( file_exists( $plugin_dir . 'includes/core/error-handler.php' ) ) {
+				require_once $plugin_dir . 'includes/core/error-handler.php';
+			}
+		}
 
-    // Migrate old option names (ss_options, sos_options) to new option name (doc_options)
-    $old_ss_options = get_option('ss_options', false);
-    if (false !== $old_ss_options) {
-        // If old ss_options exist and new options don't, migrate them
-        $new_options = get_option('doc_options', false);
-        if (false === $new_options) {
-            update_option('doc_options', $old_ss_options);
-        }
-    }
+		// Check requirements
+		if ( function_exists( 'dynos_check_requirements' ) && ! dynos_check_requirements() ) {
+			deactivate_plugins( defined( 'DYNOS_PLUGIN_BASENAME' ) ? DYNOS_PLUGIN_BASENAME : plugin_basename( dirname( __DIR__, 2 ) . '/dynamic-online-services.php' ) );
+			set_transient( 'dynos_activation_error', __( 'Dynamic Online Services could not be activated. Please check the system requirements.', 'dynamic-online-services' ), 30 );
+			return;
+		}
 
-    // Also migrate sos_options if it exists (from previous plugin name)
-    $old_sos_options = get_option('sos_options', false);
-    if (false !== $old_sos_options) {
-        // If old sos_options exist and new options don't, migrate them
-        $new_options = get_option('doc_options', false);
-        if (false === $new_options) {
-            update_option('doc_options', $old_sos_options);
-        }
-    }
+		self::migrate_options();
+		self::initialize_slugs();
+		self::register_post_types_and_flush();
 
-    // Initialize slug options if they don't exist (for tracking changes)
-    $current_options = get_option('doc_options', array());
-    if (!isset($current_options['service_post_type_slug']) || empty($current_options['service_post_type_slug'])) {
-        $defaults = \DynamicOnlineServices\Settings\Defaults::get_options();
-        update_option('doc_previous_service_slug', $defaults['service_post_type_slug']);
-        update_option('doc_previous_taxonomy_slug', $defaults['service_taxonomy_slug']);
-    } else {
-        // Store current slugs as previous slugs
-        update_option('doc_previous_service_slug', $current_options['service_post_type_slug']);
-        update_option('doc_previous_taxonomy_slug', $current_options['service_taxonomy_slug']);
-    }
+		// Set activation flag
+		set_transient( 'dynos_plugin_activated', true, 30 );
+	}
 
-    // Ensure required files are loaded for activation
-    if (!function_exists('doc_register_services_cpt_and_taxonomy')) {
-        require_once DOC_PLUGIN_DIR . 'includes/post-types.php';
-    }
+	/**
+	 * Migrate old options.
+	 *
+	 * @return void
+	 */
+	private static function migrate_options(): void {
+		$old_ss_options = get_option( 'ss_options', false );
+		if ( false !== $old_ss_options && false === get_option( 'dynos_options', false ) ) {
+			update_option( 'dynos_options', $old_ss_options );
+		}
 
-    // Flush rewrite rules for custom post types
-    if (function_exists('doc_register_services_cpt_and_taxonomy')) {
-        doc_register_services_cpt_and_taxonomy();
-    }
-    flush_rewrite_rules();
+		$old_sos_options = get_option( 'sos_options', false );
+		if ( false !== $old_sos_options && false === get_option( 'dynos_options', false ) ) {
+			update_option( 'dynos_options', $old_sos_options );
+		}
+	}
 
-    // Set activation flag for redirect or other purposes
-    set_transient('doc_plugin_activated', true, 30);
+	/**
+	 * Initialize slug options.
+	 *
+	 * @return void
+	 */
+	private static function initialize_slugs(): void {
+		$current_options = get_option( 'dynos_options', array() );
+
+		// Defaults class might need to be checked if it exists/autoloader works
+		// Assumes DynamicOnlineServices\Settings\Defaults exists based on original code usage
+		$defaults      = Defaults::get_options();
+		$service_slug  = $defaults['service_post_type_slug'];
+		$taxonomy_slug = $defaults['service_taxonomy_slug'];
+
+		if ( ! isset( $current_options['service_post_type_slug'] ) || empty( $current_options['service_post_type_slug'] ) ) {
+			update_option( 'dynos_previous_service_slug', $service_slug );
+			update_option( 'dynos_previous_taxonomy_slug', $taxonomy_slug );
+		} else {
+			update_option( 'dynos_previous_service_slug', $current_options['service_post_type_slug'] );
+			update_option( 'dynos_previous_taxonomy_slug', $current_options['service_taxonomy_slug'] );
+		}
+	}
+
+	/**
+	 * Register post types and flush rewrite rules.
+	 *
+	 * @return void
+	 */
+	private static function register_post_types_and_flush(): void {
+		// Get settings to know slugs
+		$settings = get_option( 'dynos_options', array() );
+		$defaults = Defaults::get_options(); // Assuming this works
+
+		$service_slug  = $settings['service_post_type_slug'] ?? $defaults['service_post_type_slug'];
+		$taxonomy_slug = $settings['service_taxonomy_slug'] ?? $defaults['service_taxonomy_slug'];
+
+		// Instantiate registration classes
+		// Note: we can't easily rely on the Plugin class instance here during static activation
+		// so we instantiate them manually just for flushing rules.
+
+		$cpt = new ServicePostType( $service_slug );
+		$cpt->register_post_type();
+
+		$tax = new ServiceCategoryTaxonomy( $taxonomy_slug, array( $service_slug ) );
+		$tax->register_taxonomy();
+
+		flush_rewrite_rules();
+	}
 }

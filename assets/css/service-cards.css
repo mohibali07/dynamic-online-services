@@ -8,12 +8,12 @@
 .service-card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    gap: var(--wp--style--block-gap, 20px);
     list-style: none;
     padding: 0;
     margin: 0;
-    column-gap: 20px;
-    row-gap: 40px;
+    column-gap: var(--wp--style--block-gap, 20px);
+    row-gap: calc(var(--wp--style--block-gap, 20px) * 2);
 }
 
 .service-card {
@@ -71,7 +71,7 @@
 }
 
 .service-card-title a:hover {
-    color: #ffffff !important;
+    color: var(--wp--preset--color--background, #ffffff) !important;
 }
 
 .service-card-description {
@@ -97,6 +97,5 @@
 }
 
 .service-card-link:hover {
-    background-color: #fff !important;
+    background-color: var(--wp--preset--color--background, #ffffff) !important;
 }
-

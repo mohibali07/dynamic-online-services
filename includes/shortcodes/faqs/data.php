@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * FAQs Shortcode Data Retrieval
  *
@@ -8,8 +8,10 @@
  * @subpackage Shortcodes
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+declare(strict_types=1);
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
@@ -19,41 +21,40 @@ if (!defined('ABSPATH')) {
  * @param int $post_id Post ID.
  * @return array Array of FAQs or empty array.
  */
-function doc_get_service_faqs($post_id): array {
-    // Validate post ID
-    $post_id = doc_validate_post_id($post_id);
-    if (false === $post_id) {
-        return array();
-    }
-    
-    $faqs = get_post_meta($post_id, 'service_faqs', true);
-    
-    if (!is_array($faqs) || empty($faqs)) {
-        return array();
-    }
-    
-    // Sanitize FAQ data to ensure security
-    $sanitized_faqs = array();
-    foreach ($faqs as $faq) {
-        if (!is_array($faq)) {
-            continue;
-        }
-        
-        $question = isset($faq['question']) ? sanitize_text_field($faq['question']) : '';
-        $answer = isset($faq['answer']) ? wp_kses_post($faq['answer']) : '';
-        
-        // Only include FAQs with valid questions
-        if (!empty($question)) {
-            $sanitized_faqs[] = array(
-                'question' => $question,
-                'answer' => $answer,
-            );
-        }
-    }
-    
-    // Allow filtering FAQs before return
-    $sanitized_faqs = apply_filters('doc_faqs_before_display', $sanitized_faqs, $post_id);
-    
-    return $sanitized_faqs;
-}
+function dynos_get_service_faqs( $post_id ): array {
+	// Validate post ID
+	$post_id = dynos_validate_post_id( $post_id );
+	if ( false === $post_id ) {
+		return array();
+	}
 
+	$faqs = get_post_meta( $post_id, 'service_faqs', true );
+
+	if ( ! is_array( $faqs ) || empty( $faqs ) ) {
+		return array();
+	}
+
+	// Sanitize FAQ data to ensure security
+	$sanitized_faqs = array();
+	foreach ( $faqs as $faq ) {
+		if ( ! is_array( $faq ) ) {
+			continue;
+		}
+
+		$question = isset( $faq['question'] ) ? sanitize_text_field( $faq['question'] ) : '';
+		$answer   = isset( $faq['answer'] ) ? wp_kses_post( $faq['answer'] ) : '';
+
+		// Only include FAQs with valid questions
+		if ( ! empty( $question ) ) {
+			$sanitized_faqs[] = array(
+				'question' => $question,
+				'answer'   => $answer,
+			);
+		}
+	}
+
+	// Allow filtering FAQs before return
+	$sanitized_faqs = apply_filters( 'dynos_faqs_before_display', $sanitized_faqs, $post_id );
+
+	return $sanitized_faqs;
+}

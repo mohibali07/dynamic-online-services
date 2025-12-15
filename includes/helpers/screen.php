@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Screen Helper Functions
  *
@@ -8,8 +8,10 @@
  * @subpackage Helpers
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+declare(strict_types=1);
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
@@ -23,35 +25,35 @@ if (!defined('ABSPATH')) {
  * @param string $action Screen action (optional, e.g., 'add').
  * @return bool True if screen matches, false otherwise.
  */
-function doc_is_current_screen($base, $post_type = '', $taxonomy = '', $action = ''): bool {
-    $screen = get_current_screen();
-    
-    // Check if screen object exists (can be null in some contexts like AJAX)
-    if (!$screen) {
-        return false;
-    }
-    
-    // Check base
-    if ($screen->base !== $base) {
-        return false;
-    }
-    
-    // Check post type if provided
-    if (!empty($post_type) && isset($screen->post_type) && $screen->post_type !== $post_type) {
-        return false;
-    }
-    
-    // Check taxonomy if provided
-    if (!empty($taxonomy) && isset($screen->taxonomy) && $screen->taxonomy !== $taxonomy) {
-        return false;
-    }
-    
-    // Check action if provided
-    if (!empty($action) && isset($screen->action) && $screen->action !== $action) {
-        return false;
-    }
-    
-    return true;
+function dynos_is_current_screen( $base, $post_type = '', $taxonomy = '', $action = '' ): bool {
+	$screen = get_current_screen();
+
+	// Check if screen object exists (can be null in some contexts like AJAX)
+	if ( ! $screen ) {
+		return false;
+	}
+
+	// Check base
+	if ( $screen->base !== $base ) {
+		return false;
+	}
+
+	// Check post type if provided
+	if ( ! empty( $post_type ) && isset( $screen->post_type ) && $screen->post_type !== $post_type ) {
+		return false;
+	}
+
+	// Check taxonomy if provided
+	if ( ! empty( $taxonomy ) && isset( $screen->taxonomy ) && $screen->taxonomy !== $taxonomy ) {
+		return false;
+	}
+
+	// Check action if provided
+	if ( ! empty( $action ) && isset( $screen->action ) && $screen->action !== $action ) {
+		return false;
+	}
+
+	return true;
 }
 
 /**
@@ -61,8 +63,8 @@ function doc_is_current_screen($base, $post_type = '', $taxonomy = '', $action =
  * @param string $taxonomy Taxonomy slug.
  * @return bool True if on taxonomy add form, false otherwise.
  */
-function doc_is_taxonomy_add_screen($taxonomy): bool {
-    return doc_is_current_screen('term', '', $taxonomy, 'add');
+function dynos_is_taxonomy_add_screen( $taxonomy ): bool {
+	return dynos_is_current_screen( 'term', '', $taxonomy, 'add' );
 }
 
 /**
@@ -72,8 +74,8 @@ function doc_is_taxonomy_add_screen($taxonomy): bool {
  * @param string $taxonomy Taxonomy slug.
  * @return bool True if on taxonomy edit form, false otherwise.
  */
-function doc_is_taxonomy_edit_screen($taxonomy): bool {
-    return doc_is_current_screen('term', '', $taxonomy);
+function dynos_is_taxonomy_edit_screen( $taxonomy ): bool {
+	return dynos_is_current_screen( 'term', '', $taxonomy );
 }
 
 /**
@@ -83,7 +85,6 @@ function doc_is_taxonomy_edit_screen($taxonomy): bool {
  * @param string $post_type Post type slug.
  * @return bool True if on post edit screen, false otherwise.
  */
-function doc_is_post_edit_screen($post_type): bool {
-    return doc_is_current_screen('post', $post_type);
+function dynos_is_post_edit_screen( $post_type ): bool {
+	return dynos_is_current_screen( 'post', $post_type );
 }
-

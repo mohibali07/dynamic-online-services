@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Taxonomy Custom Fields
  *
@@ -8,11 +8,12 @@
  * @subpackage Taxonomy_Fields
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+declare(strict_types=1);
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 // Include taxonomy field components
-require_once DOC_PLUGIN_DIR . 'includes/taxonomy/fields-renderer.php';
-require_once DOC_PLUGIN_DIR . 'includes/taxonomy/fields-saver.php';
-
+require_once DYNOS_PLUGIN_DIR . 'includes/taxonomy/fields-renderer.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/taxonomy/fields-saver.php';

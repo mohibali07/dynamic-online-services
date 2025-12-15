@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Scripts and Styles
  *
@@ -8,10 +8,12 @@
  * @subpackage Admin
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+declare(strict_types=1);
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 // Include admin script components
-require_once DOC_PLUGIN_DIR . 'includes/admin/scripts-taxonomy.php';
-require_once DOC_PLUGIN_DIR . 'includes/admin/scripts-settings.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/admin/scripts-taxonomy.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/admin/scripts-settings.php';

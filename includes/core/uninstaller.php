@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin Uninstaller
  *
@@ -8,36 +8,56 @@
  * @subpackage Core
  */
 
+declare(strict_types=1);
+
+namespace DynamicOnlineServices\Core;
+
+// If this file is called directly, abort.
 if (!defined('ABSPATH')) {
-    exit;
+	exit;
 }
 
 /**
- * Plugin uninstall hook.
+ * Fired during plugin uninstallation.
  *
- * @since 1.1.0
+ * This class defines all code necessary to run during the plugin's uninstallation.
+ *
+ * @since      1.1.0
+ * @package    Dynamic_Online_Services
+ * @subpackage Core
+ * @author     Techmire Solutions <http://techmiresolutions.com/>
  */
-function doc_uninstall_plugin(): void {
-    // Check if user has permission to uninstall
-    if (!current_user_can('activate_plugins')) {
-        return;
-    }
+class Uninstaller
+{
 
-    // Check if we should delete data on uninstall
-    $delete_data = get_option('doc_delete_data_on_uninstall', false);
+	/**
+	 * Uninstall the plugin.
+	 *
+	 * Fired when the plugin is uninstalled.
+	 *
+	 * @since    1.1.0
+	 */
+	public static function uninstall(): void
+	{
+		// Check if user has permission to uninstall.
+		if (!current_user_can('activate_plugins')) {
+			return;
+		}
 
-    if ($delete_data) {
-        // Delete plugin options
-        delete_option('doc_options');
-        delete_option('doc_options'); // Clean up old option name
-        delete_option('ss_options'); // Clean up old option name
-        delete_option('doc_delete_data_on_uninstall');
+		// Check if we should delete data on uninstall.
+		$delete_data = get_option('dynos_delete_data_on_uninstall', false);
 
-        // Note: We don't delete custom post types and taxonomies data
-        // as this could be destructive. Users should manually delete if needed.
-    }
+		if ($delete_data) {
+			// Delete plugin options.
+			delete_option('dynos_options');
+			delete_option('ss_options'); // Clean up old option name.
+			delete_option('dynos_delete_data_on_uninstall');
 
-    // Clear rewrite rules
-    flush_rewrite_rules();
+			// Note: We don't delete custom post types and taxonomies data
+			// as this could be destructive. Users should manually delete if needed.
+		}
+
+		// Clear rewrite rules.
+		flush_rewrite_rules();
+	}
 }
-

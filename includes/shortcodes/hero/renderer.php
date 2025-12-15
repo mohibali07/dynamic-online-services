@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Hero Shortcode Renderer
  *
@@ -8,8 +8,10 @@
  * @subpackage Shortcodes
  */
 
+declare(strict_types=1);
+
 if (!defined('ABSPATH')) {
-    exit;
+	exit;
 }
 
 /**
@@ -29,56 +31,48 @@ if (!defined('ABSPATH')) {
  * }
  * @return string HTML output.
  */
-function doc_render_hero_html($args): string {
-    $defaults = array(
-        'image_url'      => '',
-        'height'         => '50vh',
-        'title_color'    => '#FFFFFF',
-        'font_family'    => 'Helvetica',
-        'title'          => '',
-        'description'    => '',
-        'data_attribute' => '',
-        'data_value'     => '',
-    );
-    
-    $args = wp_parse_args($args, $defaults);
-    
-    // Sanitize all inputs
-    $image_url      = esc_url($args['image_url']);
-    $height         = $args['height'];
-    $title_color    = $args['title_color'];
-    $font_family    = $args['font_family'];
-    $title          = esc_html($args['title']);
-    $description    = !empty($args['description']) ? wp_kses_post($args['description']) : '';
-    $data_attribute = sanitize_key($args['data_attribute']);
-    $data_value     = esc_attr($args['data_value']);
-    
-    // Build data attribute if provided
-    $data_attr = '';
-    if (!empty($data_attribute) && !empty($data_value)) {
-        $data_attr = ' ' . esc_attr($data_attribute) . '="' . esc_attr($data_value) . '"';
-    }
-    
-    // Build style attributes using dedicated style builder helpers
-    $hero_inner_style_value = doc_build_hero_inner_style($height, $image_url);
-    $hero_inner_style = !empty($hero_inner_style_value) ? 'style="' . esc_attr($hero_inner_style_value) . '"' : '';
-    
-    $hero_content_style_value = doc_build_hero_content_style($title_color, $font_family);
-    $content_style = !empty($hero_content_style_value) ? 'style="' . esc_attr($hero_content_style_value) . '"' : '';
-    
-    ob_start();
-    ?>
-    <div class="category-hero-container"<?php echo $data_attr; // Already escaped via esc_attr() above ?>>
-        <div class="category-hero-inner" <?php echo $hero_inner_style; // Already escaped via esc_attr() above ?>>
-            <div class="hero-content" <?php echo $content_style; // Already escaped via esc_attr() above ?>>
-                <h1 class="category-hero-title"><?php echo esc_html($title); ?></h1>
-                <?php if (!empty($description)) : ?>
-                    <p class="hero-description"><?php echo wp_kses_post($description); ?></p>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-    <?php
-    return ob_get_clean();
+function dynos_render_hero_html($args): string
+{
+	$defaults = array(
+		'image_url' => '',
+		'height' => '50vh',
+		'title_color' => '#FFFFFF',
+		'font_family' => 'Helvetica',
+		'title' => '',
+		'description' => '',
+		'data_attribute' => '',
+		'data_value' => '',
+	);
+
+	$args = wp_parse_args($args, $defaults);
+
+	// Sanitize all inputs
+	$image_url = esc_url($args['image_url']);
+	$height = $args['height'];
+	$title_color = $args['title_color'];
+	$font_family = $args['font_family'];
+	$title = esc_html($args['title']);
+	$description = !empty($args['description']) ? wp_kses_post($args['description']) : '';
+	$data_attribute = sanitize_key($args['data_attribute']);
+	$data_value = esc_attr($args['data_value']);
+
+	// Build style attributes using dedicated style builder helpers
+	$hero_inner_style_value = \DynamicOnlineServices\Helpers\StyleBuilder::build_hero_inner_style($height, $image_url);
+	$hero_content_style_value = \DynamicOnlineServices\Helpers\StyleBuilder::build_hero_content_style($title_color, $font_family);
+
+	ob_start();
+	?>
+	<div class="category-hero-container" <?php if (!empty($data_attribute) && !empty($data_value)): ?> 		<?php echo esc_attr($data_attribute); ?>="<?php echo esc_attr($data_value); ?>" <?php endif; ?>>
+		<div class="category-hero-inner" <?php if (!empty($hero_inner_style_value)): ?>style="<?php echo esc_attr($hero_inner_style_value); ?>" <?php endif; ?>>
+			<div class="hero-content" <?php if (!empty($hero_content_style_value)): ?>style="<?php echo esc_attr($hero_content_style_value); ?>" <?php endif; ?>>
+				<h1 class="category-hero-title"><?php echo esc_html($title); ?></h1>
+				<?php if (!empty($description)): ?>
+					<p class="hero-description"><?php echo wp_kses_post($description); ?></p>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+	<?php
+	return ob_get_clean();
 }
 

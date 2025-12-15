@@ -6,12 +6,16 @@
  * @subpackage Shortcodes
  */
 
+declare(strict_types=1);
+
 namespace DynamicOnlineServices\Shortcodes;
 
+use DynamicOnlineServices\Renderers\HeroRenderer;
+use DynamicOnlineServices\Services\SettingsService;
 use WP_Post;
 
 if (!defined('ABSPATH')) {
-    exit;
+	exit;
 }
 
 /**
@@ -20,100 +24,164 @@ if (!defined('ABSPATH')) {
 class Hero
 {
 
-    /**
-     * Initialize shortcodes.
-     */
-    public static function init(): void
-    {
-        add_shortcode('service_category_hero', array(__CLASS__, 'render_category_hero'));
-        add_shortcode('single_service_hero', array(__CLASS__, 'render_service_hero'));
-    }
 
-    /**
-     * Render category hero shortcode.
-     *
-     * @param array $atts Shortcode attributes.
-     * @return string HTML output.
-     */
-    public static function render_category_hero($atts = array()): string
-    {
-        // Include dependencies
-        if (!function_exists('doc_process_hero_shortcode')) {
-            require_once DOC_PLUGIN_DIR . 'includes/shortcodes/hero/renderer.php';
-            require_once DOC_PLUGIN_DIR . 'includes/shortcodes/hero/data.php';
-            require_once DOC_PLUGIN_DIR . 'includes/shortcodes/hero/shortcode-handler.php';
-        }
+	/**
+	 * Initialize shortcodes.
+	 */
+	public static function init(): void
+	{
+		add_shortcode('service_category_hero', array(__CLASS__, 'render_category_hero'));
+		add_shortcode('single_service_hero', array(__CLASS__, 'render_service_hero'));
+	}
 
-        if (!is_tax('services_category')) {
-            return '';
-        }
+	/**
+	 * Render category hero shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output.
+	 */
+	public static function render_category_hero($atts = array()): string
+	{
+		// Require data helper for retrieval functions
+		if (!function_exists('dynos_get_category_hero_data')) {
+			require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/hero/data.php';
+		}
 
-        $queried_object = get_queried_object();
-        if (function_exists('doc_validate_term_object')) {
-            $queried_object = doc_validate_term_object($queried_object, 'services_category');
-        }
+		$settings = function_exists('dynos_sanitize_cpt_settings') ? dynos_sanitize_cpt_settings() : array();
+		$taxonomy_slug = isset($settings['taxonomy_slug']) ? $settings['taxonomy_slug'] : 'services_category';
 
-        if (!$queried_object) {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                do_action('doc_category_hero_term_error', get_queried_object());
-            }
-            return '';
-        }
+		if (!is_tax($taxonomy_slug)) {
+			return '';
+		}
 
-        // Allow filtering the queried object
-        $queried_object = apply_filters('doc_category_hero_term', $queried_object);
+		$queried_object = get_queried_object();
+		if (function_exists('dynos_validate_term_object')) {
+			$queried_object = dynos_validate_term_object($queried_object, $taxonomy_slug);
+		}
 
-        // Get hero data
-        $hero_data = doc_get_category_hero_data($queried_object);
+		if (!$queried_object) {
+			if (defined('WP_DEBUG') && WP_DEBUG) {
+				do_action('dynos_category_hero_term_error', get_queried_object());
+			}
+			return '';
+		}
 
-        // Process shortcode with common logic
-        $output = doc_process_hero_shortcode($atts, $hero_data, 'service_category_hero');
+		// Allow filtering the queried object
+		$queried_object = apply_filters('dynos_category_hero_term', $queried_object);
 
-        // Allow filtering the final output
-        return apply_filters('doc_category_hero_output', $output, $queried_object);
-    }
+		// Get hero data
+		$hero_data = dynos_get_category_hero_data($queried_object);
 
-    /**
-     * Render service hero shortcode.
-     *
-     * @param array $atts Shortcode attributes.
-     * @return string HTML output.
-     */
-    public static function render_service_hero($atts = array()): string
-    {
-        // Include dependencies
-        if (!function_exists('doc_process_hero_shortcode')) {
-            require_once DOC_PLUGIN_DIR . 'includes/shortcodes/hero/renderer.php';
-            require_once DOC_PLUGIN_DIR . 'includes/shortcodes/hero/data.php';
-            require_once DOC_PLUGIN_DIR . 'includes/shortcodes/hero/shortcode-handler.php';
-        }
+		// Process and Render
+		$output = self::process_hero($atts, $hero_data, 'service_category_hero');
 
-        if (!is_singular('service')) {
-            return '';
-        }
+		// Allow filtering the final output
+		return apply_filters('dynos_category_hero_output', $output, $queried_object);
+	}
 
-        // Get post object
-        $post = get_queried_object();
-        if (!$post || !($post instanceof WP_Post)) {
-            $post = get_post();
-        }
+	/**
+	 * Render service hero shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output.
+	 */
+	public static function render_service_hero($atts = array()): string
+	{
+		// Require data helper
+		if (!function_exists('dynos_get_service_hero_data')) {
+			require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/hero/data.php';
+		}
 
-        // Validate post object
-        if (function_exists('doc_validate_post_object')) {
-            $post = doc_validate_post_object($post, 'service');
-        }
+		$settings = function_exists('dynos_sanitize_cpt_settings') ? dynos_sanitize_cpt_settings() : array();
+		$service_slug = isset($settings['service_slug']) ? $settings['service_slug'] : 'service';
 
-        if (!$post) {
-            return '';
-        }
+		if (!is_singular($service_slug)) {
+			return '';
+		}
 
-        // Get hero data
-        $hero_data = doc_get_service_hero_data($post);
+		// Get post object
+		$post = get_queried_object();
+		if (!$post || !($post instanceof WP_Post)) {
+			$post = get_post();
+		}
 
-        // Process shortcode with common logic
-        $output = doc_process_hero_shortcode($atts, $hero_data, 'single_service_hero');
+		// Validate post object
+		if (function_exists('dynos_validate_post_object')) {
+			$post = dynos_validate_post_object($post, $service_slug);
+		}
 
-        // Allow filtering the final output
-        return apply_filters('doc_service_hero_output', $output, $post);
-    }
+		if (!$post) {
+			return '';
+		}
+
+		// Get hero data
+		$hero_data = dynos_get_service_hero_data($post);
+
+		// Process and Render
+		$output = self::process_hero($atts, $hero_data, 'single_service_hero');
+
+		// Allow filtering the final output
+		return apply_filters('dynos_service_hero_output', $output, $post);
+	}
+
+	/**
+	 * Process hero logic: Parse attributes, enqueue styles, then render.
+	 * Replaces legacy dynos_process_hero_shortcode.
+	 *
+	 * @param array  $atts
+	 * @param array  $hero_data
+	 * @param string $shortcode_tag
+	 * @return string
+	 */
+	private static function process_hero($atts, $hero_data, $shortcode_tag): string
+	{
+		// Get default height from settings via Service
+		$settings_service = SettingsService::get_instance();
+		$default_height = $settings_service->get_option('hero_height', '50vh');
+
+		// Parse shortcode attributes using consolidated helper if available
+		if (function_exists('dynos_parse_shortcode_attributes')) {
+			$atts = dynos_parse_shortcode_attributes(
+				$atts,
+				array('height' => $default_height),
+				$shortcode_tag
+			);
+		} else {
+			$atts = shortcode_atts(
+				array('height' => $default_height),
+				$atts,
+				$shortcode_tag
+			);
+		}
+
+		// Validate height
+		if (function_exists('dynos_validate_hero_height_attribute')) {
+			$atts['height'] = dynos_validate_hero_height_attribute($atts['height'], $default_height);
+		}
+
+		// Override height if provided
+		if (!empty($atts['height'])) {
+			$hero_data['height'] = $atts['height'];
+		}
+
+		// Breadcrumbs integration
+		$enable_breadcrumbs = $settings_service->get_option('rank_math_breadcrumbs', true);
+		if ($enable_breadcrumbs && function_exists('rank_math_the_breadcrumbs')) {
+			// Rank Math outputs directly, so we capture it
+			ob_start();
+			rank_math_the_breadcrumbs();
+			$hero_data['breadcrumbs'] = ob_get_clean();
+		} else {
+			$hero_data['breadcrumbs'] = '';
+		}
+
+		// Enqueue styles
+		if (function_exists('dynos_enqueue_hero_styles')) {
+			dynos_enqueue_hero_styles($hero_data['font_family'], $hero_data['overlay_color']);
+		}
+
+		// Render using Renderer Class
+		$renderer = new HeroRenderer();
+		return $renderer->render($hero_data);
+	}
 }

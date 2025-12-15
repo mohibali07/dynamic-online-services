@@ -1,0 +1,122 @@
+[33mWARNING: The Dynamic Online Services standard uses 1 deprecated sniff[0m
+--------------------------------------------------------------------------------
+-  [36mWordPress.PHP.POSIXFunctions[0m
+   This sniff has been deprecated since WordPressCS v3.3.0 and will be removed
+   in WordPressCS v4.0.0. To scan for PHP cross-version compatibility issues,
+   use the PHPCompatibility standard instead.
+
+Deprecated sniffs are still run, but will stop working at some point in the
+future.
+
+...........[31mE[0m......[31mE[0m....[33mW[0m....[31mE[0m.....[31mE[0m[31mE[0m...[33mW[0m.................... 60 / 76 (79%)
+.[33mW[0m..............                                             76 / 76 (100%)
+
+
+
+[1mFILE: ...lin/Documents/dynamic-online-services/includes/renderers/CardsRenderer.php[0m
+--------------------------------------------------------------------------------
+[1mFOUND 1 ERROR AFFECTING 1 LINE[0m
+--------------------------------------------------------------------------------
+ 109 | [31mERROR[0m | [1mAll output should be run through an escaping function (see the[0m
+     |       | [1mSecurity sections in the WordPress Developer Handbooks), found[0m
+     |       | [1m'$this'.[0m (WordPress.Security.EscapeOutput.OutputNotEscaped)
+--------------------------------------------------------------------------------
+
+
+[1mFILE: ...yedaalin/Documents/dynamic-online-services/includes/core/error-handler.php[0m
+--------------------------------------------------------------------------------
+[1mFOUND 2 ERRORS AFFECTING 2 LINES[0m
+--------------------------------------------------------------------------------
+  68 | [31mERROR[0m | [1mAll output should be run through an escaping function (see the[0m
+     |       | [1mSecurity sections in the WordPress Developer Handbooks), found[0m
+     |       | [1m'$exception'.[0m (WordPress.Security.EscapeOutput.OutputNotEscaped)
+ 107 | [31mERROR[0m | [1mAll output should be run through an escaping function (see the[0m
+     |       | [1mSecurity sections in the WordPress Developer Handbooks), found[0m
+     |       | [1m'$back_link'.[0m (WordPress.Security.EscapeOutput.OutputNotEscaped)
+--------------------------------------------------------------------------------
+
+
+[1mFILE: ...n/Documents/dynamic-online-services/includes/PostTypes/ServicePostType.php[0m
+--------------------------------------------------------------------------------
+[1mFOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE[0m
+--------------------------------------------------------------------------------
+ 163 | [33mWARNING[0m | [1mA function call to __() with texts containing placeholders was[0m
+     |         | [1mfound, but was not accompanied by a "translators:" comment on[0m
+     |         | [1mthe line above to clarify the meaning of the placeholders.[0m
+     |         | (WordPress.WP.I18n.MissingTranslatorsComment)
+--------------------------------------------------------------------------------
+
+
+[1mFILE: ...alin/Documents/dynamic-online-services/includes/admin/scripts-settings.php[0m
+--------------------------------------------------------------------------------
+[1mFOUND 1 ERROR AFFECTING 1 LINE[0m
+--------------------------------------------------------------------------------
+ 39 | [31mERROR[0m | [1mVersion parameter is not explicitly set or has been set to an[0m
+    |       | [1mequivalent of "false" for wp_enqueue_script; This means that the[0m
+    |       | [1mWordPress core version will be used which is not recommended for[0m
+    |       | [1mplugin or theme development.[0m
+    |       | (WordPress.WP.EnqueuedResourceParameters.NoExplicitVersion)
+--------------------------------------------------------------------------------
+
+
+[1mFILE: ...ocuments/dynamic-online-services/includes/shortcodes/category/renderer.php[0m
+--------------------------------------------------------------------------------
+[1mFOUND 3 ERRORS AFFECTING 3 LINES[0m
+--------------------------------------------------------------------------------
+  83 | [31mERROR[0m | [1mAll output should be run through an escaping function (see the[0m
+     |       | [1mSecurity sections in the WordPress Developer Handbooks), found[0m
+     |       | [1m'$grid_style_attr'.[0m
+     |       | (WordPress.Security.EscapeOutput.OutputNotEscaped)
+  86 | [31mERROR[0m | [1mAll output should be run through an escaping function (see the[0m
+     |       | [1mSecurity sections in the WordPress Developer Handbooks), found[0m
+     |       | [1m'dynos_render_category_shortcode_item'.[0m
+     |       | (WordPress.Security.EscapeOutput.OutputNotEscaped)
+ 143 | [31mERROR[0m | [1mUse Yoda Condition checks, you must.[0m
+     |       | (WordPress.PHP.YodaConditions.NotYoda)
+--------------------------------------------------------------------------------
+
+
+[1mFILE: ...uments/dynamic-online-services/includes/shortcodes/category/pagination.php[0m
+--------------------------------------------------------------------------------
+[1mFOUND 4 ERRORS AND 1 WARNING AFFECTING 5 LINES[0m
+--------------------------------------------------------------------------------
+   1 | [33mWARNING[0m | [1mFile has mixed line endings; this may cause incorrect results[0m
+     |         | (Internal.LineEndings.Mixed)
+  23 | [31mERROR[0m   | [1mGlobal constants defined by a theme/plugin should start with[0m
+     |         | [1mthe theme/plugin prefix. Found: "doc_PAGINATION_RANGE".[0m
+     |         | (WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound)
+ 106 | [31mERROR[0m   | [1mAll output should be run through an escaping function (see the[0m
+     |         | [1mSecurity sections in the WordPress Developer Handbooks), found[0m
+     |         | [1m'$i'.[0m (WordPress.Security.EscapeOutput.OutputNotEscaped)
+ 113 | [31mERROR[0m   | [1mAll output should be run through an escaping function (see the[0m
+     |         | [1mSecurity sections in the WordPress Developer Handbooks), found[0m
+     |         | [1m'$i'.[0m (WordPress.Security.EscapeOutput.OutputNotEscaped)
+ 127 | [31mERROR[0m   | [1mAll output should be run through an escaping function (see the[0m
+     |         | [1mSecurity sections in the WordPress Developer Handbooks), found[0m
+     |         | [1m'$total_pages'.[0m
+     |         | (WordPress.Security.EscapeOutput.OutputNotEscaped)
+--------------------------------------------------------------------------------
+
+
+[1mFILE: ...alin/Documents/dynamic-online-services/includes/shortcodes/cards/query.php[0m
+--------------------------------------------------------------------------------
+[1mFOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE[0m
+--------------------------------------------------------------------------------
+ 92 | [33mWARNING[0m | [1mjson_encode() is discouraged. Use wp_json_encode() instead.[0m
+    |         | (WordPress.WP.AlternativeFunctions.json_encode_json_encode)
+--------------------------------------------------------------------------------
+
+
+[1mFILE: ...ers/syedaalin/Documents/dynamic-online-services/includes/helpers/cache.php[0m
+--------------------------------------------------------------------------------
+[1mFOUND 0 ERRORS AND 2 WARNINGS AFFECTING 2 LINES[0m
+--------------------------------------------------------------------------------
+ 104 | [33mWARNING[0m | [1mjson_encode() is discouraged. Use wp_json_encode() instead.[0m
+     |         | (WordPress.WP.AlternativeFunctions.json_encode_json_encode)
+ 125 | [33mWARNING[0m | [1mjson_encode() is discouraged. Use wp_json_encode() instead.[0m
+     |         | (WordPress.WP.AlternativeFunctions.json_encode_json_encode)
+--------------------------------------------------------------------------------
+
+Time: 833ms; Memory: 14MB
+
+Script phpcs handling the lint event returned with error code 1

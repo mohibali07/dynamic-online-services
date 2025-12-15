@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "dynamic-online-services/service-cards",
+  "version": "1.1.0",
+  "title": "Service Cards",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "Display a dynamic grid of service cards.",
+  "attributes": {
+    "ids": {
+      "type": "string",
+      "default": ""
+    },
+    "category": {
+      "type": "string",
+      "default": ""
+    },
+    "taxonomy": {
+      "type": "string",
+      "default": "service-category"
+    },
+    "orderby": {
+      "type": "string",
+      "default": "date"
+    },
+    "order": {
+      "type": "string",
+      "default": "DESC"
+    },
+    "limit": {
+      "type": "number",
+      "default": -1
+    },
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "minWidth": {
+      "type": "string",
+      "default": ""
+    },
+    "showPagination": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "dynamic-online-services",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

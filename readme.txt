@@ -2,9 +2,9 @@
 Contributors: techmiresolutions
 Donate link: http://aabtaab.com/
 Tags: courses, online, education, custom, post, type, taxonomy, shortcode, settings
-Requires at least: 5.0
-Requires PHP: 7.2
-Tested up to: 6.4
+Requires at least: 6.9
+Requires PHP: 8.3
+Tested up to: 6.7
 Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,9 @@ This plugin provides a custom post type for "Courses" and a custom taxonomy for 
 * Customizable Styles: Color and font customization through settings page
 * Shortcodes: Multiple shortcodes for flexible content display
 * REST API Support: Full REST API support for custom post types and taxonomies
+* Version: 1.1.0
+* Requires: PHP 8.3+, WordPress 6.9+
+* Architecture: Follows modern WordPress plugin standards with PSR-4 autoloading, strict typing, and class-based structure (`includes/` directory).
 * Extensible: Multiple filters and hooks for developers
 * Security: Follows WordPress security best practices
 * Performance: Optimized script and style loading

@@ -6,100 +6,103 @@
  * @subpackage Shortcodes
  */
 
+declare(strict_types=1);
+
 namespace DynamicOnlineServices\Shortcodes;
 
 use WP_Post;
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
  * Faqs class.
  */
-class Faqs
-{
+class Faqs {
 
-    /**
-     * Initialize shortcode.
-     */
-    public static function init(): void
-    {
-        add_shortcode('service_faqs_accordion', array(__CLASS__, 'render'));
-    }
 
-    /**
-     * Render shortcode.
-     *
-     * @param array $atts Shortcode attributes.
-     * @return string HTML output.
-     */
-    public static function render($atts = array()): string
-    {
-        // Include dependencies
-        if (!function_exists('doc_render_faqs_accordion')) {
-            require_once DOC_PLUGIN_DIR . 'includes/shortcodes/faqs/renderer.php';
-        }
-        if (!function_exists('doc_get_service_faqs')) {
-            require_once DOC_PLUGIN_DIR . 'includes/shortcodes/faqs/data.php';
-        }
+	/**
+	 * Initialize shortcode.
+	 */
+	public static function init(): void {
+		add_shortcode( 'service_faqs_accordion', array( __CLASS__, 'render' ) );
+	}
 
-        // Parse and validate shortcode attributes
-        $default_title = __('Frequently Asked Questions', 'dynamic-online-services');
+	/**
+	 * Render shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output.
+	 */
+	public static function render( $atts = array() ): string {
+		// Include dependencies
+		if ( ! function_exists( 'dynos_render_faqs_accordion' ) ) {
+			require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/faqs/renderer.php';
+		}
+		if ( ! function_exists( 'dynos_get_service_faqs' ) ) {
+			require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/faqs/data.php';
+		}
 
-        if (function_exists('doc_parse_shortcode_attributes')) {
-            $atts = doc_parse_shortcode_attributes(
-                $atts,
-                array('title' => $default_title),
-                'service_faqs_accordion'
-            );
-        } else {
-            $atts = shortcode_atts(
-                array('title' => $default_title),
-                $atts,
-                'service_faqs_accordion'
-            );
-        }
+		// Parse and validate shortcode attributes
+		$default_title = __( 'Frequently Asked Questions', 'dynamic-online-services' );
 
-        // Validate title attribute
-        if (function_exists('doc_validate_faq_title_attribute')) {
-            $atts['title'] = doc_validate_faq_title_attribute($atts['title'], $default_title);
-        }
+		if ( function_exists( 'dynos_parse_shortcode_attributes' ) ) {
+			$atts = dynos_parse_shortcode_attributes(
+				$atts,
+				array( 'title' => $default_title ),
+				'service_faqs_accordion'
+			);
+		} else {
+			$atts = shortcode_atts(
+				array( 'title' => $default_title ),
+				$atts,
+				'service_faqs_accordion'
+			);
+		}
 
-        // Check if we're on a service post
-        if (!is_singular('service')) {
-            return '';
-        }
+		// Validate title attribute
+		if ( function_exists( 'dynos_validate_faq_title_attribute' ) ) {
+			$atts['title'] = dynos_validate_faq_title_attribute( $atts['title'], $default_title );
+		}
 
-        // Get post object
-        $post = get_queried_object();
-        if (!$post || !($post instanceof WP_Post)) {
-            $post = get_post();
-        }
+		$settings     = function_exists( 'dynos_sanitize_cpt_settings' ) ? dynos_sanitize_cpt_settings() : array();
+		$service_slug = isset( $settings['service_slug'] ) ? $settings['service_slug'] : 'service';
 
-        // Validate post object
-        if (function_exists('doc_validate_post_object')) {
-            $post = doc_validate_post_object($post, 'service');
-        }
+		// Check if we're on a service post
+		if ( ! is_singular( $service_slug ) ) {
+			return '';
+		}
 
-        if (!$post) {
-            return '';
-        }
+		// Get post object
+		$post = get_queried_object();
+		if ( ! $post || ! ( $post instanceof WP_Post ) ) {
+			$post = get_post();
+		}
 
-        $post_id = $post->ID;
+		// Validate post object
+		if ( function_exists( 'dynos_validate_post_object' ) ) {
+			$post = dynos_validate_post_object( $post, $service_slug );
+		}
 
-        // Get FAQs
-        $faqs = doc_get_service_faqs($post_id);
+		if ( ! $post ) {
+			return '';
+		}
 
-        if (empty($faqs)) {
-            $empty_content = apply_filters('doc_faqs_empty_content', '', $post_id);
-            return $empty_content;
-        }
+		$post_id = $post->ID;
 
-        // Render FAQ accordion
-        $output = doc_render_faqs_accordion($faqs, $post_id, $atts['title']);
+		// Get FAQs
+		$faqs = dynos_get_service_faqs( $post_id );
 
-        // Allow filtering the final output
-        return apply_filters('doc_faqs_output', $output, $faqs, $post_id);
-    }
+		if ( empty( $faqs ) ) {
+			$empty_content = apply_filters( 'dynos_faqs_empty_content', '', $post_id );
+			return $empty_content;
+		}
+
+		// Render FAQ accordion
+		$output = dynos_render_faqs_accordion( $faqs, $post_id, $atts['title'] );
+
+		// Allow filtering the final output
+		return apply_filters( 'dynos_faqs_output', $output, $faqs, $post_id );
+	}
 }

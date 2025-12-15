@@ -5,75 +5,64 @@
  * @package Dynamic_Online_Services
  */
 
+declare(strict_types=1);
+
 namespace DynamicOnlineServices;
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
  * Autoloader class.
  */
-class Autoloader
-{
+class Autoloader {
 
-    /**
-     * Run autoloader.
-     *
-     * @return void
-     */
-    public static function run(): void
-    {
-        spl_autoload_register(array(__CLASS__, 'autoload'));
-    }
 
-    /**
-     * Autoload.
-     *
-     * @param string $class_name Class name.
-     * @return void
-     */
-    public static function autoload($class_name): void
-    {
-        if (strpos($class_name, 'DynamicOnlineServices\\') !== 0) {
-            return;
-        }
+	/**
+	 * Run autoloader.
+	 *
+	 * @return void
+	 */
+	public static function run(): void {
+		spl_autoload_register( array( __CLASS__, 'autoload' ) );
+	}
 
-        // Remove namespace from class name.
-        $relative_class = substr($class_name, strlen('DynamicOnlineServices\\'));
+	/**
+	 * Autoload.
+	 *
+	 * @param string $class_name Class name.
+	 * @return void
+	 */
+	public static function autoload( $class_name ): void {
+		// Check if class is in our namespace
+		if ( strpos( $class_name, 'DynamicOnlineServices\\' ) !== 0 ) {
+			return;
+		}
 
-        // Map namespace to includes directory.
-        // We will map 'DynamicOnlineServices' to 'includes'.
-        // Sub-namespaces will map to sub-directories.
-        // e.g. DynamicOnlineServices\Core\Plugin -> includes/core/class-plugin.php or Plugin.php
-        // Let's stick to PSR-4 strict for now: includes/Core/Plugin.php
-        // But existing folders are lowercase.
+		// Remove namespace from class name.
+		$relative_class = substr( $class_name, strlen( 'DynamicOnlineServices\\' ) );
 
-        $file_parts = explode('\\', $relative_class);
+		// Base directory for our namespace
+		$base_dir = DYNOS_PLUGIN_DIR . 'includes/';
 
-        // Handle lowercasing for directories to match existing structure if we want to keep it,
-        // or we can just rename directories.
-        // For now, let's try to map strictly but handle case if needed.
-        // Actually, let's just map to the file path.
+		// Replace namespace separators with directory separators
+		// DynamicOnlineServices\Settings\PageRenderer -> includes/Settings/PageRenderer.php
+		$file_path = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
 
-        $file_path = DOC_PLUGIN_DIR . 'includes/';
+		// Check for file existence cases (PascalCase vs lowercase/kebab-case)
+		if ( file_exists( $file_path ) ) {
+			require_once $file_path;
+			return;
+		}
 
-        // Loop through parts
-        $last_index = count($file_parts) - 1;
-        foreach ($file_parts as $index => $part) {
-            if ($index === $last_index) {
-                // Filename
-                $file_path .= $part . '.php';
-            } else {
-                // Directory - convert to lowercase/hyphenated if needed?
-                // Let's assume we will rename directories to PascalCase or match namespace.
-                // OR we convert namespace to lowercase for directory.
-                $file_path .= strtolower(str_replace('_', '-', $part)) . '/';
-            }
-        }
-
-        if (file_exists($file_path)) {
-            require_once $file_path;
-        }
-    }
+		// Fallback: Check for lowercase directory/filename (common in WP)
+		// DynamicOnlineServices\Settings\PageRenderer -> includes/settings/pagerenderer.php or similar if needed
+		// For now, let's try strict mapping or mapping to purely lowercase if not found.
+		$lower_path = $base_dir . strtolower( str_replace( '\\', '/', $relative_class ) ) . '.php';
+		if ( file_exists( $lower_path ) ) {
+			require_once $lower_path;
+			return;
+		}
+	}
 }

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Shortcode Attributes Helper Functions
  *
@@ -9,8 +9,10 @@
  * @subpackage Helpers
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+declare(strict_types=1);
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
@@ -22,18 +24,18 @@ if (!defined('ABSPATH')) {
  * @param string $shortcode_tag Shortcode tag name.
  * @return array Parsed and validated attributes.
  */
-function doc_parse_shortcode_attributes($atts, $defaults, $shortcode_tag): array {
-    // Use WordPress's built-in shortcode_atts for parsing
-    $parsed = shortcode_atts($defaults, $atts, $shortcode_tag);
-    
-    // Sanitize all text fields
-    foreach ($parsed as $key => $value) {
-        if (is_string($value)) {
-            $parsed[$key] = sanitize_text_field($value);
-        }
-    }
-    
-    return $parsed;
+function dynos_parse_shortcode_attributes( $atts, $defaults, $shortcode_tag ): array {
+	// Use WordPress's built-in shortcode_atts for parsing
+	$parsed = shortcode_atts( $defaults, $atts, $shortcode_tag );
+
+	// Sanitize all text fields
+	foreach ( $parsed as $key => $value ) {
+		if ( is_string( $value ) ) {
+			$parsed[ $key ] = sanitize_text_field( $value );
+		}
+	}
+
+	return $parsed;
 }
 
 /**
@@ -44,13 +46,13 @@ function doc_parse_shortcode_attributes($atts, $defaults, $shortcode_tag): array
  * @param string $default_height Default height if validation fails.
  * @return string Validated and sanitized height value.
  */
-function doc_validate_hero_height_attribute($height, $default_height): string {
-    if (empty($height)) {
-        return $default_height;
-    }
-    
-    $sanitized = doc_sanitize_css_value($height, 'height');
-    return !empty($sanitized) ? $sanitized : $default_height;
+function dynos_validate_hero_height_attribute( $height, $default_height ): string {
+	if ( empty( $height ) ) {
+		return $default_height;
+	}
+
+	$sanitized = dynos_sanitize_css_value( $height, 'height' );
+	return ! empty( $sanitized ) ? $sanitized : $default_height;
 }
 
 /**
@@ -61,11 +63,10 @@ function doc_validate_hero_height_attribute($height, $default_height): string {
  * @param string $default_title Default title if empty.
  * @return string Validated and sanitized title value.
  */
-function doc_validate_faq_title_attribute($title, $default_title): string {
-    if (empty($title)) {
-        return $default_title;
-    }
-    
-    return sanitize_text_field($title);
-}
+function dynos_validate_faq_title_attribute( $title, $default_title ): string {
+	if ( empty( $title ) ) {
+		return $default_title;
+	}
 
+	return sanitize_text_field( $title );
+}

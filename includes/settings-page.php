@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Settings Page Functionality
  *
@@ -8,8 +8,10 @@
  * @subpackage Admin
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+declare(strict_types=1);
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 // Settings registration and renderer are already included in main plugin file
@@ -19,13 +21,13 @@ if (!defined('ABSPATH')) {
  *
  * @since 1.1.0
  */
-function doc_add_admin_menu(): void {
-    add_options_page(
-        __('Dynamic Online Services Settings', 'dynamic-online-services'),
-        __('Dynamic Services', 'dynamic-online-services'),
-        'manage_options',
-        'dynamic-online-services',
-        'doc_settings_page_html'
-    );
+function dynos_add_admin_menu(): void {
+	add_options_page(
+		__( 'Dynamic Online Services Settings', 'dynamic-online-services' ),
+		__( 'Dynamic Services', 'dynamic-online-services' ),
+		'manage_options',
+		'dynamic-online-services',
+		'dynos_settings_page_html'
+	);
 }
-add_action('admin_menu', 'doc_add_admin_menu');
+add_action( 'admin_menu', 'dynos_add_admin_menu' );

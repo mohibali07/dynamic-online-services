@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Hooks and Filters Documentation
  *
@@ -9,12 +9,14 @@
  * @subpackage Documentation
  */
 
+declare(strict_types=1);
+
 /**
  * FILTERS
  */
 
 /**
- * Filter: doc_get_options
+ * Filter: dynos_get_options
  *
  * Allows filtering of all plugin options before they are returned.
  *
@@ -24,7 +26,7 @@
  */
 
 /**
- * Filter: doc_get_option
+ * Filter: dynos_get_option
  *
  * Allows filtering of individual option values.
  *
@@ -37,7 +39,7 @@
  */
 
 /**
- * Filter: doc_service_cpt_labels
+ * Filter: dynos_service_cpt_labels
  *
  * Allows filtering of custom post type labels before registration.
  *
@@ -47,7 +49,7 @@
  */
 
 /**
- * Filter: doc_service_cpt_args
+ * Filter: dynos_service_cpt_args
  *
  * Allows filtering of custom post type arguments before registration.
  *
@@ -57,7 +59,7 @@
  */
 
 /**
- * Filter: doc_services_category_tax_labels
+ * Filter: dynos_services_category_tax_labels
  *
  * Allows filtering of taxonomy labels before registration.
  *
@@ -67,7 +69,7 @@
  */
 
 /**
- * Filter: doc_services_category_tax_args
+ * Filter: dynos_services_category_tax_args
  *
  * Allows filtering of taxonomy arguments before registration.
  *
@@ -77,7 +79,7 @@
  */
 
 /**
- * Filter: doc_service_permalink_before_process
+ * Filter: dynos_service_permalink_before_process
  *
  * Allows filtering of service permalink before category replacement.
  *
@@ -88,7 +90,7 @@
  */
 
 /**
- * Filter: doc_service_permalink_after_process
+ * Filter: dynos_service_permalink_after_process
  *
  * Allows filtering of service permalink after category replacement.
  *
@@ -100,7 +102,7 @@
  */
 
 /**
- * Filter: doc_before_save_faqs
+ * Filter: dynos_before_save_faqs
  *
  * Allows filtering of FAQs before they are saved to the database.
  *
@@ -111,7 +113,7 @@
  */
 
 /**
- * Filter: doc_before_save_category_thumbnail
+ * Filter: dynos_before_save_category_thumbnail
  *
  * Allows filtering of category thumbnail ID before saving.
  *
@@ -122,7 +124,7 @@
  */
 
 /**
- * Filter: doc_placeholder_image_url
+ * Filter: dynos_placeholder_image_url
  *
  * Allows filtering of placeholder image URL.
  *
@@ -133,7 +135,7 @@
  */
 
 /**
- * Filter: doc_google_font_family
+ * Filter: dynos_google_font_family
  *
  * Allows filtering of Google Font family name before enqueuing.
  *
@@ -144,7 +146,7 @@
  */
 
 /**
- * Filter: doc_google_font_url
+ * Filter: dynos_google_font_url
  *
  * Allows filtering of Google Fonts URL.
  *
@@ -156,7 +158,7 @@
  */
 
 /**
- * Filter: doc_hero_overlay_color
+ * Filter: dynos_hero_overlay_color
  *
  * Allows filtering of hero overlay color.
  *
@@ -166,7 +168,7 @@
  */
 
 /**
- * Filter: doc_hero_dynamic_css
+ * Filter: dynos_hero_dynamic_css
  *
  * Allows filtering of hero section dynamic CSS before output.
  *
@@ -178,7 +180,7 @@
  */
 
 /**
- * Filter: doc_category_hero_term
+ * Filter: dynos_category_hero_term
  *
  * Allows filtering of the queried term object for category hero.
  *
@@ -188,7 +190,7 @@
  */
 
 /**
- * Filter: doc_category_hero_title_color
+ * Filter: dynos_category_hero_title_color
  *
  * Allows filtering of category hero title color.
  *
@@ -199,7 +201,7 @@
  */
 
 /**
- * Filter: doc_category_hero_font_family
+ * Filter: dynos_category_hero_font_family
  *
  * Allows filtering of category hero font family.
  *
@@ -210,7 +212,7 @@
  */
 
 /**
- * Filter: doc_category_hero_image_url
+ * Filter: dynos_category_hero_image_url
  *
  * Allows filtering of category hero image URL.
  *
@@ -221,7 +223,7 @@
  */
 
 /**
- * Filter: doc_category_hero_height
+ * Filter: dynos_category_hero_height
  *
  * Allows filtering of category hero height.
  *
@@ -232,7 +234,7 @@
  */
 
 /**
- * Filter: doc_category_hero_title
+ * Filter: dynos_category_hero_title
  *
  * Allows filtering of category hero title.
  *
@@ -243,7 +245,7 @@
  */
 
 /**
- * Filter: doc_category_hero_output
+ * Filter: dynos_category_hero_output
  *
  * Allows filtering of category hero HTML output.
  *
@@ -254,7 +256,7 @@
  */
 
 /**
- * Filter: doc_service_hero_title_color
+ * Filter: dynos_service_hero_title_color
  *
  * Allows filtering of service hero title color.
  *
@@ -265,7 +267,7 @@
  */
 
 /**
- * Filter: doc_service_hero_font_family
+ * Filter: dynos_service_hero_font_family
  *
  * Allows filtering of service hero font family.
  *
@@ -276,7 +278,7 @@
  */
 
 /**
- * Filter: doc_service_hero_image_url
+ * Filter: dynos_service_hero_image_url
  *
  * Allows filtering of service hero image URL.
  *
@@ -287,7 +289,7 @@
  */
 
 /**
- * Filter: doc_service_hero_height
+ * Filter: dynos_service_hero_height
  *
  * Allows filtering of service hero height.
  *
@@ -298,7 +300,7 @@
  */
 
 /**
- * Filter: doc_service_hero_title
+ * Filter: dynos_service_hero_title
  *
  * Allows filtering of service hero title.
  *
@@ -309,7 +311,7 @@
  */
 
 /**
- * Filter: doc_service_hero_description
+ * Filter: dynos_service_hero_description
  *
  * Allows filtering of service hero description.
  *
@@ -320,7 +322,7 @@
  */
 
 /**
- * Filter: doc_service_hero_output
+ * Filter: dynos_service_hero_output
  *
  * Allows filtering of service hero HTML output.
  *
@@ -331,7 +333,7 @@
  */
 
 /**
- * Filter: doc_faqs_empty_content
+ * Filter: dynos_faqs_empty_content
  *
  * Allows filtering of content displayed when no FAQs are found.
  *
@@ -342,7 +344,7 @@
  */
 
 /**
- * Filter: doc_faqs_before_display
+ * Filter: dynos_faqs_before_display
  *
  * Allows filtering of FAQs array before display.
  *
@@ -353,7 +355,7 @@
  */
 
 /**
- * Filter: doc_faqs_title
+ * Filter: dynos_faqs_title
  *
  * Allows filtering of FAQ section title.
  *
@@ -364,7 +366,7 @@
  */
 
 /**
- * Filter: doc_faq_item
+ * Filter: dynos_faq_item
  *
  * Allows filtering of individual FAQ item before display.
  *
@@ -376,7 +378,7 @@
  */
 
 /**
- * Filter: doc_faqs_output
+ * Filter: dynos_faqs_output
  *
  * Allows filtering of FAQ accordion HTML output.
  *
@@ -388,7 +390,7 @@
  */
 
 /**
- * Filter: doc_faq_dynamic_css
+ * Filter: dynos_faq_dynamic_css
  *
  * Allows filtering of FAQ accordion dynamic CSS before output.
  *
@@ -399,7 +401,7 @@
  */
 
 /**
- * Filter: doc_category_content_term
+ * Filter: dynos_category_content_term
  *
  * Allows filtering of the term object for category content shortcode.
  *
@@ -409,7 +411,7 @@
  */
 
 /**
- * Filter: doc_category_content_services
+ * Filter: dynos_category_content_services
  *
  * Allows filtering of services array for category content shortcode.
  *
@@ -420,7 +422,7 @@
  */
 
 /**
- * Filter: doc_category_content_items
+ * Filter: dynos_category_content_items
  *
  * Allows filtering of items array (categories and services) before display.
  *
@@ -431,7 +433,7 @@
  */
 
 /**
- * Filter: doc_category_content_grid_class
+ * Filter: dynos_category_content_grid_class
  *
  * Allows filtering of grid container CSS class.
  *
@@ -442,7 +444,7 @@
  */
 
 /**
- * Filter: doc_category_content_item
+ * Filter: dynos_category_content_item
  *
  * Allows filtering of individual item before rendering.
  *
@@ -454,7 +456,7 @@
  */
 
 /**
- * Filter: doc_category_content_card_class
+ * Filter: dynos_category_content_card_class
  *
  * Allows filtering of card CSS class.
  *
@@ -466,7 +468,7 @@
  */
 
 /**
- * Filter: doc_category_content_button_text
+ * Filter: dynos_category_content_button_text
  *
  * Allows filtering of card button text.
  *
@@ -477,7 +479,7 @@
  */
 
 /**
- * Filter: doc_category_content_empty_message
+ * Filter: dynos_category_content_empty_message
  *
  * Allows filtering of empty state message.
  *
@@ -488,7 +490,7 @@
  */
 
 /**
- * Filter: doc_category_content_output
+ * Filter: dynos_category_content_output
  *
  * Allows filtering of category content HTML output.
  *
@@ -500,7 +502,7 @@
  */
 
 /**
- * Filter: doc_should_load_card_styles
+ * Filter: dynos_should_load_card_styles
  *
  * Allows filtering of whether to load card styles.
  *
@@ -511,7 +513,7 @@
  */
 
 /**
- * Filter: doc_card_bg_color
+ * Filter: dynos_card_bg_color
  *
  * Allows filtering of card background color.
  *
@@ -521,7 +523,7 @@
  */
 
 /**
- * Filter: doc_card_title_color
+ * Filter: dynos_card_title_color
  *
  * Allows filtering of card title color.
  *
@@ -531,7 +533,7 @@
  */
 
 /**
- * Filter: doc_card_description_color
+ * Filter: dynos_card_description_color
  *
  * Allows filtering of card description color.
  *
@@ -541,7 +543,7 @@
  */
 
 /**
- * Filter: doc_card_button_bg_color
+ * Filter: dynos_card_button_bg_color
  *
  * Allows filtering of card button background color.
  *
@@ -551,7 +553,7 @@
  */
 
 /**
- * Filter: doc_card_button_text_color
+ * Filter: dynos_card_button_text_color
  *
  * Allows filtering of card button text color.
  *
@@ -561,7 +563,7 @@
  */
 
 /**
- * Filter: doc_card_font_family
+ * Filter: dynos_card_font_family
  *
  * Allows filtering of card font family.
  *
@@ -571,7 +573,7 @@
  */
 
 /**
- * Filter: doc_card_title_hover_color
+ * Filter: dynos_card_title_hover_color
  *
  * Allows filtering of card title hover color.
  *
@@ -582,7 +584,7 @@
  */
 
 /**
- * Filter: doc_card_dynamic_css
+ * Filter: dynos_card_dynamic_css
  *
  * Allows filtering of card dynamic CSS before output.
  *
@@ -597,7 +599,7 @@
  */
 
 /**
- * Action: doc_after_save_faqs
+ * Action: dynos_after_save_faqs
  *
  * Fired after FAQs are saved to the database.
  *
@@ -607,7 +609,7 @@
  */
 
 /**
- * Action: doc_after_save_category_thumbnail
+ * Action: dynos_after_save_category_thumbnail
  *
  * Fired after category thumbnail is saved.
  *
@@ -615,4 +617,3 @@
  * @param int $term_id       The term ID.
  * @param int $thumbnail_id The attachment ID.
  */
-
