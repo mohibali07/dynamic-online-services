@@ -27,4 +27,4 @@ function dynos_load_textdomain(): void
 		dirname(DYNOS_PLUGIN_BASENAME) . '/languages'
 	);
 }
-add_action('plugins_loaded', 'dynos_load_textdomain');
+add_action('init', 'dynos_load_textdomain', 1);

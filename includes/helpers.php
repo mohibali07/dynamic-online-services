@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Helper Functions
  *
@@ -16,8 +17,9 @@
  * @param string $property CSS property name (optional).
  * @return string Escaped CSS value.
  */
-function dynos_escape_css_value( $value, $property = '' ) {
-	return \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value( $value, $property );
+function dynos_escape_css_value($value, $property = '')
+{
+	return \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($value, $property);
 }
 
 /**
@@ -31,7 +33,8 @@ function dynos_escape_css_value( $value, $property = '' ) {
  * @param string $default Default orderby value if invalid. Default 'date'.
  * @return string Safe orderby value.
  */
-function dynos_validate_orderby( $orderby, $default = 'date' ) {
+function dynos_validate_orderby($orderby, $default = 'date')
+{
 	// Whitelist of allowed orderby values for WP_Query
 	$allowed_orderby = array(
 		'date',
@@ -47,17 +50,17 @@ function dynos_validate_orderby( $orderby, $default = 'date' ) {
 	);
 
 	// Convert to lowercase for case-insensitive comparison
-	$orderby = strtolower( trim( $orderby ) );
+	$orderby = strtolower(trim($orderby));
 
 	// Check if in whitelist
-	if ( in_array( $orderby, $allowed_orderby, true ) ) {
+	if (in_array($orderby, $allowed_orderby, true)) {
 		return $orderby;
 	}
 
 	// Return default if not whitelisted
 	return $default;
 }
-declare(strict_types=1);
+
 
 if (!defined('ABSPATH')) {
 	exit;
@@ -68,6 +71,5 @@ require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-images.php';
 require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-acf.php';
 require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-admin-notices.php';
 require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-screen.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/helpers/asset-enqueuer.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-asset-enqueuer.php';
+
 require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-shortcode-attributes.php';

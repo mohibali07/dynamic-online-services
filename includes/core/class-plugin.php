@@ -71,6 +71,21 @@ class Plugin
 
 		require_once DYNOS_PLUGIN_DIR . 'includes/taxonomy-fields.php';
 
+		// Note: faqs-meta-box.php is still required if it wasn't refactored into a class yet.
+		// We marked it as "check if procedural". It is procedural.
+		require_once DYNOS_PLUGIN_DIR . 'includes/faqs/class-meta-box.php';
+		require_once DYNOS_PLUGIN_DIR . 'includes/faqs/class-saver.php';
+	}
+
+	/**
+	 * Initialize plugin components.
+	 *
+	 * Hooked to 'init' to ensure translations are loaded first.
+	 *
+	 * @return void
+	 */
+	public function init_components(): void
+	{
 		// Initialize Assets
 		$frontend_assets = new \TechmireSolutions\DynamicOnlineServices\Core\FrontendAssets();
 		$frontend_assets->init();
@@ -89,10 +104,6 @@ class Plugin
 		$service_tax = new \TechmireSolutions\DynamicOnlineServices\Taxonomies\ServiceCategoryTaxonomy($taxonomy_slug, array($service_slug));
 		$service_tax->register();
 
-		// Note: faqs-meta-box.php is still required if it wasn't refactored into a class yet.
-		// We marked it as "check if procedural". It is procedural.
-		require_once DYNOS_PLUGIN_DIR . 'includes/faqs/class-meta-box.php';
-		require_once DYNOS_PLUGIN_DIR . 'includes/faqs/class-saver.php';
 		\TechmireSolutions\DynamicOnlineServices\FAQs\MetaBox::init();
 		\TechmireSolutions\DynamicOnlineServices\FAQs\Saver::init();
 
@@ -123,6 +134,9 @@ class Plugin
 
 		// Register Blocks
 		add_action('init', array($this, 'register_blocks'));
+
+		// Initialize components
+		add_action('init', array($this, 'init_components'), 5);
 	}
 
 	/**
