@@ -51,7 +51,8 @@ class Settings
 	private function __construct()
 	{
 		add_action('admin_menu', array($this, 'add_menu'));
-		add_action('admin_init', array($this, 'register_settings'));
+		add_action('init', array($this, 'register_api_settings'));
+		add_action('admin_init', array($this, 'register_admin_ui'));
 	}
 
 	/**
@@ -69,9 +70,11 @@ class Settings
 	}
 
 	/**
-	 * Register settings.
+	 * Register settings for REST API.
+	 *
+	 * @since 1.2.0
 	 */
-	public function register_settings(): void
+	public function register_api_settings(): void
 	{
 		// Register setting with sanitization callback
 		register_setting(
@@ -83,7 +86,7 @@ class Settings
 				'default' => Defaults::get_options(),
 				'show_in_rest' => array(
 					'schema' => array(
-						'type'       => 'object',
+						'type' => 'object',
 						'properties' => array(
 							// We allow dynamic properties since it's a large options array
 							// Ideal world: define every property here.
@@ -93,7 +96,15 @@ class Settings
 				),
 			)
 		);
+	}
 
+	/**
+	 * Register admin UI settings (sections and fields).
+	 *
+	 * @since 1.2.0
+	 */
+	public function register_admin_ui(): void
+	{
 		// Dynamically register sections and fields from Config
 		$config_map = \TechmireSolutions\DynamicOnlineServices\Settings\Config::get_map();
 
@@ -110,7 +121,7 @@ class Settings
 			if (isset($section_data['fields']) && is_array($section_data['fields'])) {
 				foreach ($section_data['fields'] as $field_id => $field_data) {
 					$args = array(
-						'name'    => $field_id,
+						'name' => $field_id,
 						'default' => $field_data['default'] ?? '',
 						'label_for' => $field_id,
 					);
