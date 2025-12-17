@@ -65,7 +65,7 @@ class Sanitization
 
 		// Allow common CSS transform functions and their values
 		// Whitelist approach: only allow known safe transform functions
-		$allowed_functions = array('translate', 'translateX', 'translateY', 'translateZ', 'scale', 'scaleX', 'scaleY', 'rotate', 'skew', 'skewX', 'skewY', 'matrix', 'matrix3d', 'perspective');
+		$allowed_functions = ['translate', 'translateX', 'translateY', 'translateZ', 'scale', 'scaleX', 'scaleY', 'rotate', 'skew', 'skewX', 'skewY', 'matrix', 'matrix3d', 'perspective'];
 		$pattern = '/\b(' . implode('|', $allowed_functions) . ')\s*\([^)]*\)/i';
 
 		// Extract only valid transform functions from the input
@@ -133,7 +133,7 @@ class Sanitization
 				return self::css_dimension($value);
 			default:
 				// General sanitization: remove potentially dangerous characters
-				return wp_strip_all_tags($value);
+				return \wp_strip_all_tags($value);
 		}
 	}
 
@@ -152,26 +152,26 @@ class Sanitization
 		}
 
 		// If it's a post ID, get the post object
-		if (is_numeric($post)) {
-			$post_id = absint($post);
+		if (\is_numeric($post)) {
+			$post_id = \absint($post);
 			if (0 === $post_id) {
 				return false;
 			}
-			$post = get_post($post_id);
+			$post = \get_post($post_id);
 		}
 
 		// Validate post object
-		if (!is_object($post) || !isset($post->ID)) {
+		if (!\is_object($post) || !isset($post->ID)) {
 			return false;
 		}
 
 		// Verify post exists
-		if (!get_post($post->ID)) {
+		if (!\get_post($post->ID)) {
 			return false;
 		}
 
 		// Verify post type if specified
-		if (!empty($post_type) && get_post_type($post) !== $post_type) {
+		if (!empty($post_type) && \get_post_type($post) !== $post_type) {
 			return false;
 		}
 
@@ -191,13 +191,13 @@ class Sanitization
 			return false;
 		}
 
-		$post_id = absint($post_id);
+		$post_id = \absint($post_id);
 		if (0 === $post_id) {
 			return false;
 		}
 
 		// Verify post exists
-		if (!get_post($post_id)) {
+		if (!\get_post($post_id)) {
 			return false;
 		}
 
@@ -219,21 +219,21 @@ class Sanitization
 		}
 
 		// If it's a term ID, get the term object
-		if (is_numeric($term)) {
-			$term_id = absint($term);
+		if (\is_numeric($term)) {
+			$term_id = \absint($term);
 			if (0 === $term_id) {
 				return false;
 			}
-			$term = get_term($term_id, $taxonomy);
+			$term = \get_term($term_id, $taxonomy);
 		}
 
 		// Validate term object
-		if (!is_object($term) || is_wp_error($term) || !isset($term->term_id)) {
+		if (!\is_object($term) || \is_wp_error($term) || !isset($term->term_id)) {
 			return false;
 		}
 
 		// Verify term ID is valid
-		if (0 === absint($term->term_id)) {
+		if (0 === \absint($term->term_id)) {
 			return false;
 		}
 
@@ -259,15 +259,15 @@ class Sanitization
 			return false;
 		}
 
-		$term_id = absint($term_id);
+		$term_id = \absint($term_id);
 		if (0 === $term_id) {
 			return false;
 		}
 
 		// Verify term exists if taxonomy provided
 		if (!empty($taxonomy)) {
-			$term = get_term($term_id, $taxonomy);
-			if (is_wp_error($term) || !$term) {
+			$term = \get_term($term_id, $taxonomy);
+			if (\is_wp_error($term) || !$term) {
 				return false;
 			}
 		}
@@ -288,14 +288,14 @@ class Sanitization
 			return false;
 		}
 
-		$attachment_id = absint($attachment_id);
+		$attachment_id = \absint($attachment_id);
 		if (0 === $attachment_id) {
 			return false;
 		}
 
 		// Verify attachment exists and is an image
-		$attachment = get_post($attachment_id);
-		if (!$attachment || 'attachment' !== $attachment->post_type || !wp_attachment_is_image($attachment_id)) {
+		$attachment = \get_post($attachment_id);
+		if (!$attachment || 'attachment' !== $attachment->post_type || !\wp_attachment_is_image($attachment_id)) {
 			return false;
 		}
 
@@ -316,7 +316,7 @@ class Sanitization
 			return $default;
 		}
 
-		$sanitized = sanitize_title($slug);
+		$sanitized = \sanitize_title($slug);
 		return empty($sanitized) ? $default : $sanitized;
 	}
 
@@ -332,11 +332,11 @@ class Sanitization
 	 */
 	public static function validate_numeric_range($value, $min, $max, $default = null): mixed
 	{
-		if (is_null($value) || '' === $value) {
+		if (\is_null($value) || '' === $value) {
 			return $default;
 		}
 
-		$value = absint($value);
+		$value = \absint($value);
 		if ($value < $min || $value > $max) {
 			return $default;
 		}
@@ -364,18 +364,18 @@ class Sanitization
 
 		// Additional escaping: remove any remaining dangerous characters
 		// Remove null bytes, control characters, and potential injection vectors
-		$sanitized = str_replace(array("\0", "\r", "\n", "\t"), '', $sanitized);
+		$sanitized = str_replace(["\0", "\r", "\n", "\t"], '', $sanitized);
 
 		// Remove potential CSS injection patterns
 		// Block expressions, javascript:, url(javascript:), etc.
-		$dangerous_patterns = array(
+		$dangerous_patterns = [
 			'/expression\s*\(/i',
 			'/javascript\s*:/i',
 			'/@import/i',
 			'/url\s*\(\s*["\']?\s*javascript:/i',
 			'/<script/i',
 			'/<\/script>/i',
-		);
+		];
 
 		foreach ($dangerous_patterns as $pattern) {
 			if (preg_match($pattern, $sanitized)) {
@@ -415,5 +415,42 @@ class Sanitization
 		}
 
 		return $property . ': ' . $escaped_value . ';';
+	}
+
+	/**
+	 * Validate and sanitize orderby parameter against whitelist.
+	 *
+	 * SECURITY: Prevents SQL injection by using whitelist.
+	 *
+	 * @since 1.1.1
+	 * @param string $orderby Raw orderby value.
+	 * @param string $default Default value. default 'date'.
+	 * @return string Safe orderby value.
+	 */
+	public static function validate_orderby($orderby, $default = 'date'): string
+	{
+		// Whitelist of allowed orderby values for WP_Query
+		$allowed_orderby = [
+			'date',
+			'modified',
+			'title',
+			'name',
+			'ID',
+			'rand',
+			'menu_order',
+			'author',
+			'post__in',
+			'none',
+		];
+
+		// Convert to lowercase for case-insensitive comparison
+		$orderby = \strtolower(\trim($orderby));
+
+		// Check if in whitelist
+		if (\in_array($orderby, $allowed_orderby, true)) {
+			return $orderby;
+		}
+
+		return $default;
 	}
 }

@@ -1,26 +1,76 @@
 /**
  * FAQs Accordion Styles
- * Mobile-First Design
+ * Mobile-First Design with RTL Support, Accessibility & Dark Mode
  */
 
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    --faq-border-color: #ddd;
+    --faq-bg-color: #f7f7f7;
+    --faq-bg-hover: #eee;
+    --faq-text-color: inherit;
+    --faq-primary-color: #007cba;
+    --faq-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --faq-radius: 8px;
+    --faq-spacing: 15px;
+    --faq-transition-duration: 0.3s;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --faq-border-color: #3c434a;
+        --faq-bg-color: #1d2327;
+        --faq-bg-hover: #2c3338;
+        --faq-text-color: #c3c4c7;
+        --faq-primary-color: #72aee6;
+        --faq-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* WordPress theme dark mode */
+.is-dark-theme .service-faqs-accordion {
+    --faq-border-color: #3c434a;
+    --faq-bg-color: #1d2327;
+    --faq-bg-hover: #2c3338;
+    --faq-text-color: #c3c4c7;
+    --faq-primary-color: #72aee6;
+    --faq-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   Container Layout
+   ============================================ */
 .service-faqs-accordion {
     width: 100%;
-    margin: 0 auto;
+    margin-inline: auto;
     container-type: inline-size;
     container-name: faq-container;
 }
 
+/* ============================================
+   FAQ Item
+   ============================================ */
 .faq-item {
-    border: 1px solid var(--wp--preset--color--gray-300, #ddd);
-    border-radius: 8px;
-    margin-bottom: 15px;
+    border: 1px solid var(--faq-border-color);
+    border-radius: var(--faq-radius);
+    margin-block-end: var(--faq-spacing);
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--faq-shadow);
+    contain: layout style;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 100px;
 }
 
+/* ============================================
+   FAQ Question (Interactive Button)
+   ============================================ */
 .faq-question {
-    background-color: var(--wp--preset--color--gray-100, #f7f7f7);
-    padding: 15px 20px;
+    background-color: var(--faq-bg-color);
+    padding-block: var(--faq-spacing);
+    padding-inline: 20px;
     margin: 0;
     font-size: 1.15rem;
     cursor: pointer;
@@ -28,27 +78,48 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: background-color 0.2s ease;
+    transition: background-color var(--faq-transition-duration) ease;
     min-height: 50px;
-    /* Ensure > 44px touch target */
     -webkit-tap-highlight-color: transparent;
-    /* Remove blue highlight on mobile */
+    color: var(--faq-text-color);
+    border: none;
+    width: 100%;
+    text-align: start;
 }
 
-/* Hover-only enhancement */
-@media (hover: hover) {
+/* Hover enhancement for pointer devices only */
+@media (hover: hover) and (pointer: fine) {
     .faq-question:hover {
-        background-color: var(--wp--preset--color--gray-200, #eee);
+        background-color: var(--faq-bg-hover);
     }
 }
 
+/* Enhanced keyboard focus indicator */
+.faq-question:focus {
+    outline: 2px solid var(--faq-primary-color);
+    outline-offset: -2px;
+    z-index: 1;
+}
+
+.faq-question:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.faq-question:focus-visible {
+    outline: 2px solid var(--faq-primary-color);
+    outline-offset: -2px;
+    z-index: 1;
+}
+
+/* ============================================
+   FAQ Icon (Plus/Minus Indicator)
+   ============================================ */
 .faq-icon {
     font-size: 1.5rem;
-    transition: transform 0.3s ease;
+    transition: transform var(--faq-transition-duration) ease;
     font-weight: bold;
-    color: var(--wp--preset--color--primary, #007cba);
-    margin-left: 15px;
-    /* Spacing from text */
+    color: var(--faq-primary-color);
+    margin-inline-start: var(--faq-spacing);
     flex-shrink: 0;
 }
 
@@ -56,25 +127,42 @@
     transform: rotate(45deg);
 }
 
+/* ============================================
+   FAQ Answer (Expandable Content)
+   ============================================ */
 .faq-answer {
-    padding: 0 20px;
+    padding-inline: 20px;
+    padding-block: 0;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s ease-out, padding 0.4s ease-out;
-    background: #fff;
+    background: var(--faq-bg-color);
+    color: var(--faq-text-color);
 }
 
 .faq-answer.show {
     max-height: 1000px;
-    /* Allow for more content on mobile stacking */
-    padding: 20px;
+    padding-block: 20px;
+    padding-inline: 20px;
 }
 
-/* Container Queries */
+/* Ensure proper spacing for content inside answer */
+.faq-answer p:first-child {
+    margin-block-start: 0;
+}
+
+.faq-answer p:last-child {
+    margin-block-end: 0;
+}
+
+/* ============================================
+   Container Queries (Responsive Design)
+   ============================================ */
 @container faq-container (max-width: 480px) {
     .faq-question {
         font-size: 1rem;
-        padding: 12px 15px;
+        padding-block: 12px;
+        padding-inline: var(--faq-spacing);
     }
 
     .faq-icon {
@@ -82,6 +170,78 @@
     }
 
     .faq-answer.show {
-        padding: 15px;
+        padding-block: var(--faq-spacing);
+        padding-inline: var(--faq-spacing);
+    }
+}
+
+/* ============================================
+   High Contrast Mode Support
+   ============================================ */
+@media (prefers-contrast: high) {
+    .faq-item {
+        border-width: 2px;
+    }
+
+    .faq-question:focus-visible {
+        outline-width: 3px;
+    }
+}
+
+/* ============================================
+   Accessibility - Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+
+    .faq-question,
+    .faq-icon,
+    .faq-answer {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+
+    .faq-question.active .faq-icon {
+        transform: none;
+    }
+}
+
+/* ============================================
+   ARIA State Styling
+   ============================================ */
+.faq-question[aria-expanded="true"] {
+    font-weight: 600;
+}
+
+.faq-question[aria-expanded="false"] .faq-icon::before {
+    content: attr(data-label-expand);
+}
+
+.faq-question[aria-expanded="true"] .faq-icon::before {
+    content: attr(data-label-collapse);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+    .faq-item {
+        box-shadow: none;
+        border: 1px solid #000;
+        page-break-inside: avoid;
+    }
+
+    .faq-question {
+        background-color: transparent;
+    }
+
+    .faq-answer {
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 10px 20px !important;
+        display: block !important;
+    }
+
+    .faq-icon {
+        display: none;
     }
 }

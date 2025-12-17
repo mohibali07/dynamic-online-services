@@ -10,12 +10,14 @@ declare(strict_types=1);
 
 namespace DynamicOnlineServices\Tests\Unit\Shortcodes;
 
-use WP_Mock\Tools\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test FAQs shortcode class.
+ * @runInSeparateProcess
+ * @preserveGlobalState disabled
  */
-class FaqsTest extends TestCase
+class FaqsTest extends \DYNOS_TestCase
 {
 	/**
 	 * Set up test environment.
@@ -23,7 +25,6 @@ class FaqsTest extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		\WP_Mock::setUp();
 	}
 
 	/**
@@ -31,7 +32,6 @@ class FaqsTest extends TestCase
 	 */
 	public function tearDown(): void
 	{
-		\WP_Mock::tearDown();
 		parent::tearDown();
 	}
 
@@ -40,22 +40,31 @@ class FaqsTest extends TestCase
 	 */
 	public function test_init_registers_shortcode(): void
 	{
-		\WP_Mock::expectActionAdded('shortcode', \WP_Mock\Functions::type('array'));
+		\WP_Mock::userFunction('add_shortcode', [
+            'times' => 1,
+            'args' => ['service_faqs_accordion', \WP_Mock\Functions::type('array')]
+        ]);
 
 		// Verify class exists
 		$this->assertTrue(class_exists('TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs'));
+
+        \TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs::init();
 	}
 
 	/**
 	 * Test render returns empty on wrong context.
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
 	 */
 	public function test_render_wrong_context(): void
 	{
 		\WP_Mock::userFunction('__')
 			->andReturn('Frequently Asked Questions');
 
-		\WP_Mock::userFunction('dynos_sanitize_cpt_settings')
-			->andReturn(['service_slug' => 'services']);
+        $mockSanitization = \Mockery::mock('alias:TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization');
+        $mockSanitization->shouldReceive('sanitize_cpt_settings')
+            ->andReturn(['service_slug' => 'services']);
 
 		\WP_Mock::userFunction('is_singular')
 			->once()
@@ -64,18 +73,24 @@ class FaqsTest extends TestCase
 
 		// Verify method exists
 		$this->assertTrue(method_exists('TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs', 'render'));
+
+        \TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs::render();
 	}
 
 	/**
 	 * Test render handles empty FAQs.
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
 	 */
 	public function test_render_empty_faqs(): void
 	{
 		\WP_Mock::userFunction('__')
 			->andReturn('Frequently Asked Questions');
 
-		\WP_Mock::userFunction('dynos_sanitize_cpt_settings')
-			->andReturn(['service_slug' => 'services']);
+        $mockSanitization = \Mockery::mock('alias:TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization');
+        $mockSanitization->shouldReceive('sanitize_cpt_settings')
+            ->andReturn(['service_slug' => 'services']);
 
 		\WP_Mock::userFunction('is_singular')
 			->once()
@@ -91,5 +106,7 @@ class FaqsTest extends TestCase
 
 		// Verify method exists
 		$this->assertTrue(method_exists('TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs', 'render'));
+
+        \TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs::render();
 	}
 }

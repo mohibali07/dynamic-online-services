@@ -36,7 +36,7 @@ class HeroStyles
 	public static function enqueue(string $font_family, string $overlay_color): void
 	{
 		// Enqueue Google Font if needed
-		Fonts::enqueue_google_font($font_family, 'sos-hero-font');
+		Fonts::enqueue_google_font($font_family, 'dynos-hero-google-font');
 
 		// Allow filtering overlay color
 		$overlay_color = apply_filters('dynos_hero_overlay_color', $overlay_color);
@@ -49,9 +49,9 @@ class HeroStyles
 
 		// Enqueue hero styles
 		wp_enqueue_style(
-			'sos-hero-section',
+			'dynos-hero-section',
 			DYNOS_PLUGIN_URL . 'assets/css/hero-section.css',
-			array(),
+			[],
 			DYNOS_VERSION
 		);
 
@@ -111,6 +111,6 @@ class HeroStyles
 		// Allow filtering the CSS
 		$hero_css = apply_filters('dynos_hero_dynamic_css', $hero_css, $overlay_color, $options);
 
-		wp_add_inline_style('sos-hero-section', $hero_css);
+		wp_add_inline_style('dynos-hero-section', $hero_css);
 	}
 }

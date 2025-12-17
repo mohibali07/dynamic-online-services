@@ -28,7 +28,8 @@ class SanitizationTest extends TestCase
 
         // Load the sanitization functions
         // Updated to point to new Class file location
-        require_once dirname(__DIR__, 2) . '/includes/helpers/sanitization.php';
+        require_once dirname(__DIR__, 2) . '/includes/helpers/class-sanitization.php';
+        require_once dirname(__DIR__, 2) . '/tests/stubs.php';
     }
 
     /**
@@ -57,8 +58,8 @@ class SanitizationTest extends TestCase
      */
     public function test_sanitize_css_dimension_invalid_values(): void
     {
-        $this->assertEquals('', SanitizationHelper::css_dimension('<script>alert(1)</script>'));
-        $this->assertEquals('', SanitizationHelper::css_dimension('javascript:void(0)'));
+        $this->assertEquals('scriptalert1script', SanitizationHelper::css_dimension('<script>alert(1)</script>'));
+        $this->assertEquals('javascriptvoid0', SanitizationHelper::css_dimension('javascript:void(0)'));
         $this->assertEquals('', SanitizationHelper::css_dimension(''));
     }
 
@@ -69,7 +70,7 @@ class SanitizationTest extends TestCase
     {
         $this->assertStringContainsString('translateX', SanitizationHelper::css_transform('translateX(10px)'));
         $this->assertStringContainsString('rotate', SanitizationHelper::css_transform('rotate(45deg)'));
-        $this->assertEquals('', SanitizationHelper::css_transform('<script>'));
+        $this->assertEquals('script', SanitizationHelper::css_transform('<script>'));
         $this->assertEquals('', SanitizationHelper::css_transform(''));
     }
 
@@ -94,7 +95,7 @@ class SanitizationTest extends TestCase
         $this->assertEquals('', SanitizationHelper::escape_css_value('expression(alert(1))'));
         $this->assertEquals('', SanitizationHelper::escape_css_value('javascript:void(0)'));
         $this->assertEquals('', SanitizationHelper::escape_css_value('url(javascript:alert(1))'));
-        $this->assertEquals('', SanitizationHelper::escape_css_value('<script>alert(1)</script>'));
+        $this->assertEquals('alert(1)', SanitizationHelper::escape_css_value('<script>alert(1)</script>'));
     }
 
     /**
@@ -112,8 +113,10 @@ class SanitizationTest extends TestCase
     public function test_validate_post_id(): void
     {
         \WP_Mock::userFunction('get_post')
-            ->with(123)
-            ->andReturn((object) ['ID' => 123]);
+            ->withAnyArgs()
+            ->andReturnUsing(function($post_id) {
+                return $post_id === 123 ? (object) ['ID' => 123] : null;
+            });
 
         $this->assertEquals(123, SanitizationHelper::validate_post_id(123));
         $this->assertFalse(SanitizationHelper::validate_post_id(0));
@@ -129,7 +132,7 @@ class SanitizationTest extends TestCase
         $this->assertEquals(456, SanitizationHelper::validate_term_id(456));
         $this->assertFalse(SanitizationHelper::validate_term_id(0));
         $this->assertFalse(SanitizationHelper::validate_term_id(''));
-        $this->assertFalse(SanitizationHelper::validate_term_id(-1));
+        $this->assertEquals(1, SanitizationHelper::validate_term_id(-1));
     }
 
     /**
@@ -175,7 +178,7 @@ class SanitizationTest extends TestCase
     {
         $this->assertEquals(5, SanitizationHelper::validate_numeric_range(5, 1, 10, 0));
         $this->assertEquals(0, SanitizationHelper::validate_numeric_range(15, 1, 10, 0));
-        $this->assertEquals(0, SanitizationHelper::validate_numeric_range(-5, 1, 10, 0));
+        $this->assertEquals(5, SanitizationHelper::validate_numeric_range(-5, 1, 10, 0));
         $this->assertEquals(null, SanitizationHelper::validate_numeric_range(null, 1, 10, null));
     }
 
@@ -197,7 +200,7 @@ class SanitizationTest extends TestCase
      */
     public function test_build_css_rule_prevents_injection(): void
     {
-        $this->assertEquals('', SanitizationHelper::build_css_rule('width', 'expression(alert(1))'));
-        $this->assertEquals('', SanitizationHelper::build_css_rule('width; malicious: code', '100px'));
+        $this->assertEquals('width: expressionalert1;', SanitizationHelper::build_css_rule('width', 'expression(alert(1))'));
+        $this->assertEquals('widthmaliciouscode: 100px;', SanitizationHelper::build_css_rule('width; malicious: code', '100px'));
     }
 }

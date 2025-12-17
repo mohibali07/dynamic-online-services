@@ -39,7 +39,7 @@ function dynos_validate_category_shortcode_attributes( $atts ): array {
 					DYNOS_MAX_POSTS_PER_PAGE
 				),
 				'warning',
-				array( 'original_value' => $posts_per_page_raw )
+				[ 'original_value' => $posts_per_page_raw ]
 			);
 		}
 	} else {
@@ -47,7 +47,7 @@ function dynos_validate_category_shortcode_attributes( $atts ): array {
 	}
 
 	// Validate orderby (must be valid WordPress orderby value)
-	$valid_orderby   = array( 'menu_order', 'date', 'title', 'ID', 'author', 'modified', 'rand' );
+	$valid_orderby   = [ 'menu_order', 'date', 'title', 'ID', 'author', 'modified', 'rand' ];
 	$atts['orderby'] = isset( $atts['orderby'] ) ? sanitize_key( $atts['orderby'] ) : 'menu_order';
 	if ( ! in_array( $atts['orderby'], $valid_orderby, true ) ) {
 		$atts['orderby'] = 'menu_order';
@@ -55,7 +55,7 @@ function dynos_validate_category_shortcode_attributes( $atts ): array {
 
 	// Validate order (must be ASC or DESC)
 	$atts['order'] = isset( $atts['order'] ) ? strtoupper( sanitize_text_field( $atts['order'] ) ) : 'ASC';
-	if ( ! in_array( $atts['order'], array( 'ASC', 'DESC' ), true ) ) {
+	if ( ! in_array( $atts['order'], [ 'ASC', 'DESC' ], true ) ) {
 		$atts['order'] = 'ASC';
 	}
 

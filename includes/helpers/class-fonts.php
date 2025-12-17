@@ -31,7 +31,7 @@ class Fonts
     public static function get_standard_fonts(): array
     {
         if (!defined('DYNOS_STANDARD_FONTS')) {
-            define('DYNOS_STANDARD_FONTS', array('sans-serif', 'serif', 'monospace', 'Helvetica'));
+            define('DYNOS_STANDARD_FONTS', ['sans-serif', 'serif', 'monospace', 'Helvetica']);
         }
         return DYNOS_STANDARD_FONTS;
     }
@@ -43,7 +43,7 @@ class Fonts
      * @param string $font_family Font family name. Must be a non-empty string.
      * @return bool True if font requires Google Fonts, false otherwise. Returns false if font_family is empty or is a standard font.
      */
-    public static function is_google_font($font_family): bool
+    public static function is_google_font(string $font_family): bool
     {
         if (empty($font_family) || !is_string($font_family)) {
             return false;
@@ -58,7 +58,7 @@ class Fonts
      * @param string $font_family Font family name. Must be a valid string.
      * @return string Encoded font family name safe for use in URLs. Returns empty string if input is invalid.
      */
-    public static function encode_google_font($font_family): string
+    public static function encode_google_font(string $font_family): string
     {
         if (empty($font_family) || !is_string($font_family)) {
             return '';
@@ -82,17 +82,17 @@ class Fonts
 	 *
 	 * @since 1.1.0
 	 * @param string $font_family Font family name. Must be a valid Google Font name.
-	 * @param string $handle      Style handle for the font. Default 'sos-google-font'. Must be a valid string.
+	 * @param string $handle      Style handle for the font. Default 'dynos-google-font'. Must be a valid string.
 	 * @return bool True if font was enqueued successfully, false otherwise (e.g., if it's a standard font or encoding fails).
 	 */
-	public static function enqueue_google_font($font_family, $handle = 'sos-google-font'): bool
+	public static function enqueue_google_font(string $font_family, string $handle = 'dynos-google-font'): bool
 	{
 		if (empty($font_family) || !is_string($font_family)) {
 			return false;
 		}
 
 		if (empty($handle) || !is_string($handle)) {
-			$handle = 'sos-google-font';
+			$handle = 'dynos-google-font';
 		}
 
 		if (!self::is_google_font($font_family)) {
@@ -107,7 +107,7 @@ class Fonts
 		}
 
 		// Check hosting method from settings
-		$options = get_option('dynos_options', array());
+		$options = get_option('dynos_options', []);
 		$hosting_method = isset($options['google_font_hosting']) ? $options['google_font_hosting'] : 'remote';
 
 		// Try local hosting if enabled
@@ -145,7 +145,7 @@ class Fonts
 		wp_enqueue_style(
 			$handle,
 			esc_url($font_url),
-			array(),
+			[],
 			DYNOS_VERSION
 		);
 
@@ -183,7 +183,7 @@ class Fonts
 		wp_enqueue_style(
 			$handle,
 			esc_url($local_url),
-			array(),
+			[],
 			DYNOS_VERSION
 		);
 

@@ -20,6 +20,30 @@ namespace TechmireSolutions\DynamicOnlineServices\Helpers;
 class Options
 {
     /**
+     * Cached options.
+     *
+     * @var array|null
+     */
+    private static ?array $cached_options = null;
+
+    /**
+     * Cache key for options.
+     *
+     * @since 1.1.0
+     * @var string
+     */
+    public const CACHE_KEY = 'dynos_options';
+
+    /**
+     * Reset static cache.
+     * Useful for testing.
+     */
+    public static function reset_static_cache(): void
+    {
+        self::$cached_options = null;
+    }
+
+    /**
      * Initialize the options helper.
      * Registers necessary hooks for cache invalidation.
      *
@@ -28,9 +52,9 @@ class Options
      */
     public static function init(): void
     {
-        add_action('update_option', array(self::class, 'maybe_invalidate_cache'), 10, 3);
-        add_action('add_option', array(self::class, 'maybe_invalidate_cache_on_add'), 10, 2);
-        add_action('delete_option', array(self::class, 'maybe_invalidate_cache_on_delete'), 10, 1);
+        add_action('update_option', [self::class, 'maybe_invalidate_cache'], 10, 3);
+        add_action('add_option', [self::class, 'maybe_invalidate_cache_on_add'], 10, 2);
+        add_action('delete_option', [self::class, 'maybe_invalidate_cache_on_delete'], 10, 1);
     }
 
     /**
@@ -42,8 +66,6 @@ class Options
      */
     public static function get(bool $force_refresh = false): array
     {
-        static $options = null;
-
         // Layer 1: Check if cache should be invalidated (transient-based)
         $cache_version = get_transient('dynos_options_cache_version');
         if (false === $cache_version) {
@@ -55,31 +77,39 @@ class Options
         if (false !== $last_update) {
             $current_options = get_option('dynos_options', false);
             if (false !== $current_options) {
-                $options_hash = md5(maybe_serialize($current_options));
+                // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+                $options_hash = \md5(maybe_serialize($current_options) ?? '');
                 $cached_hash = get_transient('dynos_options_hash');
                 if ($cached_hash !== $options_hash) {
                     $force_refresh = true;
-                    set_transient('dynos_options_hash', $options_hash, DAY_IN_SECONDS);
+                    set_transient('dynos_options_hash', $options_hash, \DAY_IN_SECONDS);
                 }
             }
         }
 
         // Layer 3: Static variable cache (request-level)
-        if (null === $options || $force_refresh) {
+        if (null === self::$cached_options || $force_refresh) {
             // Use centralized default options function
             // Assuming Defaults class exists in Settings namespace based on previous code
+
             $defaults = \TechmireSolutions\DynamicOnlineServices\Settings\Defaults::get_options();
             $options = get_option('dynos_options', $defaults);
             $options = wp_parse_args($options, $defaults);
 
             $options = apply_filters('dynos_get_options', $options);
+            if (!\is_array($options)) {
+                $options = (array) $options;
+            }
 
-            set_transient('dynos_options_cache_version', time(), DAY_IN_SECONDS);
-            set_transient('dynos_options_last_update', time(), DAY_IN_SECONDS);
-            set_transient('dynos_options_hash', md5(maybe_serialize($options)), DAY_IN_SECONDS);
+            set_transient('dynos_options_cache_version', \time(), \DAY_IN_SECONDS);
+            set_transient('dynos_options_last_update', \time(), \DAY_IN_SECONDS);
+            // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+            set_transient('dynos_options_hash', \md5(maybe_serialize($options) ?? ''), \DAY_IN_SECONDS);
+
+            self::$cached_options = $options;
         }
 
-        return $options;
+        return self::$cached_options;
     }
 
     /**
@@ -109,9 +139,9 @@ class Options
     {
         if ('dynos_options' === $option) {
             self::invalidate_cache();
-            set_transient('dynos_options_last_update', time(), DAY_IN_SECONDS);
+            set_transient('dynos_options_last_update', \time(), \DAY_IN_SECONDS);
             if (is_array($value)) {
-                set_transient('dynos_options_hash', md5(maybe_serialize($value)), DAY_IN_SECONDS);
+                set_transient('dynos_options_hash', \md5(maybe_serialize($value) ?? ''), \DAY_IN_SECONDS);
             }
         }
     }
@@ -128,9 +158,9 @@ class Options
     {
         if ('dynos_options' === $option) {
             self::invalidate_cache();
-            set_transient('dynos_options_last_update', time(), DAY_IN_SECONDS);
+            set_transient('dynos_options_last_update', \time(), \DAY_IN_SECONDS);
             if (is_array($value)) {
-                set_transient('dynos_options_hash', md5(maybe_serialize($value)), DAY_IN_SECONDS);
+                set_transient('dynos_options_hash', \md5(maybe_serialize($value) ?? ''), \DAY_IN_SECONDS);
             }
         }
     }
@@ -162,8 +192,9 @@ class Options
      */
     public static function get_option($options, $key, $default = ''): mixed
     {
-        if (!is_array($options)) {
-            return $default;
+        if (empty($options)) {
+            // Fallback to get_option if cached options are empty
+            $options = get_option(self::CACHE_KEY, []);
         }
 
         $value = isset($options[$key]) ? $options[$key] : $default;

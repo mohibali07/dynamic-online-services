@@ -1,19 +1,47 @@
 /**
  * Hero Section Styles
- * Mobile-First Design
+ * Mobile-First Design with RTL Support, Accessibility & Dark Mode
  */
 
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    --hero-overlay-opacity: 0.5;
+    --hero-text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    --hero-text-shadow-light: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    --hero-content-bg: rgba(0, 0, 0, 0.3);
+    --hero-content-radius: 10px;
+    --hero-spacing: 20px;
+    --hero-title-color: #fff;
+    --hero-description-color: #fff;
+}
+
+/* Dark mode adjustments for better contrast */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --hero-overlay-opacity: 0.6;
+        --hero-content-bg: rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* ============================================
+   Container Layout
+   ============================================ */
 .category-hero-container {
     width: 100%;
     overflow: hidden;
-    margin-bottom: 30px;
+    margin-block-end: 30px;
     container-type: inline-size;
     container-name: hero-container;
+    position: relative;
 }
 
+/* ============================================
+   Hero Inner Section
+   ============================================ */
 .category-hero-inner {
     height: 30vh;
-    /* Mobile default */
     background-size: cover;
     background-position: center;
     display: flex;
@@ -21,42 +49,63 @@
     justify-content: center;
     position: relative;
     text-align: center;
+    contain: layout style paint;
 }
 
+/* Overlay for better text readability */
 .category-hero-inner::before {
-    content: '';
+    content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.5;
+    inset: 0;
+    opacity: var(--hero-overlay-opacity);
     z-index: 1;
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.3),
+            rgba(0, 0, 0, 0.6));
 }
 
+/* ============================================
+   Hero Content
+   ============================================ */
 .hero-content {
-    padding: 20px;
+    padding-block: var(--hero-spacing);
+    padding-inline: var(--hero-spacing);
     position: relative;
     z-index: 2;
-    border-radius: 10px;
+    border-radius: var(--hero-content-radius);
+    background: var(--hero-content-bg);
+    backdrop-filter: blur(4px);
+    max-width: 90%;
 }
 
+/* ============================================
+   Hero Title
+   ============================================ */
 .category-hero-title {
     font-size: 2rem;
-    /* Mobile default */
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: var(--hero-text-shadow);
     line-height: 1.2;
+    color: var(--hero-title-color);
+    font-weight: 700;
 }
 
+/* ============================================
+   Hero Description
+   ============================================ */
 .hero-description {
     font-size: 0.9rem;
-    /* Mobile default */
-    margin: 10px 0 0;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    margin-block-start: 10px;
+    margin-block-end: 0;
+    margin-inline: 0;
+    text-shadow: var(--hero-text-shadow-light);
+    color: var(--hero-description-color);
+    line-height: 1.5;
 }
 
-/* Container Queries */
+/* ============================================
+   Container Queries (Responsive Design)
+   ============================================ */
 @container hero-container (min-width: 480px) {
     .category-hero-title {
         font-size: 2.5rem;
@@ -64,6 +113,10 @@
 
     .hero-description {
         font-size: 1rem;
+    }
+
+    .hero-content {
+        max-width: 80%;
     }
 }
 
@@ -78,5 +131,119 @@
 
     .hero-description {
         font-size: 1.25rem;
+    }
+
+    .hero-content {
+        max-width: 70%;
+        padding-block: 30px;
+        padding-inline: 40px;
+    }
+}
+
+@container hero-container (min-width: 1024px) {
+    .category-hero-title {
+        font-size: 3.5rem;
+    }
+
+    .hero-description {
+        font-size: 1.5rem;
+    }
+
+    .hero-content {
+        max-width: 60%;
+    }
+}
+
+/* ============================================
+   High Contrast Mode Support
+   ============================================ */
+@media (prefers-contrast: high) {
+    .category-hero-inner::before {
+        opacity: 0.7;
+    }
+
+    .hero-content {
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #fff;
+    }
+
+    .category-hero-title,
+    .hero-description {
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+    }
+}
+
+/* ============================================
+   Accessibility - Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .hero-content {
+        backdrop-filter: none;
+    }
+
+    .category-hero-inner {
+        transition: none !important;
+    }
+}
+
+/* ============================================
+   Accessibility - Focus Styles
+   ============================================ */
+.category-hero-inner a:focus-visible,
+.hero-content a:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+    .category-hero-container {
+        margin-block-end: 15px;
+    }
+
+    .category-hero-inner {
+        height: auto !important;
+        min-height: 15vh;
+        background: #f0f0f0 !important;
+        page-break-inside: avoid;
+    }
+
+    .category-hero-inner::before {
+        display: none;
+    }
+
+    .hero-content {
+        background: transparent;
+        backdrop-filter: none;
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .category-hero-title,
+    .hero-description {
+        color: #000 !important;
+        text-shadow: none !important;
+    }
+
+    .category-hero-title {
+        font-size: 2rem !important;
+    }
+
+    .hero-description {
+        font-size: 1rem !important;
+    }
+}
+
+/* ============================================
+   Responsive Images Support
+   ============================================ */
+@media (min-resolution: 2dppx) {
+
+    /* High DPI displays - already handled by background-size: cover */
+    .category-hero-inner {
+        background-size: cover;
     }
 }

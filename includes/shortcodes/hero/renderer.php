@@ -33,7 +33,7 @@ if (!defined('ABSPATH')) {
  */
 function dynos_render_hero_html($args): string
 {
-	$defaults = array(
+	$defaults = [
 		'image_url' => '',
 		'height' => '50vh',
 		'title_color' => '#FFFFFF',
@@ -42,7 +42,7 @@ function dynos_render_hero_html($args): string
 		'description' => '',
 		'data_attribute' => '',
 		'data_value' => '',
-	);
+	];
 
 	$args = wp_parse_args($args, $defaults);
 

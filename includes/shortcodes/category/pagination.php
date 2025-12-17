@@ -55,10 +55,10 @@ function dynos_get_pagination_html($current_page, $total_pages): string
 				$base_term_link->get_error_message()
 			),
 			'warning',
-			array(
+			[
 				'term_id' => isset($queried_object->term_id) ? $queried_object->term_id : 0,
 				'error_code' => $base_term_link->get_error_code(),
-			)
+			]
 		);
 		do_action('dynos_pagination_term_link_error', $queried_object, $base_term_link);
 		return '';
@@ -67,15 +67,15 @@ function dynos_get_pagination_html($current_page, $total_pages): string
 	// Build pagination links
 	ob_start();
 	?>
-	<nav class="sos-pagination" role="navigation"
+	<nav class="dynos-pagination" role="navigation"
 		aria-label="<?php esc_attr_e('Pagination', 'dynamic-online-services'); ?>">
-		<ul class="sos-pagination-list">
+		<ul class="dynos-pagination-list">
 			<?php
 			// Previous page link
 			if ($current_page > 1) {
 				$prev_url = add_query_arg('paged', $current_page - 1, $base_term_link);
 				printf(
-					'<li class="sos-pagination-item sos-pagination-prev"><a href="%s" aria-label="%s">%s</a></li>',
+					'<li class="dynos-pagination-item dynos-pagination-prev"><a href="%s" aria-label="%s">%s</a></li>',
 					esc_url($prev_url),
 					esc_attr__('Previous page', 'dynamic-online-services'),
 					esc_html__('« Previous', 'dynamic-online-services')
@@ -92,12 +92,12 @@ function dynos_get_pagination_html($current_page, $total_pages): string
 				$first_url = add_query_arg('paged', 1, $base_term_link);
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe integer output
 				printf(
-					'<li class="sos-pagination-item"><a href="%s">%d</a></li>',
+					'<li class="dynos-pagination-item"><a href="%s">%d</a></li>',
 					esc_url($first_url),
 					1
 				);
 				if ($start > 2) {
-					echo '<li class="sos-pagination-item sos-pagination-ellipsis"><span>…</span></li>';
+					echo '<li class="dynos-pagination-item dynos-pagination-ellipsis"><span>…</span></li>';
 				}
 			}
 
@@ -106,14 +106,14 @@ function dynos_get_pagination_html($current_page, $total_pages): string
 				if ($i === $current_page) {
 					// Safe integer output with absint
 					printf(
-						'<li class="sos-pagination-item sos-pagination-current"><span aria-current="page">%d</span></li>',
+						'<li class="dynos-pagination-item dynos-pagination-current"><span aria-current="page">%d</span></li>',
 						absint($i)
 					);
 				} else {
 					$page_url = add_query_arg('paged', $i, $base_term_link);
 					// Safe integer output with absint
 					printf(
-						'<li class="sos-pagination-item"><a href="%s">%d</a></li>',
+						'<li class="dynos-pagination-item"><a href="%s">%d</a></li>',
 						esc_url($page_url),
 						absint($i)
 					);
@@ -123,12 +123,12 @@ function dynos_get_pagination_html($current_page, $total_pages): string
 			// Show last page and ellipsis if needed
 			if ($end < $total_pages) {
 				if ($end < $total_pages - 1) {
-					echo '<li class="sos-pagination-item sos-pagination-ellipsis"><span>…</span></li>';
+					echo '<li class="dynos-pagination-item dynos-pagination-ellipsis"><span>…</span></li>';
 				}
 				$last_url = add_query_arg('paged', $total_pages, $base_term_link);
 				// Safe integer output with absint
 				printf(
-					'<li class="sos-pagination-item"><a href="%s">%d</a></li>',
+					'<li class="dynos-pagination-item"><a href="%s">%d</a></li>',
 					esc_url($last_url),
 					absint($total_pages)
 				);
@@ -138,7 +138,7 @@ function dynos_get_pagination_html($current_page, $total_pages): string
 			if ($current_page < $total_pages) {
 				$next_url = add_query_arg('paged', $current_page + 1, $base_term_link);
 				printf(
-					'<li class="sos-pagination-item sos-pagination-next"><a href="%s" aria-label="%s">%s</a></li>',
+					'<li class="dynos-pagination-item dynos-pagination-next"><a href="%s" aria-label="%s">%s</a></li>',
 					esc_url($next_url),
 					esc_attr__('Next page', 'dynamic-online-services'),
 					esc_html__('Next »', 'dynamic-online-services')

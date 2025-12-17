@@ -27,7 +27,7 @@ class Autoloader
 	 */
 	public static function run(): void
 	{
-		spl_autoload_register(array(__CLASS__, 'autoload'));
+		spl_autoload_register([__CLASS__, 'autoload']);
 	}
 
 	/**
@@ -36,7 +36,7 @@ class Autoloader
 	 * @param string $class_name Class name.
 	 * @return void
 	 */
-	public static function autoload($class_name): void
+	public static function autoload(string $class_name): void
 	{
 		// Check if class is in our namespace
 		if (strpos($class_name, 'TechmireSolutions\\DynamicOnlineServices\\') !== 0) {
@@ -53,19 +53,59 @@ class Autoloader
 		$parts = explode('\\', $relative_class);
 		$class_file = array_pop($parts);
 
-		// Convert class name to kebab-case
-		$class_file = strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $class_file));
+		// FIX: Add error handling for regex operations
+		try {
+			// Convert class name to kebab-case with validation
+			$class_file_kebab = preg_replace('/(?<!^)[A-Z]/', '-$0', $class_file);
 
-		// Convert directory parts to kebab-case
-		$directory = '';
-		if (!empty($parts)) {
-			$parts = array_map(
-				function ($part) {
-					return strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $part));
-				},
-				$parts
-			);
-			$directory = implode('/', $parts) . '/';
+			// Validate preg_replace didn't error
+			if ($class_file_kebab === null) {
+				// preg_replace returns null on error
+				if (defined('WP_DEBUG') && WP_DEBUG) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+					error_log(
+						sprintf(
+							'DYNOS Autoloader: preg_replace failed for class name "%s" (error code: %d)',
+							$class_file,
+							preg_last_error()
+						)
+					);
+				}
+				return;
+			}
+
+			$class_file = strtolower($class_file_kebab);
+
+			// Convert directory parts to kebab-case
+			$directory = '';
+			if (!empty($parts)) {
+				$parts = array_map(
+					function ($part) {
+						$part_kebab = preg_replace('/(?<!^)[A-Z]/', '-$0', $part);
+
+						// Validate regex result
+						if ($part_kebab === null) {
+							// Log error and return original  (fallback)
+							if (defined('WP_DEBUG') && WP_DEBUG) {
+								// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+								error_log('DYNOS Autoloader: preg_replace failed for directory part: ' . $part);
+							}
+							return strtolower($part);
+						}
+
+						return strtolower($part_kebab);
+					},
+					$parts
+				);
+				$directory = implode('/', $parts) . '/';
+			}
+		} catch (\Exception $e) {
+			// Log exception and return to prevent fatal errors
+			if (defined('WP_DEBUG') && WP_DEBUG) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log('DYNOS Autoloader Exception: ' . $e->getMessage());
+			}
+			return;
 		}
 
 		// Try class- prefix
@@ -84,12 +124,12 @@ class Autoloader
 		} elseif (file_exists($file_path_trait)) {
 			require_once $file_path_trait;
 		} else {
-			// Log missing class file in debug mode to help identify issues
-			if (defined('WP_DEBUG') && WP_DEBUG) {
+			// FIX: Log when file not found (helps debugging)
+			if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
 				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				error_log(
 					sprintf(
-						'DYNOS Autoloader: Class file not found for %s. Tried: %s, %s, %s',
+						'DYNOS Autoloader: Could not find class "%s". Tried paths: %s, %s, %s',
 						$class_name,
 						$file_path_class,
 						$file_path_interface,

@@ -2,32 +2,53 @@ import { TabPanel, Spinner, Button, SnackbarList } from '@wordpress/components';
 import { useEntityProp } from '@wordpress/core-data';
 import { useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useMemo } from '@wordpress/element';
 
-import GeneralSettings from './components/GeneralSettings';
-import HeroSettings from './components/HeroSettings';
-import CardSettings from './components/CardSettings';
-import FaqSettings from './components/FaqSettings';
+import DynamicSettings from './components/DynamicSettings';
 
+/**
+ * SettingsApp Component.
+ *
+ * Main settings application component that manages plugin settings using WordPress entity data.
+ * Provides tabbed interface for different setting categories.
+ *
+ * @since 1.0.0
+ *
+ * @return {JSX.Element} The SettingsApp component.
+ */
 const SettingsApp = () => {
-	const [ settings, setSettings ] = useEntityProp(
+	const [settings, setSettings] = useEntityProp(
 		'root',
 		'site',
 		'dynos_options'
 	);
-	const { saveEditedEntityRecord } = useDispatch( 'core' );
-	const [ isSaving, setIsSaving ] = useState( false );
-	const [ notices, setNotices ] = useState( [] );
+	const { saveEditedEntityRecord } = useDispatch('core');
+	const [isSaving, setIsSaving] = useState(false);
+	const [notices, setNotices] = useState([]);
 
-	if ( ! settings ) {
+	// Get configuration from localized script
+	// dynosSettings is injected via wp_localize_script
+	const configMap = window.dynosSettings?.fields || {};
+
+	// Generate tabs from config
+	const tabs = useMemo(() => {
+		return Object.entries(configMap).map(([key, section]) => ({
+			name: key,
+			title: section.title,
+			className: `tab-${key}`,
+			id: section.id,
+		}));
+	}, [configMap]);
+
+	if (!settings) {
 		return <Spinner />;
 	}
 
 	const handleSave = async () => {
-		setIsSaving( true );
+		setIsSaving(true);
 		try {
-			await saveEditedEntityRecord( 'root', 'site' );
-			setNotices( [
+			await saveEditedEntityRecord('root', 'site');
+			setNotices([
 				{
 					id: 'saved',
 					content: __(
@@ -36,104 +57,60 @@ const SettingsApp = () => {
 					),
 					status: 'success',
 				},
-			] );
-		} catch ( error ) {
-			setNotices( [
+			]);
+		} catch (error) {
+			setNotices([
 				{ id: 'error', content: error.message, status: 'error' },
-			] );
+			]);
 		}
-		setIsSaving( false );
+		setIsSaving(false);
 	};
 
-	const removeNotice = ( id ) => {
-		setNotices( notices.filter( ( notice ) => notice.id !== id ) );
+	const removeNotice = (id) => {
+		setNotices(notices.filter((notice) => notice.id !== id));
 	};
 
 	return (
 		<div className="wrap dynos-settings-wrap">
 			<div
 				className="dynos-header"
-				style={ {
+				style={{
 					display: 'flex',
 					justifyContent: 'space-between',
 					alignItems: 'center',
 					marginBottom: '20px',
-				} }
+				}}
 			>
 				<h1>
-					{ __(
+					{__(
 						'Dynamic Services Settings',
 						'dynamic-online-services'
-					) }
+					)}
 				</h1>
-				<Button isPrimary isBusy={ isSaving } onClick={ handleSave }>
-					{ __( 'Save Settings', 'dynamic-online-services' ) }
+				<Button variant="primary" isBusy={isSaving} onClick={handleSave}>
+					{__('Save Settings', 'dynamic-online-services')}
 				</Button>
 			</div>
 
-			<SnackbarList notices={ notices } onRemove={ removeNotice } />
+			<SnackbarList notices={notices} onRemove={removeNotice} />
 
-			<TabPanel
-				className="dynos-settings-tabs"
-				activeClass="active-tab"
-				tabs={ [
-					{
-						name: 'general',
-						title: __( 'General', 'dynamic-online-services' ),
-						className: 'tab-general',
-					},
-					{
-						name: 'hero',
-						title: __( 'Hero Section', 'dynamic-online-services' ),
-						className: 'tab-hero',
-					},
-					{
-						name: 'cards',
-						title: __( 'Service Cards', 'dynamic-online-services' ),
-						className: 'tab-cards',
-					},
-					{
-						name: 'faqs',
-						title: __( 'FAQs', 'dynamic-online-services' ),
-						className: 'tab-faqs',
-					},
-				] }
-			>
-				{ ( tab ) => {
-					switch ( tab.name ) {
-						case 'general':
-							return (
-								<GeneralSettings
-									settings={ settings }
-									onChange={ setSettings }
-								/>
-							);
-						case 'hero':
-							return (
-								<HeroSettings
-									settings={ settings }
-									onChange={ setSettings }
-								/>
-							);
-						case 'cards':
-							return (
-								<CardSettings
-									settings={ settings }
-									onChange={ setSettings }
-								/>
-							);
-						case 'faqs':
-							return (
-								<FaqSettings
-									settings={ settings }
-									onChange={ setSettings }
-								/>
-							);
-						default:
-							return null;
-					}
-				} }
-			</TabPanel>
+			{tabs.length > 0 ? (
+				<TabPanel
+					className="dynos-settings-tabs"
+					activeClass="active-tab"
+					tabs={tabs}
+				>
+					{(tab) => (
+						<DynamicSettings
+							section={configMap[tab.name]}
+							settings={settings}
+							onChange={setSettings}
+						/>
+					)}
+				</TabPanel>
+			) : (
+				<p>{__('No settings configuration found.', 'dynamic-online-services')}</p>
+			)}
 		</div>
 	);
 };

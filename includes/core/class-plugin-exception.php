@@ -30,7 +30,7 @@ class PluginException extends Exception
 	 *
 	 * @var array
 	 */
-	protected $context = array();
+	protected $context = [];
 
 	/**
 	 * Error code.
@@ -61,7 +61,7 @@ class PluginException extends Exception
 		string $message = '',
 		string $error_code = 'dynos_error',
 		int $code = 0,
-		array $context = array(),
+		array $context = [],
 		int $http_status_code = 500,
 		?Exception $previous = null
 	) {
@@ -112,7 +112,7 @@ class PluginException extends Exception
 	 */
 	public function to_array(): array
 	{
-		return array(
+		return [
 			'message' => $this->getMessage(),
 			'code' => $this->getCode(),
 			'error_code' => $this->error_code,
@@ -120,6 +120,6 @@ class PluginException extends Exception
 			'http_status_code' => $this->http_status_code,
 			'file' => $this->getFile(),
 			'line' => $this->getLine(),
-		);
+		];
 	}
 }

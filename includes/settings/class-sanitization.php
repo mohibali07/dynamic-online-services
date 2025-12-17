@@ -34,11 +34,11 @@ class Sanitization
 			return Defaults::get_options();
 		}
 
-		$sanitized = array();
+		$sanitized = [];
 		$defaults = Defaults::get_options();
 
 		// Sanitize color fields using WordPress's built-in hex color sanitization
-		$color_fields = array(
+		$color_fields = [
 			'hero_title_color',
 			'hero_overlay_color',
 			'card_bg_color',
@@ -53,7 +53,7 @@ class Sanitization
 			'faq_question_bg_hover',
 			'faq_question_text_color',
 			'faq_answer_text_color',
-		);
+		];
 
 		foreach ($color_fields as $field) {
 			if (isset($options[$field])) {
@@ -67,14 +67,14 @@ class Sanitization
 		}
 
 		// Sanitize font family fields
-		$font_fields = array(
+		$font_fields = [
 			'hero_font_family',
 			'card_font_family',
 			'service_cpt_singular_name',
 			'service_cpt_plural_name',
 			'service_tax_singular_name',
 			'service_tax_plural_name',
-		);
+		];
 
 		foreach ($font_fields as $field) {
 			if (isset($options[$field])) {
@@ -88,9 +88,9 @@ class Sanitization
 		}
 
 		// Sanitize numeric/opacity fields (0-1 range)
-		$opacity_fields = array(
+		$opacity_fields = [
 			'hero_overlay_opacity',
-		);
+		];
 
 		foreach ($opacity_fields as $field) {
 			if (isset($options[$field])) {
@@ -105,7 +105,7 @@ class Sanitization
 		}
 
 		// Sanitize CSS dimension fields
-		$dimension_fields = array(
+		$dimension_fields = [
 			'hero_title_font_size',
 			'hero_title_font_size_tablet',
 			'hero_title_font_size_mobile',
@@ -140,7 +140,7 @@ class Sanitization
 			'faq_answer_padding',
 			'faq_answer_max_height',
 			'faq_transition_speed',
-		);
+		];
 
 		foreach ($dimension_fields as $field) {
 			if (isset($options[$field])) {
@@ -156,9 +156,9 @@ class Sanitization
 		}
 
 		// Sanitize transform fields
-		$transform_fields = array(
+		$transform_fields = [
 			'card_hover_transform',
-		);
+		];
 
 		foreach ($transform_fields as $field) {
 			if (isset($options[$field])) {
@@ -173,10 +173,10 @@ class Sanitization
 		}
 
 		// Sanitize box-shadow fields
-		$box_shadow_fields = array(
+		$box_shadow_fields = [
 			'card_box_shadow',
 			'faq_item_box_shadow',
-		);
+		];
 
 		foreach ($box_shadow_fields as $field) {
 			if (isset($options[$field])) {
@@ -191,10 +191,10 @@ class Sanitization
 		}
 
 		// Sanitize slug fields
-		$slug_fields = array(
+		$slug_fields = [
 			'service_post_type_slug' => 'services',
 			'service_taxonomy_slug' => 'service-category',
-		);
+		];
 
 		foreach ($slug_fields as $field => $default_slug) {
 			if (isset($options[$field])) {
@@ -224,7 +224,7 @@ class Sanitization
 
 		// Sanitize Google Font hosting method (whitelist validation)
 		if (isset($options['google_font_hosting'])) {
-			$valid_methods = array('remote', 'local');
+			$valid_methods = ['remote', 'local'];
 			$sanitized['google_font_hosting'] = in_array($options['google_font_hosting'], $valid_methods, true)
 				? $options['google_font_hosting']
 				: 'remote';
@@ -233,13 +233,13 @@ class Sanitization
 		}
 
 		// Sanitize advanced numeric fields
-		$numeric_fields = array(
-			'max_grid_columns'       => array('min' => 1, 'max' => 12),
-			'min_grid_columns'       => array('min' => 1, 'max' => 6),
-			'max_taxonomy_depth'     => array('min' => 1, 'max' => 20),
-			'default_excerpt_length' => array('min' => 5, 'max' => 100),
-			'max_posts_per_page'     => array('min' => 10, 'max' => 5000),
-		);
+		$numeric_fields = [
+			'max_grid_columns'       => ['min' => 1, 'max' => 12],
+			'min_grid_columns'       => ['min' => 1, 'max' => 6],
+			'max_taxonomy_depth'     => ['min' => 1, 'max' => 20],
+			'default_excerpt_length' => ['min' => 5, 'max' => 100],
+			'max_posts_per_page'     => ['min' => 10, 'max' => 5000],
+		];
 
 		foreach ($numeric_fields as $field => $constraints) {
 			if (isset($options[$field])) {
@@ -251,11 +251,11 @@ class Sanitization
 		}
 
 		// Sanitize breakpoint fields
-		$breakpoint_fields = array(
+		$breakpoint_fields = [
 			'breakpoint_tablet',
 			'breakpoint_mobile',
 			'default_grid_min_width',
-		);
+		];
 
 		foreach ($breakpoint_fields as $field) {
 			if (isset($options[$field])) {

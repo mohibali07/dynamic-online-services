@@ -37,30 +37,30 @@ function dynos_enqueue_faqs_admin_scripts( $hook_suffix ): void {
 
 	// Enqueue common admin JavaScript first (for shared functions)
 	wp_enqueue_script(
-		'sos-admin-common',
+		'dynos-admin-common',
 		DYNOS_PLUGIN_URL . 'assets/js/admin-common.js',
-		array( 'jquery' ),
+		[ 'jquery' ],
 		DYNOS_VERSION,
 		true
 	);
 
 	wp_enqueue_script(
-		'sos-faqs-admin',
+		'dynos-faqs-admin',
 		DYNOS_PLUGIN_URL . 'assets/js/faqs-admin.js',
-		array( 'jquery', 'sos-admin-common' ),
+		[ 'jquery', 'dynos-admin-common' ],
 		DYNOS_VERSION,
 		true
 	);
 
 	// Localize script for translations
 	wp_localize_script(
-		'sos-faqs-admin',
-		'sosFaqsAdmin',
-		array(
+		'dynos-faqs-admin',
+		'dynosFaqsAdmin',
+		[
 			'questionLabel' => __( 'Question:', 'dynamic-online-services' ),
 			'answerLabel'   => __( 'Answer:', 'dynamic-online-services' ),
 			'removeLabel'   => __( 'Remove FAQ', 'dynamic-online-services' ),
-		)
+		]
 	);
 }
 add_action( 'admin_enqueue_scripts', 'dynos_enqueue_faqs_admin_scripts' );

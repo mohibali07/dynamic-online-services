@@ -50,7 +50,7 @@ class Uninstaller
 		}
 
 		// Check if we should delete data on uninstall.
-		$options = get_option('dynos_options', array());
+		$options = get_option('dynos_options', []);
 		$delete_data = isset($options['delete_data_on_uninstall']) && $options['delete_data_on_uninstall'];
 
 		if ($delete_data) {

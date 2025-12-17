@@ -51,10 +51,10 @@ function dynos_render_faqs_accordion($faqs, $post_id, $title = ''): string
 			// Allow filtering individual FAQ items
 			$faq_item = apply_filters(
 				'dynos_faq_item',
-				array(
+				[
 					'question' => $question,
 					'answer' => $answer,
-				),
+				],
 				$index,
 				$post_id
 			);

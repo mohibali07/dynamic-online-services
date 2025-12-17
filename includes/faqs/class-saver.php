@@ -30,7 +30,7 @@ class Saver {
 	 * Initialize the saver.
 	 */
 	public static function init(): void {
-		add_action( 'save_post', array( __CLASS__, 'save' ) );
+		add_action( 'save_post', [ __CLASS__, 'save' ] );
 	}
 
 	/**
@@ -44,6 +44,17 @@ class Saver {
 		// Validate post ID
 		$post_id = Sanitization::validate_post_id( $post_id );
 		if ( false === $post_id ) {
+			return;
+		}
+
+		// Rate limiting: Prevent abuse (20 attempts per minute)
+		$user_id = get_current_user_id();
+		if ( ! \TechmireSolutions\DynamicOnlineServices\Helpers\RateLimiter::check( 'faq_save', $user_id, 20, 60 ) ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				AdminNotices::warning(
+					__( 'Too many FAQ save attempts. Please wait a moment and try again.', 'dynamic-online-services' )
+				);
+			}
 			return;
 		}
 
@@ -83,22 +94,46 @@ class Saver {
 		// Process FAQs from POST data
 		// Questions are sanitized as plain text, answers allow HTML (wp_kses_post)
 		// FIX: Add is_array() check to prevent fatal error if POST data is malformed
-		$raw_questions = isset( $_POST['faqs_question'] ) ? wp_unslash( $_POST['faqs_question'] ) : array();
-		$raw_answers   = isset( $_POST['faqs_answer'] ) ? wp_unslash( $_POST['faqs_answer'] ) : array();
+		$raw_questions = isset( $_POST['faqs_question'] ) ? wp_unslash( $_POST['faqs_question'] ) : [];
+		$raw_answers   = isset( $_POST['faqs_answer'] ) ? wp_unslash( $_POST['faqs_answer'] ) : [];
 
-		$faqs_questions = is_array( $raw_questions ) ? array_map( 'sanitize_text_field', $raw_questions ) : array();
-		$faqs_answers   = is_array( $raw_answers ) ? array_map( 'wp_kses_post', $raw_answers ) : array();
+		$faqs_questions = is_array( $raw_questions ) ? array_map( 'sanitize_text_field', $raw_questions ) : [];
+		$faqs_answers   = is_array( $raw_answers ) ? array_map( 'wp_kses_post', $raw_answers ) : [];
+
+		// PERFORMANCE OPTIMIZATION: Validate count EARLY before building array
+		// This prevents building oversized arrays that would be truncated anyway
+		$max_faqs = defined('DYNOS_MAX_FAQS_PER_POST') ? DYNOS_MAX_FAQS_PER_POST : 100;
+		$count = count( $faqs_questions );
+
+		// Early truncation to prevent memory waste
+		if ( $count > $max_faqs ) {
+			// Truncate input arrays BEFORE processing
+			$faqs_questions = array_slice( $faqs_questions, 0, $max_faqs );
+			$faqs_answers   = array_slice( $faqs_answers, 0, $max_faqs );
+			$count = $max_faqs;
+
+			// Fire action for notification/logging
+			do_action( 'dynos_faq_limit_exceeded', $post_id, $max_faqs, $count );
+
+			// Log warning in debug mode
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				AdminNotices::log_error(
+					sprintf( 'FAQ limit exceeded for post ID %d. Truncated to %d FAQs before processing.', $post_id, $max_faqs ),
+					'warning',
+					[ 'post_id' => $post_id, 'max_faqs' => $max_faqs ]
+				);
+			}
+		}
 
 		// Validate arrays have same length
 		// This ensures each question has a corresponding answer
-		$count = count( $faqs_questions );
 		if ( count( $faqs_answers ) !== $count ) {
 			// Log error but continue processing with minimum count
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				AdminNotices::log_error(
 					'FAQ questions and answers count mismatch for post ID: ' . $post_id,
 					'warning',
-					array( 'post_id' => $post_id )
+					[ 'post_id' => $post_id ]
 				);
 			}
 			// Fire action for error handling
@@ -107,7 +142,7 @@ class Saver {
 		}
 
 		// Build structured FAQ array from parallel question/answer arrays
-		$new_faqs = array();
+		$new_faqs = [];
 		if ( ! empty( $faqs_questions ) && $count > 0 ) {
 			for ( $i = 0; $i < $count; $i++ ) {
 				$question = isset( $faqs_questions[ $i ] ) ? trim( $faqs_questions[ $i ] ) : '';
@@ -116,10 +151,10 @@ class Saver {
 				// Only save if question is not empty and both are valid strings
 				// Empty questions are skipped (allows partial FAQ deletion)
 				if ( ! empty( $question ) && is_string( $question ) && is_string( $answer ) ) {
-					$new_faqs[] = array(
+					$new_faqs[] = [
 						'question' => $question,
 						'answer'   => $answer,
-					);
+					];
 				}
 			}
 		}
@@ -138,7 +173,7 @@ class Saver {
 				AdminNotices::log_error(
 					sprintf('FAQ limit exceeded for post ID %d. Truncated to %d FAQs.', $post_id, $max_faqs),
 					'warning',
-					array('post_id' => $post_id, 'max_faqs' => $max_faqs)
+					['post_id' => $post_id, 'max_faqs' => $max_faqs]
 				);
 			}
 		}
@@ -152,6 +187,9 @@ class Saver {
 		} else {
 			delete_post_meta( $post_id, 'service_faqs' );
 		}
+
+		// Clear FAQ cache for this post
+		\TechmireSolutions\DynamicOnlineServices\Helpers\Cache::clear_faqs( $post_id );
 
 		// Fire action after saving
 		do_action( 'dynos_after_save_faqs', $post_id, $new_faqs );

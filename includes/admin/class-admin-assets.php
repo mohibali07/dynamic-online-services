@@ -14,6 +14,7 @@ namespace TechmireSolutions\DynamicOnlineServices\Admin;
 
 use TechmireSolutions\DynamicOnlineServices\Helpers\Screen;
 use TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization;
+use TechmireSolutions\DynamicOnlineServices\Settings\Config;
 
 if (!defined('ABSPATH')) {
 	exit;
@@ -32,7 +33,7 @@ class AdminAssets
 	 */
 	public function init(): void
 	{
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
+		add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts']);
 	}
 
 	/**
@@ -87,33 +88,34 @@ class AdminAssets
 		wp_localize_script(
 			'dynos-settings-app',
 			'dynosSettings',
-			array(
+			[
 				'apiUrl'         => esc_url_raw(rest_url('dynamic-online-services/v1/')),
 				'nonce'          => wp_create_nonce('wp_rest'),
 				'maxGridColumns' => isset($options['max_grid_columns']) ? absint($options['max_grid_columns']) : 6,
 				'minGridColumns' => isset($options['min_grid_columns']) ? absint($options['min_grid_columns']) : 1,
+				'fields'         => Config::get_map(),
 				'colorPresets'   => apply_filters(
 					'dynos_color_picker_presets',
-					array(
-						array( 'name' => __('Black', 'dynamic-online-services'), 'color' => '#000000' ),
-						array( 'name' => __('White', 'dynamic-online-services'), 'color' => '#ffffff' ),
-						array( 'name' => __('Red', 'dynamic-online-services'), 'color' => '#f00' ),
-						array( 'name' => __('Blue', 'dynamic-online-services'), 'color' => '#00f' ),
-					)
+					[
+						[ 'name' => __('Black', 'dynamic-online-services'), 'color' => '#000000' ],
+						[ 'name' => __('White', 'dynamic-online-services'), 'color' => '#ffffff' ],
+						[ 'name' => __('Red', 'dynamic-online-services'), 'color' => '#f00' ],
+						[ 'name' => __('Blue', 'dynamic-online-services'), 'color' => '#00f' ],
+					]
 				),
-			)
+			]
 		);
 
 			// Enqueue styles
 			// wp-components stylesheet is required for the components to look right
-			wp_enqueue_style('wp-components', false, array(), DYNOS_VERSION);
+			wp_enqueue_style('wp-components', false, [], DYNOS_VERSION);
 
 			// Enqueue Custom Admin Settings Style
 			if (file_exists(DYNOS_PLUGIN_DIR . 'assets/css/admin-style.css')) {
 				wp_enqueue_style(
 					'dynos-admin-settings-style',
 					DYNOS_PLUGIN_URL . 'assets/css/admin-style.css',
-					array(),
+					[],
 					DYNOS_VERSION
 				);
 			}
@@ -122,7 +124,7 @@ class AdminAssets
 				wp_enqueue_style(
 					'dynos-settings-app',
 					DYNOS_PLUGIN_URL . 'build/index.css',
-					array('wp-components'),
+					['wp-components'],
 					$script_asset['version']
 				);
 			}
@@ -144,8 +146,7 @@ class AdminAssets
 
 		$is_add_form = Screen::is_taxonomy_add_screen($taxonomy_slug);
 		$is_edit_form = Screen::is_taxonomy_edit_screen($taxonomy_slug);
-		// Note: is_current_screen logic from legacy script. Check calling convention.
-		// Legacy: dynos_is_current_screen('edit-tags', '', $taxonomy_slug)
+		// Check if on category edit screen
 		$is_edit_screen = Screen::is_current_screen('edit-tags', '', $taxonomy_slug);
 
 		if (!$is_add_form && !$is_edit_form && !$is_edit_screen) {
@@ -161,29 +162,29 @@ class AdminAssets
 
 		// Enqueue common admin JavaScript first (for shared functions)
 		wp_enqueue_script(
-			'sos-admin-common',
+			'dynos-admin-common',
 			DYNOS_PLUGIN_URL . 'assets/js/admin-common.js',
-			array('jquery'),
+			['jquery'],
 			DYNOS_VERSION,
 			true
 		);
 
 		wp_enqueue_script(
-			'sos-taxonomy-media-uploader',
+			'dynos-taxonomy-media-uploader',
 			DYNOS_PLUGIN_URL . 'assets/js/taxonomy-media-uploader.js',
-			array('jquery', 'sos-admin-common'),
+			['jquery', 'dynos-admin-common'],
 			DYNOS_VERSION,
 			true
 		);
 
 		// Localize script for translations
 		wp_localize_script(
-			'sos-taxonomy-media-uploader',
-			'sosTaxonomyMedia',
-			array(
+			'dynos-taxonomy-media-uploader',
+			'dynosTaxonomyMedia',
+			[
 				'title' => __('Choose Thumbnail', 'dynamic-online-services'),
 				'button' => __('Choose Image', 'dynamic-online-services'),
-			)
+			]
 		);
 	}
 
@@ -209,7 +210,7 @@ class AdminAssets
 			wp_enqueue_style(
 				'dynos-admin-style',
 				DYNOS_PLUGIN_URL . 'assets/css/admin-style.css',
-				array(),
+				[],
 				DYNOS_VERSION
 			);
 		}

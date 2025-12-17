@@ -12,18 +12,40 @@ namespace DynamicOnlineServices\Tests\Unit\Core;
 
 use WP_Mock\Tools\TestCase;
 
+use WP_Mock;
+use DYNOS_TestCase;
+
 /**
  * Test Plugin class.
  */
-class PluginTest extends TestCase
-{
+/**
+ * @runInSeparateProcess
+ * @preserveGlobalState disabled
+ */
+class PluginTest extends DYNOS_TestCase {
 	/**
 	 * Set up test environment.
 	 */
 	public function setUp(): void
 	{
 		parent::setUp();
-		\WP_Mock::setUp();
+		// \WP_Mock::setUp();
+
+		// Mock is_admin for DependencyLoader
+		\WP_Mock::userFunction('is_admin', [
+			'return' => true
+		]);
+
+		// Mock register_block_type for Plugin class
+		\WP_Mock::userFunction('register_block_type', [
+			'return' => true
+		]);
+
+        // Reset Plugin singleton
+        $reflection = new \ReflectionClass(\TechmireSolutions\DynamicOnlineServices\Core\Plugin::class);
+        $instance = $reflection->getProperty('instance');
+        $instance->setAccessible(true);
+        $instance->setValue(null, null);
 	}
 
 	/**
@@ -61,7 +83,14 @@ class PluginTest extends TestCase
 		\WP_Mock::expectActionAdded('init', \WP_Mock\Functions::type('array'));
 
 		// Verify singleton pattern
-		$this->assertTrue(method_exists('TechmireSolutions\DynamicOnlineServices\Core\Plugin', 'get_instance'));
+		// Execute method
+		$instance = \TechmireSolutions\DynamicOnlineServices\Core\Plugin::get_instance();
+
+		// Verify instance
+		$this->assertInstanceOf('TechmireSolutions\DynamicOnlineServices\Core\Plugin', $instance);
+
+		// Verify conditions
+		$this->assertConditionsMet();
 	}
 
 	/**
@@ -72,6 +101,11 @@ class PluginTest extends TestCase
 		\WP_Mock::expectActionAdded('init', \WP_Mock\Functions::type('array'));
 
 		// Verify method exists
-		$this->assertTrue(method_exists('TechmireSolutions\DynamicOnlineServices\Core\Plugin', 'register_blocks'));
+		// Execute method via instance
+		$plugin = \TechmireSolutions\DynamicOnlineServices\Core\Plugin::get_instance();
+        $plugin->register_blocks();
+
+		// Verify conditions
+		$this->assertConditionsMet();
 	}
 }

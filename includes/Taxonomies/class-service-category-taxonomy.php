@@ -52,7 +52,7 @@ class ServiceCategoryTaxonomy implements Registrable {
 	 * @return void
 	 */
 	public function register(): void {
-		add_action( 'init', array( $this, 'register_taxonomy' ) );
+		add_action( 'init', [ $this, 'register_taxonomy' ] );
 	}
 
 	/**
@@ -73,7 +73,7 @@ class ServiceCategoryTaxonomy implements Registrable {
 	 * @return array<string, string>
 	 */
 	private function get_labels(): array {
-		return array(
+		return [
 			'name'                       => _x( 'Service Categories', 'Taxonomy General Name', 'dynamic-online-services' ),
 			'singular_name'              => _x( 'Service Category', 'Taxonomy Singular Name', 'dynamic-online-services' ),
 			'menu_name'                  => __( 'Categories', 'dynamic-online-services' ),
@@ -94,7 +94,7 @@ class ServiceCategoryTaxonomy implements Registrable {
 			'no_terms'                   => __( 'No categories', 'dynamic-online-services' ),
 			'items_list'                 => __( 'Categories list', 'dynamic-online-services' ),
 			'items_list_navigation'      => __( 'Categories list navigation', 'dynamic-online-services' ),
-		);
+		];
 	}
 
 	/**
@@ -104,7 +104,7 @@ class ServiceCategoryTaxonomy implements Registrable {
 	 * @return array<string, mixed>
 	 */
 	private function get_arguments( array $labels ): array {
-		return array(
+		return [
 			'labels'            => $labels,
 			'hierarchical'      => true,
 			'public'            => true,
@@ -112,11 +112,11 @@ class ServiceCategoryTaxonomy implements Registrable {
 			'show_admin_column' => true,
 			'show_in_nav_menus' => true,
 			'show_tagcloud'     => false,
-			'rewrite'           => array(
+			'rewrite'           => [
 				'slug'         => $this->slug,
 				'hierarchical' => true,
-			),
+			],
 			'show_in_rest'      => true,
-		);
+		];
 	}
 }

@@ -75,7 +75,7 @@ class SettingsService
 	 * @param mixed  $default Default value.
 	 * @return mixed
 	 */
-	public function get_option(string $key, $default = '')
+	public function get_option(string $key, $default = ''): mixed
 	{
 		return \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($this->options, $key, $default);
 	}

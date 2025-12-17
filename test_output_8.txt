@@ -1,0 +1,49 @@
+PHPUnit 9.6.31 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.5.0
+Configuration: /Users/syedaalin/Documents/dynamic-online-services/phpunit.xml.dist
+Warning:       No code coverage driver available
+
+...............................S..................FFF..........  63 / 102 ( 61%)
+.DEBUG: Namespaced get_post_type called......................................                         102 / 102 (100%)
+
+Time: 00:01.960, Memory: 24.00 MB
+
+There were 3 failures:
+
+1) DynamicOnlineServices\Tests\Unit\Core\PluginTest::test_get_instance_returns_singleton
+Failed asserting that WP_Mock expectations are met.
+Method intercepted(<Any Arguments>) from Mockery_1__intercept should be called at least 1 times but called 0 times.
+
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:275
+/Users/syedaalin/Documents/dynamic-online-services/tests/unit/core/PluginTest.php:93
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:123
+
+2) DynamicOnlineServices\Tests\Unit\Core\PluginTest::test_register_blocks_hook
+Failed asserting that WP_Mock expectations are met.
+Method intercepted(<Any Arguments>) from Mockery_1__intercept should be called at least 1 times but called 0 times.
+
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:275
+/Users/syedaalin/Documents/dynamic-online-services/tests/unit/core/PluginTest.php:109
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:123
+
+3) DynamicOnlineServices\Tests\Unit\Core\ServiceRegistrarTest::test_register_initializes_cpt_and_taxonomy
+Failed asserting that WP_Mock expectations are met.
+Method register_post_type(<Any Arguments>) from Mockery_0__wp_api should be called exactly 1 times but called 0 times.
+
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:275
+/Users/syedaalin/Documents/dynamic-online-services/tests/unit/core/ServiceRegistrarTest.php:55
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:123
+
+--
+
+There was 1 skipped test:
+
+1) TechmireSolutions\DynamicOnlineServices\Tests\Services\CategoryQueryServiceTest::test_get_categories_returns_terms
+CategoryQueryService::get_categories() method does not exist. Only get_child_categories() and get_services() are available.
+
+/Users/syedaalin/Documents/dynamic-online-services/tests/unit/Services/CategoryQueryServiceTest.php:57
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:123
+
+FAILURES!
+Tests: 102, Assertions: 182, Failures: 3, Skipped: 1.

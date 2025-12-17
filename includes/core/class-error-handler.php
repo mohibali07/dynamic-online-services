@@ -34,11 +34,11 @@ function dynos_handle_exception(\TechmireSolutions\DynamicOnlineServices\Core\Pl
 				'error',
 				array_merge(
 					$exception->get_context(),
-					array(
+					[
 						'error_code' => $exception->get_error_code(),
 						'file' => $exception->getFile(),
 						'line' => $exception->getLine(),
-					)
+					]
 				)
 			);
 		}
@@ -65,10 +65,10 @@ function dynos_handle_exception(\TechmireSolutions\DynamicOnlineServices\Core\Pl
 			wp_die(
 				esc_html($exception->getMessage()),
 				esc_html__('Plugin Error', 'dynamic-online-services'),
-				array(
+				[
 					'response' => absint($exception->get_http_status_code()),
 					'back_link' => true,
-				)
+				]
 			);
 		}
 	} else {
@@ -92,11 +92,11 @@ function dynos_handle_activation_error(string $message, string $title = '', bool
 
 	// Log error
 	if (function_exists('dynos_log_error')) {
-		dynos_log_error($message, 'error', array('context' => 'activation'));
+		dynos_log_error($message, 'error', ['context' => 'activation']);
 	}
 
 	// Create exception
-	$exception = new \TechmireSolutions\DynamicOnlineServices\Core\PluginException($message, 'activation_error', 0, array(), 500);
+	$exception = new \TechmireSolutions\DynamicOnlineServices\Core\PluginException($message, 'activation_error', 0, [], 500);
 	do_action('dynos_activation_error', $exception);
 
 	// Use wp_die for activation errors (required by WordPress)
@@ -104,10 +104,10 @@ function dynos_handle_activation_error(string $message, string $title = '', bool
 	wp_die(
 		esc_html($message),
 		esc_html($title),
-		array(
+		[
 			'response' => 500,
 			'back_link' => (bool) $back_link,
-		)
+		]
 	);
 }
 
@@ -130,16 +130,16 @@ function dynos_handle_permission_error(string $message = '', string $capability 
 		dynos_log_error(
 			$message,
 			'error',
-			array(
+			[
 				'context' => 'permission',
 				'capability' => $capability,
 				'current_user_id' => get_current_user_id(),
-			)
+			]
 		);
 	}
 
 	// Create exception
-	$exception = new \TechmireSolutions\DynamicOnlineServices\Core\PluginException($message, 'permission_error', 403, array('capability' => $capability), 403);
+	$exception = new \TechmireSolutions\DynamicOnlineServices\Core\PluginException($message, 'permission_error', 403, ['capability' => $capability], 403);
 
 	// Handle exception
 	dynos_handle_exception($exception, false);

@@ -33,7 +33,7 @@ class Defaults
 	 */
 	public static function get_options(): array
 	{
-		$defaults = array();
+		$defaults = [];
 		$map      = Config::get_map();
 
 		foreach ($map as $section) {

@@ -30,7 +30,7 @@ class HeroRenderer implements RendererInterface
 	 */
 	public function render(array $data): string
 	{
-		$defaults = array(
+		$defaults = [
 			'image_url' => '',
 			'height' => '50vh',
 			'title_color' => '#FFFFFF',
@@ -40,7 +40,7 @@ class HeroRenderer implements RendererInterface
 			'data_attribute' => '',
 			'data_value' => '',
 			'breadcrumbs' => '',
-		);
+		];
 
 		$data = wp_parse_args($data, $defaults);
 

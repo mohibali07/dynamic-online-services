@@ -32,9 +32,9 @@ class StyleBuilder
      * @param string $image_url Background image URL (optional).
      * @return string Inline style attribute value.
      */
-    public static function build_hero_inner_style($height, $image_url = ''): string
+    public static function build_hero_inner_style(string $height, string $image_url = ''): string
     {
-        $style_parts = array();
+        $style_parts = [];
 
         if (!empty($height)) {
             $height_escaped = Sanitization::escape_css_value($height, 'height');
@@ -61,9 +61,9 @@ class StyleBuilder
      * @param string $font_family Font family name.
      * @return string Inline style attribute value.
      */
-    public static function build_hero_content_style($title_color, $font_family): string
+    public static function build_hero_content_style(string $title_color, string $font_family): string
     {
-        $style_parts = array();
+        $style_parts = [];
 
         if (!empty($title_color)) {
             $color_escaped = sanitize_hex_color($title_color);
@@ -94,17 +94,17 @@ class StyleBuilder
      * }
      * @return string Inline style attribute value.
      */
-    public static function build_grid_style($args): string
+    public static function build_grid_style(array $args): string
     {
-        $defaults = array(
+        $defaults = [
             'grid_style' => '',
             'column_gap' => '',
             'row_gap' => '',
-        );
+        ];
 
         $args = wp_parse_args($args, $defaults);
 
-        $style_parts = array();
+        $style_parts = [];
 
         if (!empty($args['grid_style'])) {
             // Grid style is already built as a complete CSS rule

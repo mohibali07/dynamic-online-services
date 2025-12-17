@@ -144,7 +144,7 @@ class Cache
 	 * @param array  $args     Optional. get_terms() arguments.
 	 * @return array|WP_Error Array of term objects or WP_Error on failure.
 	 */
-	public static function get_terms(string $taxonomy, array $args = array()): array|\WP_Error
+	public static function get_terms(string $taxonomy, array $args = []): array|\WP_Error
 	{
 		$cache_key = 'dynos_terms_' . md5($taxonomy . wp_json_encode($args));
 
@@ -271,17 +271,69 @@ class Cache
 	 * Initialize cache hooks.
 	 *
 	 * @since 1.1.0
+	 * @deprecated 1.1.3 Use CacheHookRegistry::init() instead.
 	 * @return void
 	 */
 	public static function init_hooks(): void
 	{
-		add_action('save_post', [self::class, 'clear_on_post_save']);
-		add_action('created_term', [self::class, 'clear_on_term_save']);
-		add_action('edited_term', [self::class, 'clear_on_term_save']);
-		add_action('delete_term', [self::class, 'clear_on_term_save']);
-		add_action('update_option_dynos_options', [self::class, 'clear_on_settings_update']);
+		CacheHookRegistry::init();
+	}
+
+	/**
+	 * Get cached FAQs for a post.
+	 *
+	 * @since 1.2.0
+	 * @param int $post_id Post ID.
+	 * @return array FAQ data.
+	 */
+	public static function get_faqs(int $post_id): array
+	{
+		$cache_key = 'dynos_faqs_' . $post_id;
+
+		return self::get_or_set(
+			$cache_key,
+			function () use ($post_id) {
+				$faqs = get_post_meta($post_id, 'service_faqs', true);
+				return is_array($faqs) ? $faqs : [];
+			},
+			HOUR_IN_SECONDS
+		);
+	}
+
+	/**
+	 * Clear FAQ cache for a specific post.
+	 *
+	 * @since 1.2.0
+	 * @param int $post_id Post ID.
+	 * @return bool True on success.
+	 */
+	public static function clear_faqs(int $post_id): bool
+	{
+		$cache_key = 'dynos_faqs_' . $post_id;
+		return delete_transient($cache_key);
+	}
+
+	/**
+	 * Get cached settings.
+	 *
+	 * @since 1.2.0
+	 * @param string $option_name Option name.
+	 * @param mixed  $default Default value.
+	 * @return mixed Settings data.
+	 */
+	public static function get_settings(string $option_name, $default = [])
+	{
+		$cache_key = 'dynos_settings_' . $option_name;
+
+		return self::get_or_set(
+			$cache_key,
+			function () use ($option_name, $default) {
+				return get_option($option_name, $default);
+			},
+			HOUR_IN_SECONDS
+		);
 	}
 }
 
-// Initialize hooks
-Cache::init_hooks();
+// Initialize hooks via registry
+CacheHookRegistry::init();

@@ -23,6 +23,7 @@ if (!defined('ABSPATH')) {
 /**
  * Sanitization class.
  */
+if (!class_exists('TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization')) {
 class Sanitization
 {
 	/**
@@ -55,7 +56,7 @@ class Sanitization
 		// Validate menu icon
 		$menu_icon = self::validate_menu_icon($menu_icon);
 
-		return array(
+		return [
 			'service_slug' => $service_slug,
 			'taxonomy_slug' => $taxonomy_slug,
 			'menu_position' => $menu_position,
@@ -64,7 +65,7 @@ class Sanitization
 			'cpt_plural' => $cpt_plural,
 			'tax_singular' => $tax_singular,
 			'tax_plural' => $tax_plural,
-		);
+		];
 	}
 
 	/**
@@ -120,4 +121,5 @@ class Sanitization
 
 		return $menu_icon;
 	}
+}
 }

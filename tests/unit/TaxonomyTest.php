@@ -116,8 +116,8 @@ class TaxonomyTest extends TestCase
             ->with(
                 'service-category',
                 ['services'],
-                \WP_Mock\Functions::type('array')->andAlsoMatchesCallback(function ($args) {
-                    return isset($args['hierarchical']) && $args['hierarchical'] === true;
+                \Mockery::on(function ($args) {
+                    return is_array($args) && isset($args['hierarchical']) && $args['hierarchical'] === true;
                 })
             );
 
@@ -143,8 +143,8 @@ class TaxonomyTest extends TestCase
             ->with(
                 'service-category',
                 ['services'],
-                \WP_Mock\Functions::type('array')->andAlsoMatchesCallback(function ($args) {
-                    return isset($args['show_in_rest']) && $args['show_in_rest'] === true;
+                \Mockery::on(function ($args) {
+                    return is_array($args) && isset($args['show_in_rest']) && $args['show_in_rest'] === true;
                 })
             );
 

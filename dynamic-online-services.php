@@ -179,36 +179,31 @@ if (!defined('DYNOS_DEFAULT_EXCERPT_LENGTH')) {
  * Maximum posts per page for shortcode queries.
  * Prevents excessive database queries that could impact performance.
  *
- * Default: 1000 posts
+ * Default: 100 posts (CHANGED from 1000 in v1.2.0 for better performance)
  *
- * WHY 1000?
- * - Allows displaying large service catalogs in a single view
- * - Balanced between flexibility and performance
- * - Most sites have fewer than 1000 services
- * - Database queries remain performant up to this limit with proper indexing
- *
- * WHEN TO REDUCE:
- * - If your server has limited memory (< 256MB PHP memory limit)
- * - If you notice slow page loads with large result sets
- * - If you're on shared hosting with strict resource limits
+ * WHY 100?
+ * - Provides good balance between display flexibility and performance
+ * - Prevents slow page loads on large databases
+ * - Encourages use of pagination for better user experience
+ * - Database queries remain fast even with complex filtering
  *
  * WHEN TO INCREASE:
- * - If you have 1000+ services and need to display them all
- * - If you have dedicated hosting with ample resources
- * - Only if you've tested performance with your actual dataset
+ * - Only if you absolutely must display more than 100 items at once
+ * - Test performance with your actual dataset before deploying
+ * - Consider pagination as a better alternative for user experience
  *
  * RECOMMENDED VALUES:
- * - Small sites (< 100 services): 100-200
- * - Medium sites (100-500 services): 300-500
- * - Large sites (500-1000 services): 500-1000
- * - Enterprise (1000+ services): 1000-2000 (test performance!)
+ * - Small sites (< 100 services): 50-100
+ * - Medium sites (100-500 services): 100-200
+ * - Large sites (500+ services): Use pagination instead of increasing this limit
  *
  * Filterable via 'dynos_max_posts_per_page' hook.
  *
  * @since 1.1.0
+ * @since 1.2.0 Changed default from 1000 to 100 for better performance.
  */
 // Always run filter for transparency
-$max_posts = (int) apply_filters('dynos_max_posts_per_page', 1000);
+$max_posts = (int) apply_filters('dynos_max_posts_per_page', 100);
 if (!defined('DYNOS_MAX_POSTS_PER_PAGE')) {
 	define('DYNOS_MAX_POSTS_PER_PAGE', $max_posts);
 }
@@ -268,5 +263,10 @@ function dynos_init_plugin(): void
 {
 	\TechmireSolutions\DynamicOnlineServices\Core\Plugin::get_instance();
 	\TechmireSolutions\DynamicOnlineServices\Helpers\Options::init();
+
+	// Initialize Settings
+	\TechmireSolutions\DynamicOnlineServices\Settings\Registration::init();
+	\TechmireSolutions\DynamicOnlineServices\Settings\Menu::register();
+    \TechmireSolutions\DynamicOnlineServices\Taxonomies\TaxonomyFields::init();
 }
 add_action('plugins_loaded', 'dynos_init_plugin');

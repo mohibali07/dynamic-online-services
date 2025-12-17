@@ -30,7 +30,7 @@ class LiteSpeedCache
         }
 
         // Hook into settings save to purge cache when global styles/settings change.
-        add_action('updated_option', array(__CLASS__, 'on_option_update'), 10, 3);
+        add_action('updated_option', [__CLASS__, 'on_option_update'], 10, 3);
 
         add_action('dynos_after_save_faqs', [self::class, 'purge_post_cache']);
         add_action('save_post', [self::class, 'purge_post_cache']);

@@ -8,18 +8,22 @@ use TechmireSolutions\DynamicOnlineServices\Shortcodes\Category;
 use WP_Mock;
 use WP_Mock\Tools\TestCase;
 
-class CategoryTest extends TestCase
+/**
+ * @runInSeparateProcess
+ * @preserveGlobalState disabled
+ */
+class CategoryTest extends \DYNOS_TestCase
 {
     public function setUp(): void
     {
-        WP_Mock::setUp();
+        parent::setUp();
         // Global functions needed for all tests
-        WP_Mock::userFunction('remove_shortcode', ['return' => true]);
+        \WP_Mock::userFunction('remove_shortcode', ['return' => true]);
     }
 
     public function tearDown(): void
     {
-        WP_Mock::tearDown();
+        parent::tearDown();
     }
 
     /**
@@ -38,6 +42,9 @@ class CategoryTest extends TestCase
 
     /**
      * Test render callback instantiates and calls render.
+     */
+    /**
+     * @runInSeparateProcess
      */
     public function test_render_callback()
     {
@@ -65,75 +72,82 @@ class CategoryTest extends TestCase
     /**
      * Test render method with valid term.
      */
-    public function test_render_success()
-    {
-        $category = new Category();
-        $term = \Mockery::mock('\WP_Term');
+    	/**
+	 * Test render method with valid term.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_render_success()
+	{
+		$category = new Category();
+		$term = \Mockery::mock('\WP_Term');
 
-        // Mocks for environment
-        WP_Mock::userFunction('shortcode_atts', [
-            'return' => ['hide_empty' => false, 'pagination' => false, 'posts_per_page' => 5],
-        ]);
+		// Mock dependencies
+		\WP_Mock::userFunction('shortcode_atts', [
+			'return' => ['hide_empty' => false, 'pagination' => false, 'posts_per_page' => 5],
+		]);
 
-        WP_Mock::userFunction('TechmireSolutions\DynamicOnlineServices\Shortcodes\is_tax', [
-            'return' => true,
-        ]);
+		\WP_Mock::userFunction('get_query_var', [
+			'return' => 1,
+		]);
 
-        // Mock get_query_var for paged arg
-        WP_Mock::userFunction('get_query_var', [
-            'return' => 1,
-        ]);
+		\WP_Mock::userFunction('get_queried_object', [
+			'return' => $term,
+		]);
 
-        WP_Mock::userFunction('get_queried_object', [
-            'return' => $term,
-        ]);
+        // Mock global functions from validation/pagination files if they are not loaded
+        if (!function_exists('dynos_validate_category_shortcode_attributes')) {
+             \WP_Mock::userFunction('dynos_validate_category_shortcode_attributes')->andReturnArg(0);
+        }
+        if (!function_exists('dynos_validate_term_object')) {
+             \WP_Mock::userFunction('dynos_validate_term_object')->andReturn($term);
+        }
 
-        WP_Mock::userFunction('doc_validate_category_shortcode_attributes', [
-            'return' => ['hide_empty' => false, 'pagination' => false, 'posts_per_page' => 5],
-        ]);
-        WP_Mock::userFunction('doc_validate_term_object', [
-            'return' => $term,
-        ]);
-        WP_Mock::userFunction('doc_enqueue_service_card_styles_asset', [
-            'times' => 1,
-        ]);
+        // Mock Sanitization
+        $mockSanitization = \Mockery::mock('alias:TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization');
+        $mockSanitization->shouldReceive('sanitize_cpt_settings')
+            ->andReturn(['taxonomy_slug' => 'service-category']);
 
-        // Mock Filters - Must use with() to reply()
-        WP_Mock::onFilter('doc_category_content_term')
-            ->with($term)
-            ->reply($term);
+        \WP_Mock::userFunction('is_tax')
+            ->with('service-category')
+            ->andReturn(true);
 
-        // doc_category_content_items receives (merged_items, term)
-        WP_Mock::onFilter('doc_category_content_items')
-            ->with([], $term)
-            ->reply([]);
+        // Mock AssetEnqueuer
+        $mockEnqueuer = \Mockery::mock('alias:TechmireSolutions\DynamicOnlineServices\Helpers\AssetEnqueuer');
+        $mockEnqueuer->shouldReceive('enqueue_service_card_styles')
+            ->once();
 
-        // doc_category_content_output receives (final_output, items, term)
-        // final_output = 'Rendered Items' + '' (pagination)
-        WP_Mock::onFilter('doc_category_content_output')
-            ->with('Rendered Items', [], $term)
-            ->reply('Final Output');
+		// Mock Filters
+		\WP_Mock::onFilter('dynos_category_content_term')
+			->with($term)
+			->reply($term);
 
-        // Mock Data Retrieval Functions
-        WP_Mock::userFunction('doc_get_category_shortcode_child_categories', [
-            'return' => [],
-        ]);
-        WP_Mock::userFunction('doc_get_category_shortcode_services', [
-            'return' => ['items' => [], 'total_pages' => 1, 'current_page' => 1],
-        ]);
-        WP_Mock::userFunction('doc_render_category_shortcode_items', [
-            'return' => 'Rendered Items',
-        ]);
+		\WP_Mock::onFilter('dynos_category_content_items')
+			->with([], $term)
+			->reply([]);
 
-        // Mock doc_get_pagination_html since it is checked in load_dependencies
-        WP_Mock::userFunction('doc_get_pagination_html', [
-            'return' => '',
-        ]);
+		\WP_Mock::onFilter('dynos_category_content_output')
+			->with('Rendered Items', [], $term)
+			->reply('Final Output');
 
-        // Execute
-        $output = $category->render([]);
+		// Mock CategoryQueryService (static)
+        $mockQueryService = \Mockery::mock('alias:TechmireSolutions\DynamicOnlineServices\Services\CategoryQueryService');
+        $mockQueryService->shouldReceive('get_child_categories')
+            ->andReturn([]);
+        $mockQueryService->shouldReceive('get_services')
+            ->andReturn(['items' => [], 'total_pages' => 1, 'current_page' => 1]);
 
-        // Verify
-        $this->assertEquals('Final Output', $output);
-    }
+        // Mock CategoryRenderer (instance)
+        $rendererMock = \Mockery::mock('overload:TechmireSolutions\DynamicOnlineServices\Renderers\CategoryRenderer');
+        $rendererMock->shouldReceive('render')
+            ->once()
+            ->andReturn('Rendered Items');
+
+		// Execute
+		$output = $category->render([]);
+
+		// Verify
+		$this->assertEquals('Final Output', $output);
+	}
 }

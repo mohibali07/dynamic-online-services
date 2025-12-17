@@ -5,7 +5,7 @@ Tags: courses, online, education, custom, post, type, taxonomy, shortcode, setti
 Requires at least: 6.9
 Requires PHP: 8.3
 Tested up to: 6.7
-Stable tag: 1.1.0
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,31 @@ This plugin provides a custom post type for "Courses" and a custom taxonomy for 
 
 1. Upload the `dynamic-online-services` directory to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the "Plugins" menu in WordPress.
+
+== Performance Notes ==
+
+The plugin has been optimized for performance with sensible defaults:
+
+= Default Post Display Limit =
+
+The plugin now defaults to displaying 100 services per page (changed from 1000 in v1.2.0). This:
+* Improves page load times on large databases
+* Reduces memory usage
+* Provides better user experience with pagination
+
+= Increasing the Limit =
+
+If you need to display more items, use the `dynos_max_posts_per_page` filter:
+
+`add_filter('dynos_max_posts_per_page', function() { return 200; });`
+
+**Important**: Test performance before increasing this value in production.
+
+= Best Practices =
+
+* Use pagination for catalogs with many services
+* Organize services into categories for easier navigation
+* Consider using filters/search instead of showing all items at once
 
 == Frequently Asked Questions ==
 

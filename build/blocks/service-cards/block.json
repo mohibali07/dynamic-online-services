@@ -2,47 +2,101 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
   "name": "dynamic-online-services/service-cards",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "title": "Service Cards",
   "category": "widgets",
   "icon": "grid-view",
-  "description": "Display a dynamic grid of service cards.",
+  "description": "Display a dynamic, filterable grid of service cards with customizable layout and pagination options.",
+  "keywords": [
+    "services",
+    "cards",
+    "grid",
+    "dynamic",
+    "courses",
+    "education"
+  ],
+  "supports": {
+    "html": false,
+    "align": true,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    },
+    "color": {
+      "background": true,
+      "text": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
   "attributes": {
     "ids": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "description": "Comma-separated list of specific service IDs to display"
     },
     "category": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "description": "Category slug to filter services by"
     },
     "taxonomy": {
       "type": "string",
-      "default": "service-category"
+      "default": "service-category",
+      "description": "Taxonomy to use for filtering (default: service-category)"
     },
     "orderby": {
       "type": "string",
-      "default": "date"
+      "default": "date",
+      "enum": [
+        "date",
+        "title",
+        "menu_order",
+        "rand"
+      ],
+      "description": "Field to order services by"
     },
     "order": {
       "type": "string",
-      "default": "DESC"
+      "default": "DESC",
+      "enum": [
+        "ASC",
+        "DESC"
+      ],
+      "description": "Sort order direction"
     },
     "limit": {
       "type": "number",
-      "default": -1
+      "default": -1,
+      "minimum": -1,
+      "description": "Maximum number of services to display (-1 for all)"
     },
     "columns": {
       "type": "number",
-      "default": 3
+      "default": 3,
+      "minimum": 1,
+      "maximum": 6,
+      "description": "Number of columns in the grid layout"
     },
     "minWidth": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "description": "Minimum width for each service card (CSS value)"
     },
     "showPagination": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "description": "Enable pagination for service cards"
+    }
+  },
+  "example": {
+    "attributes": {
+      "columns": 3,
+      "limit": 6,
+      "orderby": "date",
+      "order": "DESC"
     }
   },
   "textdomain": "dynamic-online-services",

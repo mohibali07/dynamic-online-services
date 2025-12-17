@@ -29,7 +29,7 @@ function dynos_get_category_hero_data($term): array
 	// Validate term object
 	$term = dynos_validate_term_object($term, $taxonomy_slug);
 	if (false === $term) {
-		return array();
+		return [];
 	}
 
 	$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
@@ -60,7 +60,7 @@ function dynos_get_category_hero_data($term): array
 	$hero_height = apply_filters('dynos_category_hero_height', $hero_height, $term);
 	$title = apply_filters('dynos_category_hero_title', $term->name, $term);
 
-	return array(
+	return [
 		'image_url' => $image_url,
 		'height' => $hero_height,
 		'title_color' => $hero_title_color,
@@ -70,7 +70,7 @@ function dynos_get_category_hero_data($term): array
 		'data_attribute' => 'data-term-id',
 		'data_value' => $term->term_id,
 		'overlay_color' => $hero_overlay_color,
-	);
+	];
 }
 
 /**
@@ -98,7 +98,7 @@ function dynos_get_service_hero_data($post): array
 	// Get settings
 	$hero_title_color = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_title_color', '#FFFFFF');
 	$hero_overlay_color = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_overlay_color', '#000000');
-	$hero_font_family = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_font_family', 'Helvetica');
+	$hero_font_family = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_font_family', 'sans-serif');
 	$hero_height = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get_option($options, 'hero_height', '50vh');
 
 	// Allow filtering values
@@ -109,7 +109,7 @@ function dynos_get_service_hero_data($post): array
 	$post_title = apply_filters('dynos_service_hero_title', $post_title, $post);
 	$description = apply_filters('dynos_service_hero_description', $description, $post);
 
-	return array(
+	return [
 		'image_url' => $image_url,
 		'height' => $hero_height,
 		'title_color' => $hero_title_color,
@@ -119,5 +119,5 @@ function dynos_get_service_hero_data($post): array
 		'data_attribute' => 'data-post-id',
 		'data_value' => $post->ID,
 		'overlay_color' => $hero_overlay_color,
-	);
+	];
 }

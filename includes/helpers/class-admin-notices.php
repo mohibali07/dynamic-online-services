@@ -37,7 +37,7 @@ class AdminNotices
 		}
 
 		// Validate notice type
-		$allowed_types = array('error', 'warning', 'success', 'info');
+		$allowed_types = ['error', 'warning', 'success', 'info'];
 		if (!in_array($type, $allowed_types, true)) {
 			$type = 'info';
 		}
@@ -158,9 +158,9 @@ class AdminNotices
 	 * @param array  $args Additional arguments for message formatting.
 	 * @return string User-friendly error message.
 	 */
-	public static function get_user_friendly_error(string $error_code, array $args = array()): string
+	public static function get_user_friendly_error(string $error_code, array $args = []): string
 	{
-		$messages = array(
+		$messages = [
 			'invalid_post_id' => __('Invalid post ID provided. Please try again.', 'dynamic-online-services'),
 			'invalid_term_id' => __('Invalid category ID provided. Please try again.', 'dynamic-online-services'),
 			'invalid_attachment' => __('Invalid image selected. Please select a valid image.', 'dynamic-online-services'),
@@ -168,7 +168,7 @@ class AdminNotices
 			'permission_denied' => __('You do not have permission to perform this action.', 'dynamic-online-services'),
 			'invalid_input' => __('Invalid input provided. Please check your entries and try again.', 'dynamic-online-services'),
 			'network_error' => __('Network error occurred. Please check your connection and try again.', 'dynamic-online-services'),
-		);
+		];
 
 		$message = isset($messages[$error_code]) ? $messages[$error_code] : '';
 
@@ -218,14 +218,14 @@ class AdminNotices
 	 * @param array  $context Additional context data. Default empty array.
 	 * @return void
 	 */
-	public static function log_error(string $message, string $level = 'error', array $context = array()): void
+	public static function log_error(string $message, string $level = 'error', array $context = []): void
 	{
 		if (!defined('WP_DEBUG') || !WP_DEBUG) {
 			return;
 		}
 
 		// Validate log level
-		$allowed_levels = array('error', 'warning', 'info', 'debug');
+		$allowed_levels = ['error', 'warning', 'info', 'debug'];
 		if (!in_array($level, $allowed_levels, true)) {
 			$level = 'error';
 		}

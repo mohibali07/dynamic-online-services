@@ -85,11 +85,11 @@ class PrefixMigration {
 	 * @return array<string, mixed> Migration status details.
 	 */
 	public static function get_status(): array {
-		return array(
+		return [
 			'migrated'       => self::is_migrated(),
 			'migration_date' => get_option( 'dynos_prefix_migration_date', '' ),
 			'old_options'    => get_option( 'dynos_options', false ),
 			'new_options'    => get_option( 'dynos_options', false ),
-		);
+		];
 	}
 }

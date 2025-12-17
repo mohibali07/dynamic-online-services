@@ -25,17 +25,17 @@ function dynos_get_service_faqs( $post_id ): array {
 	// Validate post ID
 	$post_id = dynos_validate_post_id( $post_id );
 	if ( false === $post_id ) {
-		return array();
+		return [];
 	}
 
 	$faqs = get_post_meta( $post_id, 'service_faqs', true );
 
 	if ( ! is_array( $faqs ) || empty( $faqs ) ) {
-		return array();
+		return [];
 	}
 
 	// Sanitize FAQ data to ensure security
-	$sanitized_faqs = array();
+	$sanitized_faqs = [];
 	foreach ( $faqs as $faq ) {
 		if ( ! is_array( $faq ) ) {
 			continue;
@@ -46,10 +46,10 @@ function dynos_get_service_faqs( $post_id ): array {
 
 		// Only include FAQs with valid questions
 		if ( ! empty( $question ) ) {
-			$sanitized_faqs[] = array(
+			$sanitized_faqs[] = [
 				'question' => $question,
 				'answer'   => $answer,
-			);
+			];
 		}
 	}
 

@@ -65,8 +65,8 @@ class Images
 
 		// Whitelist approach: Only allow safe SVG elements and attributes
 		// Define allowed SVG structure with whitelisted elements and attributes
-		$allowed_svg_elements = array('svg', 'rect', 'text');
-		$allowed_svg_attributes = array(
+		$allowed_svg_elements = ['svg', 'rect', 'text'];
+		$allowed_svg_attributes = [
 			'xmlns',
 			'width',
 			'height',
@@ -78,7 +78,7 @@ class Images
 			'dy',
 			'font-family',
 			'font-size',
-		);
+		];
 
 		// Build SVG using whitelisted structure only
 		// This prevents injection of malicious SVG elements or attributes
@@ -96,7 +96,7 @@ class Images
 
 		// Enhanced security validation: whitelist-based approach
 		// Block all potentially dangerous patterns
-		$dangerous_patterns = array(
+		$dangerous_patterns = [
 			'/<script/i',                    // Script tags
 			'/<\/script>/i',                 // Closing script tags
 			'/on\w+\s*=/i',                  // Event handlers (onclick, onload, etc.)
@@ -109,7 +109,7 @@ class Images
 			'/<style/i',                     // Style elements (could contain malicious CSS)
 			'/expression\s*\(/i',            // CSS expressions
 			'/@import/i',                    // CSS imports
-		);
+		];
 
 		foreach ($dangerous_patterns as $pattern) {
 			if (preg_match($pattern, $svg_content)) {
@@ -161,11 +161,11 @@ class Images
 	{
 		$post_id = absint($post_id);
 		if (0 === $post_id) {
-			return array();
+			return [];
 		}
 
 		// Get ACF banner image field
-		$image_array = Acf::get_field('banner_bg_image', $post_id, array());
+		$image_array = Acf::get_field('banner_bg_image', $post_id, []);
 
 		// Fallback: use featured image if ACF image is not available
 		if (empty($image_array) || !is_array($image_array)) {
@@ -173,7 +173,7 @@ class Images
 			if ($thumbnail_id) {
 				$image_url = wp_get_attachment_image_url($thumbnail_id, 'full');
 				if ($image_url) {
-					$image_array = array('url' => $image_url);
+					$image_array = ['url' => $image_url];
 					// Try to get alt text from featured image
 					$image_alt = get_post_meta($thumbnail_id, '_wp_attachment_image_alt', true);
 					if (!empty($image_alt)) {
@@ -188,7 +188,7 @@ class Images
 			return $image_array;
 		}
 
-		return array();
+		return [];
 	}
 
 	/**

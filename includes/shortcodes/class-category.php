@@ -10,6 +10,12 @@ declare(strict_types=1);
 
 namespace TechmireSolutions\DynamicOnlineServices\Shortcodes;
 
+use TechmireSolutions\DynamicOnlineServices\Services\CategoryQueryService;
+use TechmireSolutions\DynamicOnlineServices\Renderers\CategoryRenderer;
+use TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization;
+use TechmireSolutions\DynamicOnlineServices\Helpers\AssetEnqueuer;
+use WP_Term;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -30,7 +36,7 @@ class Category {
 	 * Initialize shortcode.
 	 */
 	public static function init(): void {
-		add_shortcode( self::TAG, array( __CLASS__, 'render_callback' ) );
+		add_shortcode( self::TAG, [ __CLASS__, 'render_callback' ] );
 	}
 
 	/**
@@ -41,7 +47,7 @@ class Category {
 	 */
 	public static function render_callback( $atts ): string {
 		$instance = new self();
-		return $instance->render( is_array( $atts ) ? $atts : array() );
+		return $instance->render( is_array( $atts ) ? $atts : [] );
 	}
 
 	/**
@@ -56,7 +62,7 @@ class Category {
 
 		// Parse attributes
 		$atts = shortcode_atts(
-			array(
+			[
 				'posts_per_page' => -1,
 				'orderby'        => 'menu_order',
 				'order'          => 'ASC',
@@ -65,7 +71,7 @@ class Category {
 				'min_width'      => '',
 				'pagination'     => false,
 				'paged'          => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
-			),
+			],
 			$atts,
 			self::TAG
 		);
@@ -75,7 +81,7 @@ class Category {
 			$atts = dynos_validate_category_shortcode_attributes( $atts );
 		}
 
-		$settings = \TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization::sanitize_cpt_settings();
+		$settings = Sanitization::sanitize_cpt_settings();
 		$taxonomy_slug = isset( $settings['taxonomy_slug'] ) ? $settings['taxonomy_slug'] : 'services_category';
 
 		if ( ! is_tax( $taxonomy_slug ) ) {
@@ -97,7 +103,7 @@ class Category {
 		$term = apply_filters( 'dynos_category_content_term', $term );
 
 		// Enqueue styles
-		\TechmireSolutions\DynamicOnlineServices\Helpers\AssetEnqueuer::enqueue_service_card_styles();
+		AssetEnqueuer::enqueue_service_card_styles();
 
 		return $this->generate_output( $term, $atts );
 	}
@@ -105,23 +111,15 @@ class Category {
 	/**
 	 * Generate HTML output.
 	 *
-	 * @param \WP_Term $term Category term.
-	 * @param array    $atts Shortcode attributes.
+	 * @param WP_Term $term Category term.
+	 * @param array   $atts Shortcode attributes.
 	 * @return string HTML output.
 	 */
-	protected function generate_output( $term, array $atts ): string {
-		// Get data
-		$child_categories = function_exists( 'dynos_get_category_shortcode_child_categories' )
-			? dynos_get_category_shortcode_child_categories( $term, $atts['hide_empty'] )
-			: array();
+	protected function generate_output( WP_Term $term, array $atts ): string {
+		// Get data using new Service
+		$child_categories = CategoryQueryService::get_child_categories( $term, (bool) $atts['hide_empty'] );
 
-		$services_data = function_exists( 'dynos_get_category_shortcode_services' )
-			? dynos_get_category_shortcode_services( $term, $atts )
-			: array(
-				'items'        => array(),
-				'total_pages'  => 1,
-				'current_page' => 1,
-			);
+		$services_data = CategoryQueryService::get_services( $term, $atts );
 
 		$service_items = $services_data['items'];
 		$total_pages   = $services_data['total_pages'];
@@ -130,11 +128,9 @@ class Category {
 		$items_to_display = array_merge( $child_categories, $service_items );
 		$items_to_display = apply_filters( 'dynos_category_content_items', $items_to_display, $term );
 
-		// Render
-		$output = '';
-		if ( function_exists( 'dynos_render_category_shortcode_items' ) ) {
-			$output = dynos_render_category_shortcode_items( $items_to_display, $term, $atts );
-		}
+		// Render using new Renderer
+		$renderer = new CategoryRenderer();
+		$output = $renderer->render( $items_to_display, $term, $atts );
 
 		// Pagination
 		$pagination_html = '';
@@ -157,12 +153,7 @@ class Category {
 			if ( ! function_exists( 'dynos_validate_category_shortcode_attributes' ) ) {
 				require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/category/validation.php';
 			}
-			if ( ! function_exists( 'dynos_get_category_shortcode_child_categories' ) ) {
-				require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/category/query.php';
-			}
-			if ( ! function_exists( 'dynos_render_category_shortcode_items' ) ) {
-				require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/category/renderer.php';
-			}
+			// query.php and renderer.php are no longer needed
 			if ( ! function_exists( 'dynos_get_pagination_html' ) ) {
 				require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/category/pagination.php';
 			}

@@ -31,8 +31,8 @@ class Hero
 	 */
 	public static function init(): void
 	{
-		add_shortcode('service_category_hero', array(__CLASS__, 'render_category_hero'));
-		add_shortcode('single_service_hero', array(__CLASS__, 'render_service_hero'));
+		add_shortcode('service_category_hero', [__CLASS__, 'render_category_hero']);
+		add_shortcode('single_service_hero', [__CLASS__, 'render_service_hero']);
 	}
 
 	/**
@@ -41,7 +41,7 @@ class Hero
 	 * @param array $atts Shortcode attributes.
 	 * @return string HTML output.
 	 */
-	public static function render_category_hero($atts = array()): string
+	public static function render_category_hero($atts = []): string
 	{
 		// Require data helper for retrieval functions
 		if (!function_exists('dynos_get_category_hero_data')) {
@@ -86,7 +86,7 @@ class Hero
 	 * @param array $atts Shortcode attributes.
 	 * @return string HTML output.
 	 */
-	public static function render_service_hero($atts = array()): string
+	public static function render_service_hero($atts = []): string
 	{
 		// Require data helper
 		if (!function_exists('dynos_get_service_hero_data')) {
@@ -143,7 +143,7 @@ class Hero
 		// Parse shortcode attributes using consolidated helper class
 		$atts = ShortcodeAttributes::parse(
 			(array) $atts,
-			array('height' => $default_height),
+			['height' => $default_height],
 			$shortcode_tag
 		);
 

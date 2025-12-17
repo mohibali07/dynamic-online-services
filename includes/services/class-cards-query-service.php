@@ -72,16 +72,16 @@ class CardsQueryService
 			$limit = DYNOS_MAX_POSTS_PER_PAGE;
 		}
 
-		$args = array(
+		$args = [
 			'post_type' => $service_slug,
 			'post_status' => 'publish',
 			'posts_per_page' => $limit,
-			'orderby' => isset($atts['orderby']) ? dynos_validate_orderby($atts['orderby'], 'date') : 'date',
+			'orderby' => isset($atts['orderby']) ? \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::validate_orderby($atts['orderby'], 'date') : 'date',
 			'order' => isset($atts['order']) ? sanitize_text_field($atts['order']) : 'DESC',
 			'no_found_rows' => true, // Performance: skip pagination counting if not needed
 			'update_post_meta_cache' => true, // We need meta cache (preloaded in shortcode)
 			'update_post_term_cache' => true, // Performance: cache term relationships
-		);
+		];
 
 		// Filter by IDs
 		if (!empty($atts['ids'])) {
@@ -115,11 +115,11 @@ class CardsQueryService
 					error_log(sprintf('DYNOS: Invalid taxonomy "%s" in cards shortcode', $taxonomy));
 				}
 				// Return empty query instead of error
-				return array(
+				return [
 					'post_type' => $service_slug,
-					'post__in' => array(0), // Will return no results
+					'post__in' => [0], // Will return no results
 					'posts_per_page' => 1,
-				);
+				];
 			}
 
 			// Check if category is IDs or Slugs
@@ -128,13 +128,13 @@ class CardsQueryService
 			// Determine field based on first item
 			$field = is_numeric($categories[0]) ? 'term_id' : 'slug';
 
-			$args['tax_query'] = array(
-				array(
+			$args['tax_query'] = [
+				[
 					'taxonomy' => $taxonomy,
 					'field' => $field,
 					'terms' => $categories,
-				),
-			);
+				],
+			];
 		}
 
 		// Pagination

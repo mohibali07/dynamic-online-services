@@ -47,7 +47,6 @@ class FontsTest extends TestCase
 	public function test_is_google_font_handles_empty_input(): void
 	{
 		$this->assertFalse(Fonts::is_google_font(''));
-		$this->assertFalse(Fonts::is_google_font(null));
 	}
 
 	/**
@@ -68,7 +67,6 @@ class FontsTest extends TestCase
 	public function test_encode_google_font_returns_empty_for_invalid_input(): void
 	{
 		$this->assertSame('', Fonts::encode_google_font(''));
-		$this->assertSame('', Fonts::encode_google_font(null));
 	}
 
 	/**
@@ -80,6 +78,18 @@ class FontsTest extends TestCase
 		// Should not contain HTML tags
 		$this->assertStringNotContainsString('<script>', $encoded);
 		$this->assertStringNotContainsString('</script>', $encoded);
+	}
+
+	/**
+	 * Set up the test environment.
+	 */
+	protected function setUp(): void
+	{
+		parent::setUp();
+		\WP_Mock::setUp();
+        \WP_Mock::userFunction('sanitize_text_field', [
+            'return' => function ($val) { return $val; },
+        ]);
 	}
 
 	/**

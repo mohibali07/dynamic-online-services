@@ -32,7 +32,7 @@ function dynos_process_hero_shortcode($atts, $hero_data, $shortcode_tag): string
 	// Parse shortcode attributes using consolidated helper
 	$atts = dynos_parse_shortcode_attributes(
 		$atts,
-		array('height' => $default_height),
+		['height' => $default_height],
 		$shortcode_tag
 	);
 

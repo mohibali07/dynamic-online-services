@@ -27,7 +27,7 @@ class Faqs {
 	 * Initialize shortcode.
 	 */
 	public static function init(): void {
-		add_shortcode( 'service_faqs_accordion', array( __CLASS__, 'render' ) );
+		add_shortcode( 'service_faqs_accordion', [ __CLASS__, 'render' ] );
 	}
 
 	/**
@@ -36,7 +36,7 @@ class Faqs {
 	 * @param array $atts Shortcode attributes.
 	 * @return string HTML output.
 	 */
-	public static function render( $atts = array() ): string {
+	public static function render( $atts = [] ): string {
 		// Include dependencies
 		if ( ! function_exists( 'dynos_render_faqs_accordion' ) ) {
 			require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/faqs/renderer.php';
@@ -50,7 +50,7 @@ class Faqs {
 
 		$atts = ShortcodeAttributes::parse(
 			(array) $atts,
-			array( 'title' => $default_title ),
+			[ 'title' => $default_title ],
 			'service_faqs_accordion'
 		);
 
@@ -63,7 +63,7 @@ class Faqs {
 		// Check if we're on a service post
 		if ( ! is_singular( $service_slug ) ) {
 			// Provide helpful message for admins/editors
-			if ( current_user_can( 'edit_posts' ) ) {
+			if ( \current_user_can( 'edit_posts' ) ) {
 				return sprintf(
 					'<div class="dynos-shortcode-notice" style="padding:10px;background:#fff3cd;border-left:4px solid #ffc107;margin:10px 0;">
 						<strong>%s:</strong> %s

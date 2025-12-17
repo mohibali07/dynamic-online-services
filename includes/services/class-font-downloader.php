@@ -88,7 +88,7 @@ class FontDownloader
 		}
 
 		// Download font files
-		$downloaded_files = array();
+		$downloaded_files = [];
 		foreach ($font_urls as $url) {
 			$local_path = $this->download_font_file($url, $font_family);
 			if ($local_path) {
@@ -143,10 +143,10 @@ class FontDownloader
 		// Use WordPress HTTP API with WOFF2 user agent for modern fonts
 		$response = wp_remote_get(
 			$url,
-			array(
+			[
 				'timeout'    => 30,
 				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-			)
+			]
 		);
 
 		if (is_wp_error($response)) {
@@ -167,7 +167,7 @@ class FontDownloader
 	 */
 	private function parse_font_urls(string $css): array
 	{
-		$urls = array();
+		$urls = [];
 
 		// Match URLs in url() declarations
 		if (preg_match_all('/url\((https:\/\/[^)]+\.woff2?)\)/', $css, $matches)) {
@@ -222,9 +222,9 @@ class FontDownloader
 		// Download file
 		$response = wp_remote_get(
 			$url,
-			array(
+			[
 				'timeout' => 30,
-			)
+			]
 		);
 
 		if (is_wp_error($response)) {

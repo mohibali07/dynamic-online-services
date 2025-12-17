@@ -595,6 +595,28 @@ declare(strict_types=1);
  */
 
 /**
+ * Filter: dynos_service_cards_query_args
+ *
+ * Allows filtering of arguments for the service cards query.
+ *
+ * @since 1.1.0
+ * @param array $args The query arguments.
+ * @param array $atts The shortcode attributes.
+ * @return array Modified query arguments.
+ */
+
+/**
+ * Filter: dynos_category_content_query_args
+ *
+ * Allows filtering of arguments for the category content query.
+ *
+ * @since 1.1.0
+ * @param array   $query_args The query arguments.
+ * @param WP_Term $term       The term object.
+ * @return array Modified query arguments.
+ */
+
+/**
  * ACTIONS
  */
 
@@ -616,4 +638,197 @@ declare(strict_types=1);
  * @since 1.1.0
  * @param int $term_id       The term ID.
  * @param int $thumbnail_id The attachment ID.
+ */
+
+/**
+ * Action: dynos_permalink_term_error
+ *
+ * Fired when generating a permalink if no valid terms are found.
+ *
+ * @since 1.1.0
+ * @param mixed $terms   The terms result (WP_Error or false/empty element).
+ * @param int   $post_id The post ID.
+ */
+
+/**
+ * Action: dynos_permalink_self_reference
+ *
+ * Fired when a circular reference to itself is detected in permalink generation.
+ *
+ * @since 1.1.0
+ * @param int $term_id The problematic term ID.
+ */
+
+/**
+ * Action: dynos_permalink_circular_reference
+ *
+ * Fired when a circular reference loop is detected in permalink generation.
+ *
+ * @since 1.1.0
+ * @param int   $current_term_id The current term ID.
+ * @param int   $parent_id       The parent term ID being checked.
+ * @param array $visited_ids     Array of visited term IDs.
+ */
+
+/**
+ * Action: dynos_permalink_parent_term_error
+ *
+ * Fired when a parent term cannot be retrieved during permalink generation.
+ *
+ * @since 1.1.0
+ * @param mixed $parent_term The parent term result.
+ * @param int   $parent_id   The parent term ID.
+ */
+
+/**
+ * Action: dynos_permalink_max_depth_reached
+ *
+ * Fired when max taxonomy depth is reached during permalink generation.
+ *
+ * @since 1.1.0
+ * @param int $term_id   The current term ID.
+ * @param int $max_depth The maximum allowed depth.
+ */
+
+/**
+ * Action: dynos_rate_limit_exceeded
+ *
+ * Fired when a user exceeds the rate limit.
+ *
+ * @since 1.1.0
+ * @param string $action       The action being limited.
+ * @param int    $user_id      The user ID.
+ * @param int    $attempts     The number of attempts.
+ * @param int    $max_attempts The maximum allowed attempts.
+ */
+
+/**
+ * Action: dynos_rate_limits_cleared
+ *
+ * Fired when rate limits are cleared.
+ *
+ * @since 1.1.0
+ */
+
+/**
+ * Action: dynos_faq_limit_exceeded
+ *
+ * Fired when the number of FAQs exceeds the allowed limit.
+ *
+ * @since 1.1.0
+ * @param int $post_id  The post ID.
+ * @param int $max_faqs The maximum allowed FAQs.
+ * @param int $count    The current count of FAQs.
+ */
+
+/**
+ * Action: dynos_faq_count_mismatch
+ *
+ * Fired when FAQ question and answer counts do not match during save.
+ *
+ * @since 1.1.0
+ * @param int $post_id       The post ID.
+ * @param int $questions_count The count of questions.
+ * @param int $answers_count   The count of answers.
+ */
+
+/**
+ * Action: dynos_category_content_term_error
+ *
+ * Fired when the queried object is not a valid term in the category content shortcode.
+ *
+ * @since 1.1.0
+ * @param mixed $queried_object The invalid queried object.
+ */
+
+/**
+ * Action: dynos_category_content_term_link_error
+ *
+ * Fired when a term link cannot be generated in the category content shortcode.
+ *
+ * @since 1.1.0
+ * @param WP_Term $category The category term.
+ * @param mixed   $term_link The error result.
+ */
+
+/**
+ * Action: dynos_category_hero_term_error
+ *
+ * Fired when the queried object is not a valid term in the category hero shortcode.
+ *
+ * @since 1.1.0
+ * @param mixed $queried_object The invalid queried object.
+ */
+
+/**
+ * Action: dynos_pagination_term_link_error
+ *
+ * Fired when the base term link cannot be generated for pagination.
+ *
+ * @since 1.1.0
+ * @param WP_Term $queried_object The term object.
+ * @param mixed   $base_term_link The error result.
+ */
+
+/**
+ * Action: dynos_constants_cache_reset
+ *
+ * Fired when the constants cache is forcibly reset.
+ *
+ * @since 1.1.0
+ */
+
+/**
+ * Action: dynos_exception_handled
+ *
+ * Fired when an exception is caught and handled by the error handler.
+ *
+ * @since 1.1.0
+ * @param Throwable $exception The caught exception.
+ */
+
+/**
+ * Action: dynos_activation_error
+ *
+ * Fired when an error occurs during plugin activation.
+ *
+ * @since 1.1.0
+ * @param Throwable $exception The caught exception.
+ */
+
+/**
+ * Action: dynos_log_error
+ *
+ * Fired to log an error message (usually for admin notices or debugging).
+ *
+ * @since 1.1.0
+ * @param string $message The error message.
+ * @param string $level   The error level (e.g., 'error', 'warning').
+ * @param array  $context Additional context.
+ */
+
+/**
+ * Action: dynos_breakpoints_loaded
+ *
+ * Fired when CSS breakpoints are loaded.
+ *
+ * @since 1.1.0
+ * @param string $tablet The tablet breakpoint.
+ * @param string $mobile The mobile breakpoint.
+ */
+
+/**
+ * Action: dynos_constants_cache_cleared
+ *
+ * Fired when the constants cache is cleared.
+ *
+ * @since 1.1.0
+ */
+
+/**
+ * Action: dynos_options_cache_invalidated
+ *
+ * Fired when the options cache is invalidated (e.g., on save).
+ *
+ * @since 1.1.0
  */

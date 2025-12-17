@@ -9,6 +9,8 @@
  * @since 1.2.0
  */
 
+declare(strict_types=1);
+
 
 // This file is for documentation purposes only and is never included.
 if (!defined('ABSPATH')) {

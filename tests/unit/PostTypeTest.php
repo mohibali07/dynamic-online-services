@@ -10,13 +10,12 @@ declare(strict_types=1);
 
 namespace DynamicOnlineServices\Tests\Unit;
 
-use WP_Mock\Tools\TestCase;
 use TechmireSolutions\DynamicOnlineServices\PostTypes\ServicePostType;
 
 /**
  * Test ServicePostType class.
  */
-class PostTypeTest extends TestCase
+class PostTypeTest extends \DYNOS_TestCase
 {
     /**
      * Set up test environment.
@@ -25,6 +24,28 @@ class PostTypeTest extends TestCase
     {
         parent::setUp();
         \WP_Mock::setUp();
+
+        // Mock sanitize_title for ServicePostType constructor
+        \WP_Mock::userFunction('sanitize_title', [
+            'return' => function($title) {
+                return \strtolower(\str_replace(' ', '-', $title));
+            }
+        ]);
+
+        // Mock WordPress functions for Options class
+        \WP_Mock::userFunction('get_transient', [
+            'return' => false
+        ]);
+
+        \WP_Mock::userFunction('get_option', [
+            'return' => []
+        ]);
+
+        \WP_Mock::userFunction('wp_parse_args', [
+            'return' => function($args, $defaults) {
+                return \array_merge($defaults, $args);
+            }
+        ]);
     }
 
     /**
@@ -95,9 +116,6 @@ class PostTypeTest extends TestCase
         \WP_Mock::userFunction('__')
             ->andReturn('Service updated.');
 
-        \WP_Mock::userFunction('sprintf')
-            ->andReturn('Service restored');
-
         \WP_Mock::userFunction('wp_post_revision_title')
             ->andReturn('Revision');
 
@@ -127,9 +145,6 @@ class PostTypeTest extends TestCase
 
         \WP_Mock::userFunction('__')
             ->andReturn('Service updated.');
-
-        \WP_Mock::userFunction('sprintf')
-            ->andReturn('Service restored');
 
         \WP_Mock::userFunction('wp_post_revision_title')
             ->with(123, false) // Should be sanitized to 123

@@ -39,7 +39,7 @@ class ServicePostType implements Registrable
 	public function __construct(string $slug)
 	{
 		// Sanitize slug
-		$sanitized_slug = sanitize_title($slug);
+		$sanitized_slug = \sanitize_title($slug);
 
 		// Validate slug is not empty
 		if (empty($sanitized_slug)) {
@@ -68,8 +68,8 @@ class ServicePostType implements Registrable
 	 */
 	public function register(): void
 	{
-		add_action('init', array($this, 'register_post_type'));
-		add_filter('post_updated_messages', array($this, 'updated_messages'));
+		add_action('init', [$this, 'register_post_type']);
+		add_filter('post_updated_messages', [$this, 'updated_messages']);
 	}
 
 	/**
@@ -109,7 +109,7 @@ class ServicePostType implements Registrable
 		$singular_name = apply_filters('dynos_service_singular_name', $singular_name);
 		$plural_name = apply_filters('dynos_service_plural_name', $plural_name);
 
-		return array(
+		return [
 			'name' => _x($plural_name, 'Post Type General Name', 'dynamic-online-services'),
 			'singular_name' => _x($singular_name, 'Post Type Singular Name', 'dynamic-online-services'),
 			'menu_name' => $plural_name,
@@ -153,7 +153,7 @@ class ServicePostType implements Registrable
 			'items_list_navigation' => sprintf(__('%s list navigation', 'dynamic-online-services'), $plural_name),
 			/* translators: %s: Plural name (lowercase) of the post type */
 			'filter_items_list' => sprintf(__('Filter %s list', 'dynamic-online-services'), strtolower($plural_name)),
-		);
+		];
 	}
 
 	/**
@@ -164,11 +164,11 @@ class ServicePostType implements Registrable
 	 */
 	private function get_arguments(array $labels): array
 	{
-		return array(
+		return [
 			'label' => __('Service', 'dynamic-online-services'),
 			'description' => __('Post Type Description', 'dynamic-online-services'),
 			'labels' => $labels,
-			'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
+			'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
 			'hierarchical' => false,
 			'public' => true,
 			'show_ui' => true,
@@ -183,11 +183,11 @@ class ServicePostType implements Registrable
 			'publicly_queryable' => true,
 			'capability_type' => 'post',
 			'show_in_rest' => true,
-			'rewrite' => array(
-				'slug' => $this->slug . '/%services_category%',
+			'rewrite' => [
+				'slug' => \sanitize_title($this->slug),
 				'with_front' => false,
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -198,8 +198,8 @@ class ServicePostType implements Registrable
 	 */
 	public function updated_messages(array $messages): array
 	{
-		$post = get_post();
-		$post_type_object = get_post_type_object($this->slug);
+		$post = \get_post();
+		$post_type_object = \get_post_type_object($this->slug);
 
 		// Return early if post type object doesn't exist or post is null
 		if (!$post_type_object || !$post) {
@@ -207,26 +207,26 @@ class ServicePostType implements Registrable
 		}
 
 		// Sanitize revision ID if present.
-		$revision_id = filter_input(INPUT_GET, 'revision', FILTER_VALIDATE_INT);
+		$revision_id = \filter_input(INPUT_GET, 'revision', FILTER_VALIDATE_INT);
 		$revision_id = $revision_id ? $revision_id : 0;
 
 		// Safe post date access with null check
 		$scheduled_date = '';
 		if (isset($post->post_date)) {
-			$scheduled_date = date_i18n(
-				__('M j, Y @ G:i', 'dynamic-online-services'),
-				strtotime($post->post_date)
-			);
+			$scheduled_date = \date_i18n(
+					__('M j, Y @ G:i', 'dynamic-online-services'),
+					\strtotime($post->post_date)
+				);
 		}
 
-		$messages[$this->slug] = array(
+		$messages[$this->slug] = [
 			0 => '', // Unused. Messages start at index 1.
 			1 => __('Service updated.', 'dynamic-online-services'),
 			2 => __('Custom field updated.', 'dynamic-online-services'),
 			3 => __('Custom field deleted.', 'dynamic-online-services'),
 			4 => __('Service updated.', 'dynamic-online-services'),
 			/* translators: %s: date and time of the revision */
-			5 => $revision_id ? sprintf(__('Service restored to revision from %s', 'dynamic-online-services'), wp_post_revision_title($revision_id, false)) : false,
+			5 => $revision_id ? sprintf(__('Service restored to revision from %s', 'dynamic-online-services'), \wp_post_revision_title($revision_id, false)) : false,
 			6 => __('Service published.', 'dynamic-online-services'),
 			7 => __('Service saved.', 'dynamic-online-services'),
 			8 => __('Service submitted.', 'dynamic-online-services'),
@@ -236,7 +236,7 @@ class ServicePostType implements Registrable
 				$scheduled_date
 			),
 			10 => __('Service draft updated.', 'dynamic-online-services'),
-		);
+		];
 
 		return $messages;
 	}

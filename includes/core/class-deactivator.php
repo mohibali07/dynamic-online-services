@@ -28,10 +28,25 @@ class Deactivator
 	 */
 	public static function deactivate(): void
 	{
-		// Flush rewrite rules
-		flush_rewrite_rules();
+		try {
+			// Flush rewrite rules
+			flush_rewrite_rules();
 
-		// Clear any transients
-		delete_transient('dynos_plugin_activated');
+			// Clear any transients
+			delete_transient('dynos_plugin_activated');
+			delete_transient('dynos_component_init_error');
+			delete_transient('dynos_activation_error');
+		} catch (\RuntimeException | \Exception $e) {
+			// Log error but don't stop deactivation
+			if (defined('WP_DEBUG') && WP_DEBUG) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log(
+					sprintf(
+						'DYNOS Deactivation cleanup warning: %s',
+						$e->getMessage()
+					)
+				);
+			}
+		}
 	}
 }

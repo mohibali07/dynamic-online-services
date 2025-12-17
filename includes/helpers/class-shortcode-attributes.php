@@ -31,19 +31,19 @@ class ShortcodeAttributes
 	 * @param string $shortcode_tag Shortcode tag name.
 	 * @return array Parsed and validated attributes.
 	 */
-	public static function parse(array $atts, array $defaults, string $shortcode_tag): array
+	public static function parse( array $atts, array $defaults, string $shortcode = '' ): array
 	{
 		// Use WordPress's built-in shortcode_atts for parsing
-		$parsed = shortcode_atts($defaults, $atts, $shortcode_tag);
+		$atts = \shortcode_atts( $defaults, $atts, $shortcode );
 
 		// Sanitize all text fields
-		foreach ($parsed as $key => $value) {
+		foreach ($atts as $key => $value) {
 			if (is_string($value)) {
-				$parsed[$key] = sanitize_text_field($value);
+				$atts[$key] = \sanitize_text_field($value);
 			}
 		}
 
-		return $parsed;
+		return $atts;
 	}
 
 	/**

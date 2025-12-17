@@ -33,7 +33,7 @@ class FaqStyles
 	 */
 	public static function init(): void
 	{
-		add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue'));
+		add_action('wp_enqueue_scripts', [__CLASS__, 'enqueue']);
 	}
 
 	/**
@@ -114,16 +114,16 @@ class FaqStyles
 
 		// Enqueue base FAQ styles
 		wp_enqueue_style(
-			'sos-faqs-accordion',
+			'dynos-faqs-accordion',
 			DYNOS_PLUGIN_URL . 'assets/css/faqs-accordion.css',
-			array(),
+			[],
 			DYNOS_VERSION
 		);
 
 		wp_enqueue_script(
-			'sos-faqs-accordion',
+			'dynos-faqs-accordion',
 			DYNOS_PLUGIN_URL . 'assets/js/faqs-accordion.js',
-			array('jquery'),
+			['jquery'],
 			DYNOS_VERSION,
 			true
 		);
@@ -165,6 +165,6 @@ class FaqStyles
 		// Allow filtering the CSS
 		$dynamic_css = apply_filters('dynos_faq_dynamic_css', $dynamic_css, $options);
 
-		wp_add_inline_style('sos-faqs-accordion', $dynamic_css);
+		wp_add_inline_style('dynos-faqs-accordion', $dynamic_css);
 	}
 }

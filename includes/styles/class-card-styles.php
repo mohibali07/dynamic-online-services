@@ -34,7 +34,7 @@ class CardStyles
 	 */
 	public static function init(): void
 	{
-		add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue'));
+		add_action('wp_enqueue_scripts', [__CLASS__, 'enqueue']);
 	}
 
 	/**
@@ -53,8 +53,13 @@ class CardStyles
 		if (!$load_styles) {
 			if (is_tax($taxonomy_slug)) {
 				$load_styles = true;
+			} elseif (is_singular()) { // Check if it's a singular post/page
+				$current_post = \get_post(); // Get the current post object
+				if ($current_post instanceof WP_Post && has_shortcode($current_post->post_content, 'service_category_content')) {
+					$load_styles = true;
+				}
 			} else {
-				// Check if current post has the shortcode
+				// Check if current post has the shortcode (fallback for non-singular contexts if needed, though singular covers most cases)
 				$current_post = get_post();
 				if ($current_post instanceof WP_Post && has_shortcode($current_post->post_content, 'service_category_content')) {
 					$load_styles = true;
@@ -63,7 +68,7 @@ class CardStyles
 		}
 
 		// Allow filtering whether to load styles
-		$post = get_post();
+		$post = \get_post();
 		$load_styles = apply_filters('dynos_should_load_card_styles', $load_styles, $post);
 
 		if (!$load_styles) {
@@ -82,14 +87,14 @@ class CardStyles
 
 		// Enqueue base card styles
 		wp_enqueue_style(
-			'sos-service-cards',
+			'dynos-service-cards',
 			DYNOS_PLUGIN_URL . 'assets/css/service-cards.css',
-			array(),
+			[],
 			DYNOS_VERSION
 		);
 
 		// Enqueue Google Font if needed
-		Fonts::enqueue_google_font($card_font, 'sos-google-font');
+		Fonts::enqueue_google_font($card_font, 'dynos-card-google-font');
 
 		// Allow filtering CSS values
 		$card_bg = apply_filters('dynos_card_bg_color', $card_bg);
@@ -228,6 +233,6 @@ class CardStyles
 		// Allow filtering the CSS before adding
 		$dynamic_css = apply_filters('dynos_card_dynamic_css', $dynamic_css, $options);
 
-		wp_add_inline_style('sos-service-cards', $dynamic_css);
+		wp_add_inline_style('dynos-service-cards', $dynamic_css);
 	}
 }

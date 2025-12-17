@@ -15,8 +15,11 @@ use TechmireSolutions\DynamicOnlineServices\Helpers\Options;
 
 /**
  * Test Options helper class.
+ *
+ * @runInSeparateProcess
+ * @preserveGlobalState disabled
  */
-class OptionsTest extends TestCase
+class OptionsTest extends \DYNOS_TestCase
 {
 	/**
 	 * Set up test environment.
@@ -24,7 +27,9 @@ class OptionsTest extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		\WP_Mock::setUp();
+        require_once __DIR__ . '/../../namespaced-stubs.php';
+        \TechmireSolutions\DynamicOnlineServices\Helpers\MockSpy::reset();
+        Options::reset_static_cache();
 	}
 
 	/**
@@ -41,6 +46,8 @@ class OptionsTest extends TestCase
 	 */
 	public function test_get_options_with_cache(): void
 	{
+		// Mock dependencies
+		$defaults = ['default' => 'value'];
 		\WP_Mock::userFunction('get_transient')
 			->with('dynos_options_cache_version')
 			->andReturn(time());
@@ -50,13 +57,11 @@ class OptionsTest extends TestCase
 			->andReturn(false);
 
 		\WP_Mock::userFunction('get_option')
-			->with('dynos_options', \WP_Mock\Functions::type('array'))
+			->withAnyArgs() // Keep relaxed args or revert to specific args if confident
 			->andReturn(['test_key' => 'test_value']);
 
-		\WP_Mock::userFunction('wp_parse_args')
-			->andReturnUsing(function ($args, $defaults) {
-				return array_merge($defaults, $args);
-			});
+
+		// wp_parse_args is handled by stub logic + MockSpy
 
 		\WP_Mock::onFilter('dynos_get_options')
 			->with(\WP_Mock\Functions::type('array'))
@@ -64,17 +69,15 @@ class OptionsTest extends TestCase
 				return $options;
 			});
 
-		\WP_Mock::userFunction('set_transient')
-			->times(3);
+		\WP_Mock::userFunction('set_transient')->andReturn(true);
 
-		\WP_Mock::userFunction('maybe_serialize')
-			->andReturnUsing(function ($data) {
-				return serialize($data);
-			});
+        // maybe_serialize interacts with MockSpy but we don't need to mock it as stub handles it logic.
 
 		$options = Options::get();
 
 		$this->assertIsArray($options);
+        // set_transient calls: cache_version, last_update, hash
+        $this->assertEquals(3, \TechmireSolutions\DynamicOnlineServices\Helpers\MockSpy::count('set_transient'));
 	}
 
 	/**
@@ -82,15 +85,14 @@ class OptionsTest extends TestCase
 	 */
 	public function test_invalidate_cache(): void
 	{
-		\WP_Mock::userFunction('delete_transient')
-			->times(3)
-			->andReturn(true);
+		\WP_Mock::userFunction('delete_transient')->andReturn(true);
 
 		\WP_Mock::expectAction('dynos_options_cache_invalidated');
 
 		Options::invalidate_cache();
 
 		$this->assertConditionsMet();
+        $this->assertEquals(3, \TechmireSolutions\DynamicOnlineServices\Helpers\MockSpy::count('delete_transient'));
 	}
 
 	/**
@@ -101,25 +103,19 @@ class OptionsTest extends TestCase
 		$old_value = ['old' => 'value'];
 		$new_value = ['new' => 'value'];
 
-		\WP_Mock::userFunction('delete_transient')
-			->times(3)
-			->andReturn(true);
+		\WP_Mock::userFunction('delete_transient')->andReturn(true);
 
 		\WP_Mock::expectAction('dynos_options_cache_invalidated');
 
-		\WP_Mock::userFunction('set_transient')
-			->twice()
-			->andReturn(true);
+		\WP_Mock::userFunction('set_transient')->andReturn(true);
 
-		\WP_Mock::userFunction('maybe_serialize')
-			->once()
-			->andReturnUsing(function ($data) {
-				return serialize($data);
-			});
+        // maybe_serialize stubbed in namespaced-stubs.php
 
 		Options::maybe_invalidate_cache($old_value, $new_value, 'dynos_options');
 
 		$this->assertConditionsMet();
+        $this->assertEquals(3, \TechmireSolutions\DynamicOnlineServices\Helpers\MockSpy::count('delete_transient'));
+        $this->assertEquals(2, \TechmireSolutions\DynamicOnlineServices\Helpers\MockSpy::count('set_transient'));
 	}
 
 	/**
@@ -128,12 +124,11 @@ class OptionsTest extends TestCase
 	public function test_maybe_invalidate_cache_ignores_other_options(): void
 	{
 		// Should not call delete_transient for non-plugin options
-		\WP_Mock::userFunction('delete_transient')
-			->never();
 
 		Options::maybe_invalidate_cache([], [], 'other_option');
 
 		$this->assertConditionsMet();
+        $this->assertEquals(0, \TechmireSolutions\DynamicOnlineServices\Helpers\MockSpy::count('delete_transient'));
 	}
 
 	/**

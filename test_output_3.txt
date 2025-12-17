@@ -1,0 +1,64 @@
+PHPUnit 9.6.31 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.5.0
+Configuration: /Users/syedaalin/Documents/dynamic-online-services/phpunit.xml.dist
+Warning:       No code coverage driver available
+
+...............................S............E..FF.........DEBUG: Namespaced get_post_type called....... 65 / 96 ( 67%)
+...............................                                   96 / 96 (100%)
+
+Time: 00:02.137, Memory: 22.00 MB
+
+There was 1 error:
+
+1) DynamicOnlineServices\Tests\Unit\Core\ActivatorTest::test_activate_sets_activation_flag
+Mockery\Exception\NoMatchingExpectationException: No matching handler found for Mockery_0__wp_api::set_transient('dynos_activation_error', 'Dynamic Online Services activation failed: No matching handler found for Mockery_0__wp_api::set_transient('dynos_options_cache_version', 1765947117, 86400). Either the method was unexpected or its arguments matched no expected argument list for this method
+
+', 30). Either the method was unexpected or its arguments matched no expected argument list for this method
+
+
+
+/Users/syedaalin/Documents/dynamic-online-services/vendor/mockery/mockery/library/Mockery/ExpectationDirector.php:90
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Functions/Handler.php:52
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Functions.php:339
+/Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/CallRerouting.php:265
+/Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/CallRerouting.php:296
+/Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/Stack.php:27
+/Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/CallRerouting.php:288
+/Users/syedaalin/Documents/dynamic-online-services/tests/stubs.php:286
+/Users/syedaalin/Documents/dynamic-online-services/includes/core/class-activator.php:66
+/Users/syedaalin/Documents/dynamic-online-services/tests/unit/core/ActivatorTest.php:93
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:123
+
+--
+
+There were 2 failures:
+
+1) DynamicOnlineServices\Tests\Unit\Core\PluginTest::test_get_instance_returns_singleton
+Failed asserting that WP_Mock expectations are met.
+Method intercepted(<Any Arguments>) from Mockery_1__intercept should be called at least 1 times but called 0 times.
+
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:275
+/Users/syedaalin/Documents/dynamic-online-services/tests/unit/core/PluginTest.php:87
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:123
+
+2) DynamicOnlineServices\Tests\Unit\Core\PluginTest::test_register_blocks_hook
+Failed asserting that WP_Mock expectations are met.
+Method intercepted(<Any Arguments>) from Mockery_1__intercept should be called at least 1 times but called 0 times.
+
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:275
+/Users/syedaalin/Documents/dynamic-online-services/tests/unit/core/PluginTest.php:103
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:123
+
+--
+
+There was 1 skipped test:
+
+1) TechmireSolutions\DynamicOnlineServices\Tests\Services\CategoryQueryServiceTest::test_get_categories_returns_terms
+CategoryQueryService::get_categories() method does not exist. Only get_child_categories() and get_services() are available.
+
+/Users/syedaalin/Documents/dynamic-online-services/tests/unit/Services/CategoryQueryServiceTest.php:57
+/Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php:123
+
+ERRORS!
+Tests: 96, Assertions: 175, Errors: 1, Failures: 2, Skipped: 1.

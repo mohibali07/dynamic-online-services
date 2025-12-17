@@ -152,7 +152,7 @@ class FieldRenderers
 	{
 		$options = get_option('dynos_options', Defaults::get_options());
 		$current_value = isset($options[$args['name']]) ? $options[$args['name']] : $args['default'];
-		$radio_options = isset($args['options']) && is_array($args['options']) ? $args['options'] : array();
+		$radio_options = isset($args['options']) && is_array($args['options']) ? $args['options'] : [];
 
 		if (empty($radio_options)) {
 			echo '<p class="description">' . esc_html__('No options available.', 'dynamic-online-services') . '</p>';

@@ -34,8 +34,8 @@ class CardsRenderer implements RendererInterface
 	 */
 	public function render(array $data): string
 	{
-		$items = isset($data['items']) ? $data['items'] : array();
-		$atts = isset($data['atts']) ? $data['atts'] : array();
+		$items = isset($data['items']) ? $data['items'] : [];
+		$atts = isset($data['atts']) ? $data['atts'] : [];
 
 		if (empty($items)) {
 			return '';
@@ -58,8 +58,7 @@ class CardsRenderer implements RendererInterface
 
 		$grid_min_width = !empty($atts['min_width']) ? $atts['min_width'] : $opt_min_width;
 
-		// Note: dynos_escape_css_value is a global helper.
-		$grid_min_width = function_exists('dynos_escape_css_value') ? dynos_escape_css_value($grid_min_width, 'min-width') : esc_attr($grid_min_width);
+		$grid_min_width = \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($grid_min_width, 'min-width');
 
 		if (empty($grid_min_width)) {
 			$grid_min_width = $default_min_width;
@@ -79,36 +78,28 @@ class CardsRenderer implements RendererInterface
 		}
 
 		// Sanitize gaps
-		$grid_column_gap = function_exists('dynos_escape_css_value') ? dynos_escape_css_value($grid_column_gap, 'width') : esc_attr($grid_column_gap);
-		$grid_row_gap = function_exists('dynos_escape_css_value') ? dynos_escape_css_value($grid_row_gap, 'height') : esc_attr($grid_row_gap);
+		$grid_column_gap = \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($grid_column_gap, 'width');
+		$grid_row_gap = \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($grid_row_gap, 'height');
 
 		// Build inline style
 		$grid_style_value = '';
-		if (function_exists('dynos_build_grid_style')) {
-			$grid_style_value = dynos_build_grid_style(
-				array(
+		if (class_exists(\TechmireSolutions\DynamicOnlineServices\Helpers\StyleBuilder::class)) {
+			$grid_style_value = \TechmireSolutions\DynamicOnlineServices\Helpers\StyleBuilder::build_grid_style(
+				[
 					'grid_style' => $grid_style,
 					'column_gap' => $grid_column_gap,
 					'row_gap' => $grid_row_gap,
-				)
+				]
 			);
 		} else {
 			$grid_style_value = $grid_style . ' gap: ' . $grid_row_gap . ' ' . $grid_column_gap . ';';
 		}
 
-		// ... (This replace block needs to be carefully targeted)
-
 		echo '<ul class="service-card-grid doc-service-cards" ' . (!empty($grid_style_value) ? 'style="' . esc_attr($grid_style_value) . '"' : '') . '>';
 
 		foreach ($items as $index => $item) {
-			// Check for item renderer helper or fallback
-			if (function_exists('dynos_render_category_shortcode_item')) {
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Function handles escaping internally
-				echo dynos_render_category_shortcode_item($item, $index, null);
-			} else {
-				// Output is escaped within render_fallback_card method
-				echo wp_kses_post($this->render_fallback_card($item));
-			}
+			// Output is escaped within render_fallback_card method
+			echo wp_kses_post($this->render_fallback_card($item));
 		}
 
 		echo '</ul>';
@@ -125,6 +116,8 @@ class CardsRenderer implements RendererInterface
 	private function render_fallback_card(array $item): string
 	{
 		$image_url = !empty($item['image_url']) ? $item['image_url'] : \TechmireSolutions\DynamicOnlineServices\Helpers\Images::get_placeholder_url();
+
+		$settings_service = SettingsService::get_instance();
 
 		// Pre-escaping removed for late escaping pattern
 
@@ -144,7 +137,7 @@ class CardsRenderer implements RendererInterface
 					<p class="service-card-description"><?php echo esc_html($item['description']); ?></p>
 				<?php endif; ?>
 				<a href="<?php echo esc_url($item['url']); ?>"
-					class="service-card-link"><?php esc_html_e('VIEW DETAILS', 'dynamic-online-services'); ?></a>
+					class="service-card-link"><?php echo esc_html($settings_service->get_option('card_button_text', 'VIEW DETAILS')); ?></a>
 			</div>
 		</li>
 		<?php

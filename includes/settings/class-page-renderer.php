@@ -36,20 +36,7 @@ class PageRenderer
 
 		?>
 		<div class="wrap">
-			<form method="post" action="options.php">
-				<?php
-				// Output nonce, option_page, and hidden fields for this settings page
-				// This provides CSRF protection for the settings form
-				settings_fields('Dynamic_Online_Services');
-				?>
-
-				<div id="dynos-settings-root"></div>
-
-				<?php
-				// Let React handle the submit button, but provide fallback
-				// The React app should render its own submit button that triggers form.submit()
-				?>
-			</form>
+			<div id="dynos-settings-root"></div>
 		</div>
 		<?php
 	}

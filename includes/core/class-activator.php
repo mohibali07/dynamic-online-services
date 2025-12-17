@@ -48,13 +48,16 @@ class Activator {
 				return;
 			}
 
-			self::migrate_options();
-			self::initialize_slugs();
+			OptionsMigrator::migrate();
+			SlugInitializer::initialize();
 			self::register_post_types_and_flush();
+
+			// Clear cached constants to ensure fresh filter values
+			\TechmireSolutions\DynamicOnlineServices\Helpers\Constants::clear_cache();
 
 			// Set activation flag
 			set_transient( 'dynos_plugin_activated', true, 30 );
-		} catch (\Exception $e) {
+		} catch (\RuntimeException | \Exception $e) {
 			// Log the error
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log('DYNOS Activation Failed: ' . $e->getMessage());
@@ -80,41 +83,21 @@ class Activator {
 	/**
 	 * Migrate old options.
 	 *
+	 * @deprecated 1.1.3 Use OptionsMigrator::migrate() instead.
 	 * @return void
 	 */
 	private static function migrate_options(): void {
-		$old_ss_options = get_option( 'ss_options', false );
-		if ( false !== $old_ss_options && false === get_option( 'dynos_options', false ) ) {
-			update_option( 'dynos_options', $old_ss_options );
-		}
-
-		$old_sos_options = get_option( 'sos_options', false );
-		if ( false !== $old_sos_options && false === get_option( 'dynos_options', false ) ) {
-			update_option( 'dynos_options', $old_sos_options );
-		}
+		OptionsMigrator::migrate();
 	}
 
 	/**
 	 * Initialize slug options.
 	 *
+	 * @deprecated 1.1.3 Use SlugInitializer::initialize() instead.
 	 * @return void
 	 */
 	private static function initialize_slugs(): void {
-		$current_options = get_option( 'dynos_options', array() );
-
-		// Defaults class might need to be checked if it exists/autoloader works
-		// Assumes DynamicOnlineServices\Settings\Defaults exists based on original code usage
-		$defaults      = Defaults::get_options();
-		$service_slug  = $defaults['service_post_type_slug'];
-		$taxonomy_slug = $defaults['service_taxonomy_slug'];
-
-		if ( ! isset( $current_options['service_post_type_slug'] ) || empty( $current_options['service_post_type_slug'] ) ) {
-			update_option( 'dynos_previous_service_slug', $service_slug );
-			update_option( 'dynos_previous_taxonomy_slug', $taxonomy_slug );
-		} else {
-			update_option( 'dynos_previous_service_slug', $current_options['service_post_type_slug'] );
-			update_option( 'dynos_previous_taxonomy_slug', $current_options['service_taxonomy_slug'] );
-		}
+		SlugInitializer::initialize();
 	}
 
 	/**
@@ -124,7 +107,7 @@ class Activator {
 	 */
 	private static function register_post_types_and_flush(): void {
 		// Get settings to know slugs
-		$settings = get_option( 'dynos_options', array() );
+		$settings = get_option( 'dynos_options', [] );
 		$defaults = Defaults::get_options(); // Assuming this works
 
 		$service_slug  = $settings['service_post_type_slug'] ?? $defaults['service_post_type_slug'];
@@ -137,7 +120,7 @@ class Activator {
 		$cpt = new ServicePostType( $service_slug );
 		$cpt->register_post_type();
 
-		$tax = new ServiceCategoryTaxonomy( $taxonomy_slug, array( $service_slug ) );
+		$tax = new ServiceCategoryTaxonomy( $taxonomy_slug, [ $service_slug ] );
 		$tax->register_taxonomy();
 
 		flush_rewrite_rules();

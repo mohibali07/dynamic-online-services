@@ -29,7 +29,7 @@ class MetaBox {
 	 * Initialize the meta box.
 	 */
 	public static function init(): void {
-		add_action( 'add_meta_boxes', array( __CLASS__, 'add' ) );
+		add_action( 'add_meta_boxes', [ __CLASS__, 'add' ] );
 	}
 
 	/**
@@ -44,7 +44,7 @@ class MetaBox {
 		add_meta_box(
 			'dynos_service_faqs_meta_box',
 			__( 'FAQs', 'dynamic-online-services' ),
-			array( __CLASS__, 'render' ),
+			[ __CLASS__, 'render' ],
 			$service_slug,
 			'normal',
 			'high'
@@ -62,7 +62,7 @@ class MetaBox {
 
 		$faqs = get_post_meta( $post->ID, 'service_faqs', true );
 		if ( ! is_array( $faqs ) ) {
-			$faqs = array();
+			$faqs = [];
 		}
 
 		// Validate FAQ structure

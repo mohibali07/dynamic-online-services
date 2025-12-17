@@ -10,13 +10,12 @@ declare(strict_types=1);
 
 namespace DynamicOnlineServices\Tests\Unit\Core;
 
-use WP_Mock\Tools\TestCase;
 use TechmireSolutions\DynamicOnlineServices\Core\Activator;
 
 /**
  * Test Activator class.
  */
-class ActivatorTest extends TestCase
+class ActivatorTest extends \DYNOS_TestCase
 {
 	/**
 	 * Set up test environment.
@@ -25,6 +24,16 @@ class ActivatorTest extends TestCase
 	{
 		parent::setUp();
 		\WP_Mock::setUp();
+
+		// Mock is_admin for SlugInitializer
+		\WP_Mock::userFunction('is_admin', [
+			'return' => true
+		]);
+
+		// Mock update_option for SlugInitializer
+		\WP_Mock::userFunction('update_option', [
+			'return' => true
+		]);
 	}
 
 	/**
@@ -46,25 +55,44 @@ class ActivatorTest extends TestCase
 			->once()
 			->andReturn(true);
 
+        // Mock error handler checks
+        \WP_Mock::userFunction('dynos_handle_activation_error')
+            ->andReturn(true); // Helper function from Activator if exists or global
+
 		// Mock options migration
 		\WP_Mock::userFunction('get_option')
-			->andReturn(false);
+			->andReturn([]); // Return empty array to use defaults
 
-		\WP_Mock::userFunction('update_option')
-			->andReturn(true);
+        // Defaults::get_options() might be called. Mock it?
+        // Activator calls Defaults::get_options().
+        if (!class_exists('TechmireSolutions\DynamicOnlineServices\Settings\Defaults')) {
+             \Mockery::mock('alias:TechmireSolutions\DynamicOnlineServices\Settings\Defaults')
+                ->shouldReceive('get_options')->andReturn([
+                    'service_post_type_slug' => 'service',
+                    'service_taxonomy_slug' => 'service-category'
+                ]);
+        }
 
 		// Mock set_transient for activation flag
+		// Mock set_transient
 		\WP_Mock::userFunction('set_transient')
-			->with('dynos_plugin_activated', true, 30)
-			->once()
 			->andReturn(true);
 
-		// Mock flush_rewrite_rules
-		\WP_Mock::userFunction('flush_rewrite_rules')
-			->once();
+		// Mock set_transient
+		\WP_Mock::userFunction('set_transient')
+			->andReturn(true);
+
+		// Mock permissions check
+		\WP_Mock::userFunction('current_user_can')
+			->with('activate_plugins')
+			->andReturn(true);
 
 		// This test verifies the method exists and can be called
-		$this->assertTrue(method_exists(Activator::class, 'activate'));
+		// Execute method
+		Activator::activate();
+
+		// Verify conditions
+		$this->assertConditionsMet();
 	}
 
 	/**
@@ -88,7 +116,15 @@ class ActivatorTest extends TestCase
 			->once()
 			->andReturn(true);
 
-		// Verify method exists
-		$this->assertTrue(method_exists(Activator::class, 'activate'));
+		// Mock permissions check
+		\WP_Mock::userFunction('current_user_can')
+			->with('activate_plugins')
+			->andReturn(true);
+
+		// Execute method
+		Activator::activate();
+
+		// Verify conditions
+		$this->assertConditionsMet();
 	}
 }
