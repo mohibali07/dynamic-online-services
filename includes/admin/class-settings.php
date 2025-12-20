@@ -58,8 +58,8 @@ class Settings
 		add_action('admin_menu', array($this, 'add_menu'));
 
 		// This registers the actual option and setting definition (Runs on Admin + REST)
-		add_action('admin_init', array($this, 'register_settings'));
-		add_action('rest_api_init', array($this, 'register_settings'));
+		// This registers the actual option and setting definition (Runs on Admin + REST)
+		add_action('init', array($this, 'register_settings'));
 
 		// This adds the UI sections and fields (Runs on Admin ONLY)
 		add_action('admin_init', array($this, 'add_settings_fields'));
@@ -103,8 +103,14 @@ class Settings
 						'type'       => 'object',
 						'properties' => array(
 							// We map specific properties to ensure they appear even if empty
-							'max_grid_columns' => array( 'type' => 'integer' ),
-							'min_grid_columns' => array( 'type' => 'integer' ),
+							'max_grid_columns'  => array( 'type' => 'integer' ),
+							'min_grid_columns'  => array( 'type' => 'integer' ),
+							'whatsapp_enabled'  => array( 'type' => 'boolean' ),
+							'whatsapp_number'   => array( 'type' => 'string' ),
+							'whatsapp_message'  => array( 'type' => 'string' ),
+							'whatsapp_position' => array( 'type' => 'string' ),
+							'whatsapp_bg_color' => array( 'type' => 'string' ),
+							'whatsapp_icon_color' => array( 'type' => 'string' ),
 						),
 						'additionalProperties' => true,
 					),

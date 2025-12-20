@@ -33,6 +33,14 @@ class HeroStyles
 	 * @param string $overlay_color  Overlay color for the hero section.
 	 * @return void
 	 */
+	/**
+	 * Enqueue hero section styles and fonts.
+	 *
+	 * @since 1.2.0
+	 * @param string $font_family    Font family name.
+	 * @param string $overlay_color  Overlay color for the hero section.
+	 * @return void
+	 */
 	public static function enqueue(string $font_family, string $overlay_color): void
 	{
 		// Enqueue Google Font if needed
@@ -47,70 +55,71 @@ class HeroStyles
 			$overlay_color = '#000000';
 		}
 
-		// Enqueue hero styles
+		// Enqueue hero styles - Using the public (modern) CSS file
 		wp_enqueue_style(
 			'sos-hero-section',
-			DYNOS_PLUGIN_URL . 'assets/css/hero-section.css',
+			DYNOS_PLUGIN_URL . 'assets/public/css/hero-section.css',
 			array(),
 			DYNOS_VERSION
 		);
 
 		// Get options for dynamic hero settings
 		$options = Options::get();
-		$overlay_opacity = floatval(Options::get_option($options, 'hero_overlay_opacity', '0.5'));
-		$hero_title_font_size = Options::get_option($options, 'hero_title_font_size', '3rem');
-		$hero_title_font_size_tablet = Options::get_option($options, 'hero_title_font_size_tablet', '2.5rem');
-		$hero_title_font_size_mobile = Options::get_option($options, 'hero_title_font_size_mobile', '2rem');
-		$hero_description_font_size = Options::get_option($options, 'hero_description_font_size', '1.25rem');
-		$hero_description_font_size_tablet = Options::get_option($options, 'hero_description_font_size_tablet', '1rem');
-		$hero_description_font_size_mobile = Options::get_option($options, 'hero_description_font_size_mobile', '0.9rem');
-		$hero_height = Options::get_option($options, 'hero_height', '50vh');
-		$hero_height_tablet = Options::get_option($options, 'hero_height_tablet', '30vh');
-		$hero_height_mobile = Options::get_option($options, 'hero_height_mobile', '30vh');
-		$hero_content_padding = Options::get_option($options, 'hero_content_padding', '20px');
-		$hero_border_radius = Options::get_option($options, 'hero_border_radius', '10px');
-		$hero_margin_bottom = Options::get_option($options, 'hero_margin_bottom', '30px');
 
-		// Sanitize and escape all CSS values to prevent injection
-		$overlay_opacity = min(max($overlay_opacity, 0), 1);
-		$hero_title_font_size = Sanitization::escape_css_value($hero_title_font_size, 'font-size');
-		$hero_title_font_size_tablet = Sanitization::escape_css_value($hero_title_font_size_tablet, 'font-size');
-		$hero_title_font_size_mobile = Sanitization::escape_css_value($hero_title_font_size_mobile, 'font-size');
-		$hero_description_font_size = Sanitization::escape_css_value($hero_description_font_size, 'font-size');
-		$hero_description_font_size_tablet = Sanitization::escape_css_value($hero_description_font_size_tablet, 'font-size');
-		$hero_description_font_size_mobile = Sanitization::escape_css_value($hero_description_font_size_mobile, 'font-size');
-		$hero_height = Sanitization::escape_css_value($hero_height, 'height');
-		$hero_height_tablet = Sanitization::escape_css_value($hero_height_tablet, 'height');
-		$hero_height_mobile = Sanitization::escape_css_value($hero_height_mobile, 'height');
-		$hero_content_padding = Sanitization::escape_css_value($hero_content_padding, 'padding');
-		$hero_border_radius = Sanitization::escape_css_value($hero_border_radius, 'border-radius');
-		$hero_margin_bottom = Sanitization::escape_css_value($hero_margin_bottom, 'margin');
+		// Retrieve and normalize options
+		$defaults = array(
+			'hero_overlay_opacity'              => '0.5',
+			'hero_title_font_size'              => '3rem',
+			'hero_title_font_size_tablet'       => '2.5rem',
+			'hero_title_font_size_mobile'       => '2rem',
+			'hero_description_font_size'        => '1.25rem',
+			'hero_description_font_size_tablet' => '1rem',
+			'hero_description_font_size_mobile' => '0.9rem',
+			'hero_height'                       => '50vh',
+			'hero_height_tablet'                => '30vh',
+			'hero_height_mobile'                => '30vh',
+			'hero_content_padding'              => '20px',
+			'hero_border_radius'                => '10px',
+			'hero_margin_bottom'                => '30px',
+		);
 
-		// Escape breakpoint values for safe use in CSS
-		$breakpoint_tablet = esc_attr(DYNOS_BREAKPOINT_TABLET);
-		$breakpoint_mobile = esc_attr(DYNOS_BREAKPOINT_MOBILE);
+		$settings = array();
+		foreach ($defaults as $key => $default) {
+			$settings[$key] = Options::get_option($options, $key, $default);
+		}
 
-		// Generate dynamic CSS with responsive styles using safe CSS building
-		$hero_css = '.category-hero-container {' . Sanitization::build_css_rule('margin-bottom', $hero_margin_bottom) . '}';
-		$hero_css .= '.category-hero-inner {' . Sanitization::build_css_rule('height', $hero_height) . '}';
-		$hero_css .= '.hero-content {' . Sanitization::build_css_rule('padding', $hero_content_padding) . ' ' . Sanitization::build_css_rule('border-radius', $hero_border_radius) . '}';
-		$hero_css .= '.category-hero-inner::before {' . Sanitization::build_css_rule('background-color', $overlay_color) . ' ' . Sanitization::build_css_rule('opacity', (string) $overlay_opacity) . '}';
-		$hero_css .= '.category-hero-title {' . Sanitization::build_css_rule('font-size', $hero_title_font_size) . '}';
-		$hero_css .= '.hero-description {' . Sanitization::build_css_rule('font-size', $hero_description_font_size) . '}';
-		$hero_css .= '@media (max-width: ' . $breakpoint_tablet . ') {';
-		$hero_css .= '.category-hero-inner {' . Sanitization::build_css_rule('height', $hero_height_tablet) . '}';
-		$hero_css .= '.category-hero-title {' . Sanitization::build_css_rule('font-size', $hero_title_font_size_tablet) . '}';
-		$hero_css .= '.hero-description {' . Sanitization::build_css_rule('font-size', $hero_description_font_size_tablet) . '}';
-		$hero_css .= '}';
-		$hero_css .= '@media (max-width: ' . $breakpoint_mobile . ') {';
-		$hero_css .= '.category-hero-inner {' . Sanitization::build_css_rule('height', $hero_height_mobile) . '}';
-		$hero_css .= '.category-hero-title {' . Sanitization::build_css_rule('font-size', $hero_title_font_size_mobile) . '}';
-		$hero_css .= '.hero-description {' . Sanitization::build_css_rule('font-size', $hero_description_font_size_mobile) . '}';
-		$hero_css .= '}';
+		// Sanitize values
+		$overlay_opacity = min(max(floatval($settings['hero_overlay_opacity']), 0), 1);
 
-		// Allow filtering the CSS
-		$hero_css = apply_filters('dynos_hero_dynamic_css', $hero_css, $overlay_color, $options);
+		// Build CSS Variables mapping
+		$css_vars = array(
+			'--hero-overlay-color'                  => $overlay_color,
+			'--hero-overlay-opacity'                => (string) $overlay_opacity,
+			'--hero-title-font-size'                => Sanitization::escape_css_value($settings['hero_title_font_size'], 'font-size'),
+			'--hero-title-font-size-tablet'         => Sanitization::escape_css_value($settings['hero_title_font_size_tablet'], 'font-size'),
+			'--hero-title-font-size-mobile'         => Sanitization::escape_css_value($settings['hero_title_font_size_mobile'], 'font-size'),
+			'--hero-description-font_size'          => Sanitization::escape_css_value($settings['hero_description_font_size'], 'font-size'),
+			'--hero-description-font-size-tablet'   => Sanitization::escape_css_value($settings['hero_description_font_size_tablet'], 'font-size'),
+			'--hero-description-font-size-mobile'   => Sanitization::escape_css_value($settings['hero_description_font_size_mobile'], 'font-size'),
+			'--hero-height'                         => Sanitization::escape_css_value($settings['hero_height'], 'height'),
+			'--hero-height-tablet'                  => Sanitization::escape_css_value($settings['hero_height_tablet'], 'height'),
+			'--hero-height-mobile'                  => Sanitization::escape_css_value($settings['hero_height_mobile'], 'height'),
+			'--hero-content-padding'                => Sanitization::escape_css_value($settings['hero_content_padding'], 'padding'),
+			'--hero-border-radius'                  => Sanitization::escape_css_value($settings['hero_border_radius'], 'border-radius'),
+			'--hero-margin-bottom'                  => Sanitization::escape_css_value($settings['hero_margin_bottom'], 'margin'),
+		);
 
-		wp_add_inline_style('sos-hero-section', $hero_css);
+		// Generate CSS Variables block
+		// We verify the style handle is valid before adding inline style, though wp_enqueue_style was just called.
+		$css_string = ":root {\n";
+		foreach ($css_vars as $var => $value) {
+			$css_string .= "\t{$var}: {$value};\n";
+		}
+		$css_string .= "}\n";
+
+		// Allow filtering the CSS variables
+		$css_string = apply_filters('dynos_hero_css_variables', $css_string, $css_vars);
+
+		wp_add_inline_style('sos-hero-section', $css_string);
 	}
 }

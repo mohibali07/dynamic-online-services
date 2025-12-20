@@ -1,4 +1,4 @@
-import { PanelBody, PanelRow } from '@wordpress/components';
+import { PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import OptionControl from './OptionControl';
 
@@ -70,6 +70,7 @@ const CardSettings = ( { settings, onChange } ) => {
 						'Font size for the card title.',
 						'dynamic-online-services'
 					) }
+					type="unit"
 					optionKey="card_title_font_size"
 					settings={ settings }
 					onChange={ onChange }
@@ -83,6 +84,7 @@ const CardSettings = ( { settings, onChange } ) => {
 						'Font size for the card description text.',
 						'dynamic-online-services'
 					) }
+					type="unit"
 					optionKey="card_description_font_size"
 					settings={ settings }
 					onChange={ onChange }
@@ -105,6 +107,7 @@ const CardSettings = ( { settings, onChange } ) => {
 						'Rounding of the card corners.',
 						'dynamic-online-services'
 					) }
+					type="unit"
 					optionKey="card_border_radius"
 					settings={ settings }
 					onChange={ onChange }
@@ -115,6 +118,7 @@ const CardSettings = ( { settings, onChange } ) => {
 						'Total height of the card element.',
 						'dynamic-online-services'
 					) }
+					type="unit"
 					optionKey="card_height"
 					settings={ settings }
 					onChange={ onChange }
@@ -128,6 +132,7 @@ const CardSettings = ( { settings, onChange } ) => {
 						'Space on the left and right of the content.',
 						'dynamic-online-services'
 					) }
+					type="unit"
 					optionKey="card_content_padding"
 					settings={ settings }
 					onChange={ onChange }
@@ -143,6 +148,7 @@ const CardSettings = ( { settings, onChange } ) => {
 						'Horizontal space between cards in the grid.',
 						'dynamic-online-services'
 					) }
+					type="unit"
 					optionKey="grid_gap"
 					settings={ settings }
 					onChange={ onChange }
@@ -153,6 +159,7 @@ const CardSettings = ( { settings, onChange } ) => {
 						'Vertical space between rows of cards.',
 						'dynamic-online-services'
 					) }
+					type="unit"
 					optionKey="grid_row_gap"
 					settings={ settings }
 					onChange={ onChange }

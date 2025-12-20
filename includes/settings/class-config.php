@@ -705,6 +705,66 @@ class Config {
 					),
 				),
 			),
+			// WhatsApp Settings
+			'whatsapp'  => array(
+				'id'     => 'dynos_whatsapp_section',
+				'title'  => __( 'WhatsApp Settings', 'dynamic-online-services' ),
+				'fields' => array(
+					'whatsapp_enabled'    => array(
+						'title'    => __( 'Enable WhatsApp Button', 'dynamic-online-services' ),
+						'callback' => 'dynos_checkbox_field_callback',
+						'default'  => false,
+						'args'     => array(
+							'label' => __( 'Show floating WhatsApp button on frontend.', 'dynamic-online-services' ),
+						),
+					),
+					'whatsapp_number'     => array(
+						'title'    => __( 'WhatsApp Number', 'dynamic-online-services' ),
+						'callback' => 'dynos_text_field_callback',
+						'default'  => '',
+						'args'     => array(
+							'placeholder' => 'e.g., 1234567890 (Include country code without +)',
+							'description' => __( 'Enter phone number with country code. Do not include spaces or +.', 'dynamic-online-services' ),
+						),
+					),
+					'whatsapp_message'    => array(
+						'title'    => __( 'Pre-filled Message', 'dynamic-online-services' ),
+						'callback' => 'dynos_textarea_field_callback',
+						'default'  => 'Hello, I have a question.',
+						'args'     => array(
+							'placeholder' => 'e.g., Hello, I need help.',
+							'description' => __( 'Message to pre-fill when user clicks the button.', 'dynamic-online-services' ),
+						),
+					),
+					'whatsapp_position'   => array(
+						'title'    => __( 'Button Position', 'dynamic-online-services' ),
+						'callback' => 'dynos_select_field_callback',
+						'default'  => 'right',
+						'args'     => array(
+							'options' => array(
+								'right' => __( 'Bottom Right', 'dynamic-online-services' ),
+								'left'  => __( 'Bottom Left', 'dynamic-online-services' ),
+							),
+						),
+					),
+					'whatsapp_bg_color'   => array(
+						'title'    => __( 'Button Background Color', 'dynamic-online-services' ),
+						'callback' => 'dynos_color_field_callback',
+						'default'  => '#25D366',
+						'args'     => array(
+							'description' => __( 'Background color of the WhatsApp button.', 'dynamic-online-services' ),
+						),
+					),
+					'whatsapp_icon_color' => array(
+						'title'    => __( 'Button Icon Color', 'dynamic-online-services' ),
+						'callback' => 'dynos_color_field_callback',
+						'default'  => '#FFFFFF',
+						'args'     => array(
+							'description' => __( 'Color of the WhatsApp icon.', 'dynamic-online-services' ),
+						),
+					),
+				),
+			),
 		);
 	}
 }

@@ -50,7 +50,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 						'Overlay opacity from 0 (transparent) to 1 (opaque).',
 						'dynamic-online-services'
 					) }
-					type="number"
+					type="range"
 					optionKey="hero_overlay_opacity"
 					settings={ settings }
 					onChange={ onChange }
@@ -67,7 +67,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 						'dynamic-online-services'
 					) }
 					help={ __(
-						'Hero section height for desktop. Use px, vh, or %.',
+						'Hero section height for desktop. Supports px, vh, %. Example: 60vh',
 						'dynamic-online-services'
 					) }
 					optionKey="hero_height"
@@ -80,7 +80,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 						'dynamic-online-services'
 					) }
 					help={ __(
-						'Hero section height for tablets.',
+						'Hero section height for tablets. Supports px, vh, %. Example: 50vh',
 						'dynamic-online-services'
 					) }
 					optionKey="hero_height_tablet"
@@ -93,7 +93,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 						'dynamic-online-services'
 					) }
 					help={ __(
-						'Hero section height for mobile.',
+						'Hero section height for mobile. Supports px, vh, %. Example: 50vh',
 						'dynamic-online-services'
 					) }
 					optionKey="hero_height_mobile"

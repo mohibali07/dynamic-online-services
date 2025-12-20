@@ -43,20 +43,42 @@ const GeneralSettings = ( { settings, onChange } ) => {
 				title={ __( 'Uninstall', 'dynamic-online-services' ) }
 				initialOpen={ false }
 			>
-				<OptionControl
-					label={ __(
-						'Delete Data on Uninstall',
-						'dynamic-online-services'
-					) }
-					help={ __(
-						'Remove all data when plugin is deleted.',
-						'dynamic-online-services'
-					) }
-					type="toggle"
-					optionKey="delete_data_on_uninstall"
-					settings={ settings }
-					onChange={ onChange }
-				/>
+				<div
+					style={ {
+						padding: '16px',
+						border: '1px solid #d63638',
+						borderRadius: '4px',
+						backgroundColor: '#fcf0f1',
+					} }
+				>
+					<OptionControl
+						label={ __(
+							'Delete Data on Uninstall',
+							'dynamic-online-services'
+						) }
+						help={ __(
+							'Remove all data when plugin is deleted.',
+							'dynamic-online-services'
+						) }
+						type="toggle"
+						optionKey="delete_data_on_uninstall"
+						settings={ settings }
+						onChange={ onChange }
+					/>
+					<p
+						style={ {
+							color: '#d63638',
+							marginTop: '10px',
+							marginBottom: 0,
+							fontStyle: 'italic',
+						} }
+					>
+						{ __(
+							'Warning: Enabling this will permanently delete all services and settings when you uninstall the plugin.',
+							'dynamic-online-services'
+						) }
+					</p>
+				</div>
 			</PanelBody>
 		</div>
 	);

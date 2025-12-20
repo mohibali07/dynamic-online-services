@@ -7,14 +7,33 @@
    CSS Custom Properties
    ============================================ */
 :root {
+	/* Default fallbacks if PHP variables are missing */
+	--hero-overlay-color: #000;
 	--hero-overlay-opacity: 0.5;
 	--hero-text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 	--hero-text-shadow-light: 1px 1px 2px rgba(0, 0, 0, 0.5);
 	--hero-content-bg: rgba(0, 0, 0, 0.3);
 	--hero-content-radius: 10px;
-	--hero-spacing: 20px;
+	--hero-content-padding: 20px;
+	--hero-margin-bottom: 30px;
 	--hero-title-color: #fff;
 	--hero-description-color: #fff;
+
+	/* Typography Defaults */
+	--hero-title-font-size-mobile: 2rem;
+	--hero-title-font-size-tablet: 2.5rem;
+	--hero-title-font-size: 3rem;
+
+	--hero-description-font-size-mobile: 0.9rem;
+	--hero-description-font-size-tablet: 1rem;
+	--hero-description-font-size: 1.25rem;
+
+	/* Layout Defaults */
+	--hero-height-mobile: 30vh;
+	--hero-height-tablet: 30vh;
+	--hero-height: 50vh;
+
+	--hero-border-radius: 10px;
 }
 
 /* Dark mode adjustments for better contrast */
@@ -32,7 +51,7 @@
 .category-hero-container {
 	width: 100%;
 	overflow: hidden;
-	margin-block-end: 30px;
+	margin-block-end: var(--hero-margin-bottom);
 	container-type: inline-size;
 	container-name: hero-container;
 	position: relative;
@@ -42,7 +61,7 @@
    Hero Inner Section
    ============================================ */
 .category-hero-inner {
-	height: 30vh;
+	height: var(--hero-height-mobile);
 	background-size: cover;
 	background-position: center;
 	display: flex;
@@ -60,19 +79,22 @@
 	inset: 0;
 	opacity: var(--hero-overlay-opacity);
 	z-index: 1;
-	background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+	background-color: var(--hero-overlay-color);
+	/* Optional: Blend mode if color is not black/white to look better */
+	mix-blend-mode: multiply;
 }
 
 /* ============================================
    Hero Content
    ============================================ */
 .hero-content {
-	padding-block: var(--hero-spacing);
-	padding-inline: var(--hero-spacing);
+	padding-block: var(--hero-content-padding);
+	padding-inline: var(--hero-content-padding);
 	position: relative;
 	z-index: 2;
-	border-radius: var(--hero-content-radius);
+	border-radius: var(--hero-border-radius);
 	background: var(--hero-content-bg);
+	-webkit-backdrop-filter: blur(4px);
 	backdrop-filter: blur(4px);
 	max-width: 90%;
 }
@@ -81,7 +103,7 @@
    Hero Title
    ============================================ */
 .category-hero-title {
-	font-size: 2rem;
+	font-size: var(--hero-title-font-size-mobile);
 	margin: 0;
 	text-shadow: var(--hero-text-shadow);
 	line-height: 1.2;
@@ -93,7 +115,7 @@
    Hero Description
    ============================================ */
 .hero-description {
-	font-size: 0.9rem;
+	font-size: var(--hero-description-font-size-mobile);
 	margin-block-start: 10px;
 	margin-block-end: 0;
 	margin-inline: 0;
@@ -106,13 +128,16 @@
    Container Queries (Responsive Design)
    ============================================ */
 @container hero-container (min-width: 480px) {
+	.category-hero-inner {
+		height: var(--hero-height-tablet);
+	}
 
 	.category-hero-title {
-		font-size: 2.5rem;
+		font-size: var(--hero-title-font-size-tablet);
 	}
 
 	.hero-description {
-		font-size: 1rem;
+		font-size: var(--hero-description-font-size-tablet);
 	}
 
 	.hero-content {
@@ -123,15 +148,15 @@
 @container hero-container (min-width: 768px) {
 
 	.category-hero-inner {
-		height: 50vh;
+		height: var(--hero-height);
 	}
 
 	.category-hero-title {
-		font-size: 3rem;
+		font-size: var(--hero-title-font-size);
 	}
 
 	.hero-description {
-		font-size: 1.25rem;
+		font-size: var(--hero-description-font-size);
 	}
 
 	.hero-content {
@@ -143,12 +168,13 @@
 
 @container hero-container (min-width: 1024px) {
 
+	/* Optional: Scaling up for very large screens */
 	.category-hero-title {
-		font-size: 3.5rem;
+		font-size: calc(var(--hero-title-font-size) * 1.1);
 	}
 
 	.hero-description {
-		font-size: 1.5rem;
+		font-size: calc(var(--hero-description-font-size) * 1.1);
 	}
 
 	.hero-content {
@@ -162,17 +188,19 @@
 @media (prefers-contrast: high) {
 
 	.category-hero-inner::before {
-		opacity: 0.7;
+		opacity: 0.8 !important;
+		background-color: #000 !important;
 	}
 
 	.hero-content {
-		background: rgba(0, 0, 0, 0.8);
+		background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #fff;
 	}
 
 	.category-hero-title,
 	.hero-description {
-		text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+		text-shadow: none;
+		color: #fff !important;
 	}
 }
 
@@ -182,6 +210,7 @@
 @media (prefers-reduced-motion: reduce) {
 
 	.hero-content {
+		-webkit-backdrop-filter: none;
 		backdrop-filter: none;
 	}
 
@@ -222,10 +251,12 @@
 
 	.hero-content {
 		background: transparent;
+		-webkit-backdrop-filter: none;
 		backdrop-filter: none;
 		max-width: 100%;
 		padding: 10px;
 	}
+
 
 	.category-hero-title,
 	.hero-description {
@@ -234,11 +265,11 @@
 	}
 
 	.category-hero-title {
-		font-size: 2rem !important;
+		font-size: 20pt !important;
 	}
 
 	.hero-description {
-		font-size: 1rem !important;
+		font-size: 12pt !important;
 	}
 }
 

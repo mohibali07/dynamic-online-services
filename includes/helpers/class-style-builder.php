@@ -39,7 +39,8 @@ class StyleBuilder
         if (!empty($height)) {
             $height_escaped = Sanitization::escape_css_value($height, 'height');
             if (!empty($height_escaped)) {
-                $style_parts[] = 'height:' . $height_escaped;
+                // Use CSS variable instead of height property to allow Container Queries to handle mobile height
+                $style_parts[] = '--hero-height:' . $height_escaped;
             }
         }
 

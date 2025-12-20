@@ -109,6 +109,10 @@ class Plugin
 
 		// Initialize Integrations
 		\TechmireSolutions\DynamicOnlineServices\Integration\LiteSpeedCache::init();
+
+		// Initialize Renderers
+		$whatsapp_renderer = new \TechmireSolutions\DynamicOnlineServices\Renderers\WhatsappRenderer();
+		$whatsapp_renderer->init();
 	}
 
 	/**
