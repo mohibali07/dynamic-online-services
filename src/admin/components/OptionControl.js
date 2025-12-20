@@ -2,7 +2,6 @@ import {
 	TextControl,
 	ToggleControl,
 	ColorPalette,
-	BaseControl,
 	RangeControl,
 	Popover,
 	Button,
@@ -43,20 +42,18 @@ const OptionControl = ( {
 		} );
 	};
 
-	switch ( type ) {
-		case 'toggle':
-		case 'checkbox':
-			return (
-				<ToggleControl
-					label={ label }
-					help={ help }
-					checked={ !! value }
-					onChange={ handleChange }
-				/>
-			);
-		case 'color':
-			return (
-				<BaseControl label={ label } help={ help } id={ optionKey }>
+	const renderControl = () => {
+		switch ( type ) {
+			case 'toggle':
+			case 'checkbox':
+				return (
+					<ToggleControl
+						checked={ !! value }
+						onChange={ handleChange }
+					/>
+				);
+			case 'color':
+				return (
 					<div
 						style={ {
 							display: 'flex',
@@ -72,6 +69,7 @@ const OptionControl = ( {
 								borderRadius: '50%',
 								border: '1px solid #ccc',
 								cursor: 'pointer',
+								boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
 							} }
 							onClick={ () => setShowPopover( ! showPopover ) }
 							aria-label={ __(
@@ -79,7 +77,15 @@ const OptionControl = ( {
 								'dynamic-online-services'
 							) }
 						/>
-						<code>{ value }</code>
+						<code
+							style={ {
+								background: '#f0f0f1',
+								padding: '4px 8px',
+								borderRadius: '4px',
+							} }
+						>
+							{ value }
+						</code>
 						{ showPopover && (
 							<Popover
 								position="bottom left"
@@ -98,8 +104,18 @@ const OptionControl = ( {
 													name: 'White',
 													color: '#ffffff',
 												},
-												{ name: 'Red', color: '#f00' },
-												{ name: 'Blue', color: '#00f' },
+												{
+													name: 'Red',
+													color: '#ef4444',
+												},
+												{
+													name: 'Blue',
+													color: '#3b82f6',
+												},
+												{
+													name: 'Green',
+													color: '#10b981',
+												},
 											]
 										}
 										value={ value }
@@ -110,59 +126,62 @@ const OptionControl = ( {
 							</Popover>
 						) }
 					</div>
-				</BaseControl>
-			);
+				);
 
-		case 'range':
-			return (
-				<RangeControl
-					label={ label }
-					help={ help }
-					value={ value }
-					onChange={ handleChange }
-					min={ 0 }
-					max={ 1 }
-					step={ 0.1 }
-				/>
-			);
+			case 'range':
+				return (
+					<RangeControl
+						value={ value }
+						onChange={ handleChange }
+						min={ 0 }
+						max={ 1 }
+						step={ 0.1 }
+						withInputField={ false }
+					/>
+				);
 
-		case 'unit':
-			return (
-				<UnitControl
-					label={ label }
-					help={ help }
-					value={ value }
-					onChange={ handleChange }
-					units={ [
-						{ value: 'px', label: 'px', default: 0 },
-						{ value: '%', label: '%', default: 0 },
-						{ value: 'vh', label: 'vh', default: 0 },
-						{ value: 'vw', label: 'vw', default: 0 },
-						{ value: 'rem', label: 'rem', default: 0 },
-						{ value: 'em', label: 'em', default: 0 },
-					] }
-				/>
-			);
-		case 'number':
-			return (
-				<TextControl
-					label={ label }
-					help={ help }
-					type="number"
-					value={ value }
-					onChange={ handleChange }
-				/>
-			);
-		default:
-			return (
-				<TextControl
-					label={ label }
-					help={ help }
-					value={ value || '' }
-					onChange={ handleChange }
-				/>
-			);
-	}
+			case 'unit':
+				return (
+					<UnitControl
+						value={ value }
+						onChange={ handleChange }
+						units={ [
+							{ value: 'px', label: 'px', default: 0 },
+							{ value: '%', label: '%', default: 0 },
+							{ value: 'vh', label: 'vh', default: 0 },
+							{ value: 'vw', label: 'vw', default: 0 },
+							{ value: 'rem', label: 'rem', default: 0 },
+							{ value: 'em', label: 'em', default: 0 },
+						] }
+					/>
+				);
+			case 'number':
+				return (
+					<TextControl
+						type="number"
+						value={ value }
+						onChange={ handleChange }
+					/>
+				);
+			default:
+				return (
+					<TextControl
+						value={ value || '' }
+						onChange={ handleChange }
+					/>
+				);
+		}
+	};
+
+	return (
+		<div className="dynos-option-control">
+			<div className="dynos-control-header">
+				<label className="dynos-control-label">{ label }</label>
+				{ help && <span className="dynos-control-help">{ help }</span> }
+			</div>
+			<div className="dynos-control-input">{ renderControl() }</div>
+		</div>
+	);
 };
 
 export default OptionControl;

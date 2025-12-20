@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fc547804495eb98a489855e2c68f52e7",
+    "content-hash": "1c8810767f7c5c66e95a024b3666f5ea",
     "packages": [],
     "packages-dev": [
         {
             "name": "10up/wp_mock",
-            "version": "1.1.0",
+            "version": "dev-fix-php-deprecated-notices-nullable",
             "source": {
                 "type": "git",
                 "url": "https://github.com/10up/wp_mock.git",
-                "reference": "f25b5895ed31bf5e7036fe0c666664364ae011c2"
+                "reference": "38d3e1942d8d8c2dddd332f24b0c108108ee1b0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/10up/wp_mock/zipball/f25b5895ed31bf5e7036fe0c666664364ae011c2",
-                "reference": "f25b5895ed31bf5e7036fe0c666664364ae011c2",
+                "url": "https://api.github.com/repos/10up/wp_mock/zipball/38d3e1942d8d8c2dddd332f24b0c108108ee1b0f",
+                "reference": "38d3e1942d8d8c2dddd332f24b0c108108ee1b0f",
                 "shasum": ""
             },
             "require": {
@@ -57,9 +57,9 @@
             "description": "A mocking library to take the pain out of unit testing for WordPress",
             "support": {
                 "issues": "https://github.com/10up/wp_mock/issues",
-                "source": "https://github.com/10up/wp_mock/tree/1.1.0"
+                "source": "https://github.com/10up/wp_mock/tree/fix-php-deprecated-notices-nullable"
             },
-            "time": "2025-03-12T00:36:13+00:00"
+            "time": "2025-12-02T15:52:11+00:00"
         },
         {
             "name": "antecedent/patchwork",
@@ -2672,7 +2672,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "10up/wp_mock": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},

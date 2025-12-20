@@ -4,7 +4,8 @@
  * Integrates WordPress Media Library with taxonomy term forms for thumbnail management.
  * Provides upload, preview, and removal functionality for category images.
  *
- * @package    Dynamic_Online_Services
+ * @param      $
+ * @package
  * @subpackage Assets/JavaScript
  * @since      1.0.0
  */
@@ -100,7 +101,7 @@
 			 *
 			 * @since 1.0.0
 			 *
-			 * @param {Object} attachment WordPress media attachment object.
+			 * @param {Object} attachment     WordPress media attachment object.
 			 * @param {string} attachment.url Image URL.
 			 * @param {string} attachment.alt Image alt text.
 			 *

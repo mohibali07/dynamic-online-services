@@ -55,6 +55,9 @@ class FontsTest extends TestCase
 	 */
 	public function test_encode_google_font_encodes_spaces(): void
 	{
+		\WP_Mock::userFunction('sanitize_text_field', [
+            'return' => function($str) { return $str; }
+        ]);
 		$encoded = Fonts::encode_google_font('Open Sans');
 		$this->assertStringContainsString('Open', $encoded);
 		$this->assertStringContainsString('Sans', $encoded);

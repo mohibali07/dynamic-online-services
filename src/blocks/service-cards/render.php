@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 // $attributes is available here.
 
 // Map block attributes to shortcode attributes.
-$dynos_default_columns = defined('DYNOS_MIN_GRID_COLUMNS') ? (string) DYNOS_MIN_GRID_COLUMNS : '1';
+$dynos_default_columns = (string) \TechmireSolutions\DynamicOnlineServices\Core\Configuration::get_min_grid_columns();
 $dynos_shortcode_atts = array(
     'ids'             => $attributes['ids'] ?? '',
     'category'        => $attributes['category'] ?? '',

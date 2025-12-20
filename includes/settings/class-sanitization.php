@@ -34,6 +34,8 @@ class Sanitization
 			return Defaults::get_options();
 		}
 
+		error_log('Dynos Sanitization Incoming: ' . print_r($options, true));
+
 		$sanitized = array();
 		$defaults = Defaults::get_options();
 
@@ -273,6 +275,166 @@ class Sanitization
 			$sanitized['rank_math_breadcrumbs'] = !empty($options['rank_math_breadcrumbs']);
 		} else {
 			$sanitized['rank_math_breadcrumbs'] = isset($defaults['rank_math_breadcrumbs']) ? $defaults['rank_math_breadcrumbs'] : true;
+		}
+
+		// Sanitize WhatsApp Visibility
+		if (isset($options['whatsapp_visibility'])) {
+			$valid_visibility = array('all', 'home');
+			$sanitized['whatsapp_visibility'] = in_array($options['whatsapp_visibility'], $valid_visibility, true)
+				? $options['whatsapp_visibility']
+				: 'all';
+		} else {
+			$sanitized['whatsapp_visibility'] = isset($defaults['whatsapp_visibility']) ? $defaults['whatsapp_visibility'] : 'all';
+		}
+
+		// Sanitize WhatsApp Availability
+		if (isset($options['whatsapp_availability'])) {
+			$sanitized['whatsapp_availability'] = !empty($options['whatsapp_availability']);
+		} else {
+			$sanitized['whatsapp_availability'] = isset($defaults['whatsapp_availability']) ? $defaults['whatsapp_availability'] : false;
+		}
+
+		// Sanitize WhatsApp Schedule
+		foreach (['whatsapp_schedule_start', 'whatsapp_schedule_end'] as $field) {
+			if (isset($options[$field])) {
+				// Simple regex for HH:MM
+				$sanitized[$field] = preg_match('/^([01][0-9]|2[0-3]):[0-5][0-9]$/', $options[$field])
+					? $options[$field]
+					: (isset($defaults[$field]) ? $defaults[$field] : '09:00');
+			} else {
+				$sanitized[$field] = isset($defaults[$field]) ? $defaults[$field] : '09:00';
+			}
+		}
+
+		// Sanitize WhatsApp Timezone
+		if (isset($options['whatsapp_timezone'])) {
+			// Validate if it's a valid timezone identifier
+			$sanitized['whatsapp_timezone'] = in_array($options['whatsapp_timezone'], timezone_identifiers_list(), true)
+				? $options['whatsapp_timezone']
+				: 'UTC';
+		} else {
+			$sanitized['whatsapp_timezone'] = isset($defaults['whatsapp_timezone']) ? $defaults['whatsapp_timezone'] : 'UTC';
+		}
+
+		// Sanitize WhatsApp core fields (check existing keys to avoid overwrite if handled elsewhere?
+		// Actually basic fields like enabled/number/messsage seem NOT explicitly handled in the loop above?
+		// Wait, look at the file content...
+		// "Sanitize color fields" handles some.
+		// "Sanitize font family" handles some.
+		// "Sanitize numeric" ...
+		// CHECK lines 37-279 again. 'whatsapp_number', 'whatsapp_message', 'whatsapp_enabled' are MISSING in the big sanitization!
+		// They might be getting lost too!
+		// 'whatsapp_position' is also missing?
+		// Let's check if they were in the Color/Dimension arrays.
+		// whatsapp_bg_color -> Yes (color_fields)
+		// whatsapp_enabled, whatsapp_number, whatsapp_message, whatsapp_position -> NO.
+		// THIS IS LIKELY THE ROOT CAUSE for ALL WhatsApp settings being cleared, not just new ones.
+
+		$text_fields = array('whatsapp_number', 'whatsapp_message');
+		foreach ($text_fields as $field) {
+			if (isset($options[$field])) {
+				$sanitized[$field] = sanitize_text_field($options[$field]);
+			} else {
+				$sanitized[$field] = isset($defaults[$field]) ? $defaults[$field] : '';
+			}
+		}
+
+		if (isset($options['whatsapp_enabled'])) {
+			$sanitized['whatsapp_enabled'] = !empty($options['whatsapp_enabled']);
+		} else {
+			$sanitized['whatsapp_enabled'] = isset($defaults['whatsapp_enabled']) ? $defaults['whatsapp_enabled'] : false;
+		}
+
+		if (isset($options['whatsapp_position'])) {
+			$valid_api_pos = array('left', 'right');
+			$sanitized['whatsapp_position'] = in_array($options['whatsapp_position'], $valid_api_pos, true) ? $options['whatsapp_position'] : 'right';
+		} else {
+			$sanitized['whatsapp_position'] = isset($defaults['whatsapp_position']) ? $defaults['whatsapp_position'] : 'right';
+		}
+
+		// Sanitize Offsets (CSS dimension)
+		foreach (['whatsapp_position_offset_x', 'whatsapp_position_offset_y'] as $field) {
+			if (isset($options[$field])) {
+				$sanitized[$field] = \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::css_dimension($options[$field]);
+				if (empty($sanitized[$field]) && isset($defaults[$field])) {
+					$sanitized[$field] = $defaults[$field];
+				}
+			} else {
+				$sanitized[$field] = isset($defaults[$field]) ? $defaults[$field] : '20px';
+			}
+		}
+
+		// Sanitize Icon Style
+		if (isset($options['whatsapp_icon_style'])) {
+			$valid_styles = array('default', 'chat', 'avatar');
+			$sanitized['whatsapp_icon_style'] = in_array($options['whatsapp_icon_style'], $valid_styles, true)
+				? $options['whatsapp_icon_style']
+				: 'default';
+		} else {
+			$sanitized['whatsapp_icon_style'] = isset($defaults['whatsapp_icon_style']) ? $defaults['whatsapp_icon_style'] : 'default';
+		}
+
+		// Sanitize Toggles
+		foreach (['whatsapp_show_desktop', 'whatsapp_show_mobile', 'whatsapp_analytics_enabled'] as $field) {
+			if (isset($options[$field])) {
+				$sanitized[$field] = !empty($options[$field]);
+			} else {
+				$sanitized[$field] = isset($defaults[$field]) ? $defaults[$field] : false;
+			}
+		}
+
+		// Sanitize CTA & Offline
+		$text_fields_extra = array('whatsapp_offline_text', 'whatsapp_cta_text');
+		foreach ($text_fields_extra as $field) {
+			if (isset($options[$field])) {
+				$sanitized[$field] = sanitize_text_field($options[$field]);
+			} else {
+				$sanitized[$field] = isset($defaults[$field]) ? $defaults[$field] : '';
+			}
+		}
+
+		if (isset($options['whatsapp_offline_behavior'])) {
+			$valid_offline = array('hide', 'show');
+			$sanitized['whatsapp_offline_behavior'] = in_array($options['whatsapp_offline_behavior'], $valid_offline, true) ? $options['whatsapp_offline_behavior'] : 'hide';
+		} else {
+			$sanitized['whatsapp_offline_behavior'] = isset($defaults['whatsapp_offline_behavior']) ? $defaults['whatsapp_offline_behavior'] : 'hide';
+		}
+
+		if (isset($options['whatsapp_cta_enabled'])) {
+			$sanitized['whatsapp_cta_enabled'] = !empty($options['whatsapp_cta_enabled']);
+		} else {
+			$sanitized['whatsapp_cta_enabled'] = isset($defaults['whatsapp_cta_enabled']) ? $defaults['whatsapp_cta_enabled'] : false;
+		}
+
+		if (isset($options['whatsapp_cta_delay'])) {
+			$sanitized['whatsapp_cta_delay'] = absint($options['whatsapp_cta_delay']);
+		} else {
+			$sanitized['whatsapp_cta_delay'] = isset($defaults['whatsapp_cta_delay']) ? $defaults['whatsapp_cta_delay'] : 5;
+		}
+
+		// Sanitize Multi-Agent Support.
+		if ( isset( $options['whatsapp_agents_enabled'] ) ) {
+			$sanitized['whatsapp_agents_enabled'] = ! empty( $options['whatsapp_agents_enabled'] );
+		} else {
+			$sanitized['whatsapp_agents_enabled'] = isset( $defaults['whatsapp_agents_enabled'] ) ? $defaults['whatsapp_agents_enabled'] : false;
+		}
+
+		if ( isset( $options['whatsapp_agents'] ) && is_array( $options['whatsapp_agents'] ) ) {
+			$sanitized_agents = array();
+			foreach ( $options['whatsapp_agents'] as $agent ) {
+				if ( ! is_array( $agent ) ) {
+					continue;
+				}
+				$sanitized_agents[] = array(
+					'name'       => isset( $agent['name'] ) ? sanitize_text_field( $agent['name'] ) : '',
+					'number'     => isset( $agent['number'] ) ? sanitize_text_field( $agent['number'] ) : '',
+					'label'      => isset( $agent['label'] ) ? sanitize_text_field( $agent['label'] ) : '',
+					'avatar_url' => isset( $agent['avatar_url'] ) ? esc_url_raw( $agent['avatar_url'] ) : '',
+				);
+			}
+			$sanitized['whatsapp_agents'] = $sanitized_agents;
+		} else {
+			$sanitized['whatsapp_agents'] = isset( $defaults['whatsapp_agents'] ) ? $defaults['whatsapp_agents'] : array();
 		}
 
 		return wp_parse_args($sanitized, $defaults);

@@ -3,7 +3,7 @@
         'name' => 'techmire-solutions/dynamic-online-services',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '9da64418593dfb94f1731985d633bbde2a25b2c5',
+        'reference' => 'daf9334daacc77aa2457ec0b2878dfd0ab4b8142',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '10up/wp_mock' => array(
-            'pretty_version' => '1.1.0',
-            'version' => '1.1.0.0',
-            'reference' => 'f25b5895ed31bf5e7036fe0c666664364ae011c2',
+            'pretty_version' => 'dev-fix-php-deprecated-notices-nullable',
+            'version' => 'dev-fix-php-deprecated-notices-nullable',
+            'reference' => '38d3e1942d8d8c2dddd332f24b0c108108ee1b0f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../10up/wp_mock',
             'aliases' => array(),
@@ -373,7 +373,7 @@
         'techmire-solutions/dynamic-online-services' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '9da64418593dfb94f1731985d633bbde2a25b2c5',
+            'reference' => 'daf9334daacc77aa2457ec0b2878dfd0ab4b8142',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

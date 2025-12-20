@@ -14,7 +14,7 @@ namespace TechmireSolutions\DynamicOnlineServices\Styles;
 
 use TechmireSolutions\DynamicOnlineServices\Helpers\Options;
 use TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization;
-use TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization as CPTSanitization;
+use TechmireSolutions\DynamicOnlineServices\Cpt\Sanitization as CPTSanitization;
 use WP_Post;
 
 if (!defined('ABSPATH')) {

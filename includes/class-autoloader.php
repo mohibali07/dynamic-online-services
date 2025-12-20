@@ -43,20 +43,59 @@ class Autoloader {
 		// Remove namespace from class name.
 		$relative_class = substr( $class_name, strlen( 'TechmireSolutions\\DynamicOnlineServices\\' ) );
 
-		// Base directory for our namespace
-		$base_dir = DYNOS_PLUGIN_DIR . 'includes/';
-
-		// Split into parts to handle the last part (classname) differently
+		// Split into parts to handle mapping and filenames
 		$parts = explode( '\\', $relative_class );
+		$root_namespace = array_shift( $parts ); // e.g. Admin, Cpt, Shortcodes
+
+		// Define base directory based on root namespace
+		switch ( $root_namespace ) {
+			case 'Admin':
+				$base_dir = DYNOS_PLUGIN_DIR . 'admin/';
+				break;
+			case 'Cpt':
+				$base_dir = DYNOS_PLUGIN_DIR . 'cpt/';
+				break;
+			case 'Shortcodes':
+				$base_dir = DYNOS_PLUGIN_DIR . 'frontend/shortcodes/';
+				break;
+			case 'Renderers':
+				$base_dir = DYNOS_PLUGIN_DIR . 'frontend/renderers/';
+				break;
+			case 'Services':
+				$base_dir = DYNOS_PLUGIN_DIR . 'frontend/services/';
+				break;
+			case 'FAQs':
+				$base_dir = DYNOS_PLUGIN_DIR . 'includes/faqs/';
+				break;
+			default:
+				// Fallback for Core, Helpers, Taxonomies, etc.
+				// If the namespace was Core, it continues from there.
+				// We popped 'Core' so we need to put it back into directory path logic effectively?
+				// Actually, if it's 'Core', relative_class was 'Core\Activator'.
+				// $parts is now ['Activator'].
+				// The previous logic used the whole relative string.
+				// Let's adjust.
+				$base_dir = DYNOS_PLUGIN_DIR . 'includes/';
+				// If it wasn't one of the special moved directories, we assume it's in includes.
+				// But we popped the first part. We need to handle that.
+				// For 'Core', it IS inside 'includes/core'.
+				// So if we have 'Core', we want directory to start with 'core/'.
+				// The logic below constructs directory from $parts.
+				// So if we put $root_namespace back into $parts? No, 'Admin' -> 'admin/' is the root.
+				// 'Core' -> 'includes/core/'.
+				// So for default, we want to treat $root_namespace as the first directory part.
+				array_unshift($parts, $root_namespace);
+				break;
+		}
+
 		$class_file = array_pop( $parts );
 
 		// Convert class name to kebab-case
 		$class_file = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $class_file ) );
 
-		// Convert directory parts to kebab-case (same as class names)
+		// Convert directory parts to kebab-case
 		$directory = '';
 		if ( ! empty( $parts ) ) {
-			// Convert each directory part to kebab-case
 			$kebab_parts = array_map(
 				function( $part ) {
 					return strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $part ) );
@@ -65,6 +104,15 @@ class Autoloader {
 			);
 			$directory = implode( '/', $kebab_parts ) . '/';
 		}
+
+		// For mapped directories, the mapping already points to the root of that component.
+		// e.g. Admin\Settings -> admin/class-settings.php (if no subnamespace)
+		// $parts for Admin\Settings (after shift) is []. $directory is ''.
+		// $base_dir is .../admin/. Final: .../admin/class-settings.php. Correct.
+
+		// e.g. Core\Activator -> Default -> unshift -> ['Core'].
+		// $parts is now ['Core']. $directory is 'core/'.
+		// $base_dir is .../includes/. Final: .../includes/core/class-activator.php. Correct.
 
 		// Try class- prefix
 		$file_path_class = $base_dir . $directory . 'class-' . $class_file . '.php';
@@ -82,9 +130,7 @@ class Autoloader {
 		} elseif ( file_exists( $file_path_trait ) ) {
 			require_once $file_path_trait;
 		} else {
-			// Log missing class file in debug mode to help identify issues
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				error_log(
 					sprintf(
 						'DYNOS Autoloader: Class file not found for %s. Tried: %s, %s, %s',

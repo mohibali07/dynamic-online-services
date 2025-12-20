@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace TechmireSolutions\DynamicOnlineServices\Core;
 
 use TechmireSolutions\DynamicOnlineServices\Settings\Defaults;
-use TechmireSolutions\DynamicOnlineServices\PostTypes\ServicePostType;
+use TechmireSolutions\DynamicOnlineServices\Cpt\ServicePostType;
 use TechmireSolutions\DynamicOnlineServices\Taxonomies\ServiceCategoryTaxonomy;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -48,7 +48,7 @@ class Activator {
 			}
 
 			// Check requirements
-			if ( function_exists( 'dynos_check_requirements' ) && ! dynos_check_requirements() ) {
+			if ( ! self::check_requirements() ) {
 				deactivate_plugins( defined( 'DYNOS_PLUGIN_BASENAME' ) ? DYNOS_PLUGIN_BASENAME : plugin_basename( dirname( __DIR__, 2 ) . '/dynamic-online-services.php' ) );
 				set_transient( 'dynos_activation_error', __( 'Dynamic Online Services could not be activated. Please check the system requirements.', 'dynamic-online-services' ), 30 );
 				return;
@@ -81,6 +81,23 @@ class Activator {
 				defined('DYNOS_PLUGIN_BASENAME') ? DYNOS_PLUGIN_BASENAME : plugin_basename(dirname(__DIR__, 2) . '/dynamic-online-services.php')
 			);
 		}
+	}
+
+	/**
+	 * Check if system requirements are met.
+	 *
+	 * @return bool True if requirements met, false otherwise.
+	 */
+	private static function check_requirements(): bool {
+		// Example requirements: PHP 7.4+, WP 5.6+
+		if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
+			return false;
+		}
+		global $wp_version;
+		if ( version_compare( $wp_version, '5.6', '<' ) ) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -145,8 +162,8 @@ class Activator {
 		}
 
 		// Load post type class
-		if ( file_exists( $plugin_dir . 'includes/post-types/class-service-post-type.php' ) ) {
-			require_once $plugin_dir . 'includes/post-types/class-service-post-type.php';
+		if ( file_exists( $plugin_dir . 'cpt/class-service-post-type.php' ) ) {
+			require_once $plugin_dir . 'cpt/class-service-post-type.php';
 		}
 
 		// Load taxonomy class

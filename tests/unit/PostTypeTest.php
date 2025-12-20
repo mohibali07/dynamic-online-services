@@ -11,7 +11,9 @@ declare(strict_types=1);
 namespace DynamicOnlineServices\Tests\Unit;
 
 use WP_Mock\Tools\TestCase;
-use TechmireSolutions\DynamicOnlineServices\PostTypes\ServicePostType;
+use TechmireSolutions\DynamicOnlineServices\Cpt\ServicePostType;
+
+require_once dirname(__DIR__, 2) . '/cpt/class-service-post-type.php';
 
 /**
  * Test ServicePostType class.
@@ -25,6 +27,8 @@ class PostTypeTest extends TestCase
     {
         parent::setUp();
         \WP_Mock::setUp();
+        \WP_Mock::userFunction('get_option')->andReturn([]);
+        \WP_Mock::userFunction('wp_parse_args')->andReturnArg(0);
     }
 
     /**
@@ -50,8 +54,8 @@ class PostTypeTest extends TestCase
      */
     public function test_register_adds_init_hook(): void
     {
-        \WP_Mock::expectActionAdded('init', [\WP_Mock\Functions::type(ServicePostType::class), 'register_post_type']);
-        \WP_Mock::expectFilterAdded('post_updated_messages', [\WP_Mock\Functions::type(ServicePostType::class), 'updated_messages']);
+        \WP_Mock::expectActionAdded('init', [\Mockery::type(ServicePostType::class), 'register_post_type']);
+        \WP_Mock::expectFilterAdded('post_updated_messages', [\Mockery::type(ServicePostType::class), 'updated_messages']);
 
         $post_type = new ServicePostType('services');
         $post_type->register();

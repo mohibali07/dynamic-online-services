@@ -1,0 +1,38 @@
+@@ -75,6 +75,18 @@
+ 		'overlay_color'      => $hero_overlay_color,
+ 		'text_alignment'     => $text_alignment,
+ 		'vertical_alignment' => $vertical_alignment,
++'cta_enabled'        => $options['hero_cta_enabled'] ?? false,
++'cta_text'           => $options['hero_cta_text'] ?? '',
++'cta_url'            => $options['hero_cta_url'] ?? '',
++'cta_style'          => $options['hero_cta_style'] ?? 'primary',
++'cta_new_tab'        => $options['hero_cta_new_tab'] ?? false,
++'video_enabled'      => $options['hero_video_enabled'] ?? false,
++'video_url'          => $options['hero_video_url'] ?? '',
++'video_poster'       => $options['hero_video_poster'] ?? '',
++'video_autoplay'     => $options['hero_video_autoplay'] ?? true,
++'video_loop'         => $options['hero_video_loop'] ?? true,
++'video_muted'        => $options['hero_video_muted'] ?? true,
++'parallax_enabled'   => $options['hero_parallax_enabled'] ?? false,
+ 	);
+ 
+ 	// Cache the data.
+@@ -134,6 +146,18 @@
+ 		'title_color'        => $hero_title_color,
+ 		'text_alignment'     => $text_alignment,
+ 		'vertical_alignment' => $vertical_alignment,
++'cta_enabled'        => $options['hero_cta_enabled'] ?? false,
++'cta_text'           => $options['hero_cta_text'] ?? '',
++'cta_url'            => $options['hero_cta_url'] ?? '',
++'cta_style'          => $options['hero_cta_style'] ?? 'primary',
++'cta_new_tab'        => $options['hero_cta_new_tab'] ?? false,
++'video_enabled'      => $options['hero_video_enabled'] ?? false,
++'video_url'          => $options['hero_video_url'] ?? '',
++'video_poster'       => $options['hero_video_poster'] ?? '',
++'video_autoplay'     => $options['hero_video_autoplay'] ?? true,
++'video_loop'         => $options['hero_video_loop'] ?? true,
++'video_muted'        => $options['hero_video_muted'] ?? true,
++'parallax_enabled'   => $options['hero_parallax_enabled'] ?? false,
+ 	);
+ 
+ 	// Cache the data.

@@ -34,6 +34,13 @@ class Options
     }
 
     /**
+     * Internal cache for options.
+     *
+     * @var array|null
+     */
+    private static $options_cache = null;
+
+    /**
      * Get plugin options with caching.
      *
      * @since 1.1.0
@@ -42,44 +49,53 @@ class Options
      */
     public static function get(bool $force_refresh = false): array
     {
-        static $options = null;
-
         // Layer 1: Check if cache should be invalidated (transient-based)
         $cache_version = get_transient('dynos_options_cache_version');
         if (false === $cache_version) {
             $force_refresh = true;
         }
 
-        // Layer 2: Hash-based change detection
-        $last_update = get_transient('dynos_options_last_update');
-        if (false !== $last_update) {
-            $current_options = get_option('dynos_options', false);
-            if (false !== $current_options) {
-                $options_hash = md5(maybe_serialize($current_options));
-                $cached_hash = get_transient('dynos_options_hash');
+        if (!$force_refresh && null !== self::$options_cache) {
+            return self::$options_cache;
+        }
+
+        // Layer 2: Hash-based change detection (only if not already forcing)
+        if (!$force_refresh) {
+            $last_update = get_transient('dynos_options_last_update');
+            if (false !== $last_update) {
+                $current_options = get_option('dynos_options', false);
+                if (false !== $current_options) {
+                    // Modified: Use serialize() instead of maybe_serialize() to ensure string input for md5()
+                    $options_hash = md5(serialize($current_options));
+                    $cached_hash = get_transient('dynos_options_hash');
                 if ($cached_hash !== $options_hash) {
                     $force_refresh = true;
                     set_transient('dynos_options_hash', $options_hash, DAY_IN_SECONDS);
                 }
             }
         }
+        }
 
         // Layer 3: Static variable cache (request-level)
-        if (null === $options || $force_refresh) {
+        if (null === self::$options_cache || $force_refresh) {
             // Use centralized default options function
-            // Assuming Defaults class exists in Settings namespace based on previous code
             $defaults = \TechmireSolutions\DynamicOnlineServices\Settings\Defaults::get_options();
-            $options = get_option('dynos_options', $defaults);
-            $options = wp_parse_args($options, $defaults);
+            $stored_options = get_option('dynos_options', $defaults);
 
-            $options = apply_filters('dynos_get_options', $options);
+            // Ensure $stored_options is an array
+            if (!is_array($stored_options)) {
+                $stored_options = $defaults;
+            }
+
+            self::$options_cache = wp_parse_args($stored_options, $defaults);
+            self::$options_cache = apply_filters('dynos_get_options', self::$options_cache);
 
             set_transient('dynos_options_cache_version', time(), DAY_IN_SECONDS);
             set_transient('dynos_options_last_update', time(), DAY_IN_SECONDS);
-            set_transient('dynos_options_hash', md5(maybe_serialize($options)), DAY_IN_SECONDS);
+            set_transient('dynos_options_hash', md5(serialize(self::$options_cache)), DAY_IN_SECONDS);
         }
 
-        return $options;
+        return (array)self::$options_cache;
     }
 
     /**
@@ -111,7 +127,8 @@ class Options
             self::invalidate_cache();
             set_transient('dynos_options_last_update', time(), DAY_IN_SECONDS);
             if (is_array($value)) {
-                set_transient('dynos_options_hash', md5(maybe_serialize($value)), DAY_IN_SECONDS);
+                // Modified: Use serialize() instead of maybe_serialize()
+                set_transient('dynos_options_hash', md5(serialize($value)), DAY_IN_SECONDS);
             }
         }
     }
@@ -130,7 +147,8 @@ class Options
             self::invalidate_cache();
             set_transient('dynos_options_last_update', time(), DAY_IN_SECONDS);
             if (is_array($value)) {
-                set_transient('dynos_options_hash', md5(maybe_serialize($value)), DAY_IN_SECONDS);
+                // Modified: Use serialize() instead of maybe_serialize()
+                set_transient('dynos_options_hash', md5(serialize($value)), DAY_IN_SECONDS);
             }
         }
     }
@@ -169,5 +187,17 @@ class Options
         $value = isset($options[$key]) ? $options[$key] : $default;
 
         return apply_filters('dynos_get_option', $value, $key, $default, $options);
+    }
+
+    /**
+     * Reset the options cache.
+     * Useful for testing.
+     *
+     * @since 1.1.0
+     * @return void
+     */
+    public static function reset_cache(): void
+    {
+        self::$options_cache = null;
     }
 }

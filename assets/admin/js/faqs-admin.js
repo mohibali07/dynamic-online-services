@@ -4,7 +4,8 @@
  * Handles admin interface for managing FAQs on service pages.
  * Provides add/remove functionality and dynamic form generation.
  *
- * @package    Dynamic_Online_Services
+ * @param      $
+ * @package
  * @subpackage Assets/JavaScript
  * @since      1.0.0
  */
@@ -31,7 +32,7 @@
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param {Object} labels Object containing translated label strings.
+	 * @param {Object} labels               Object containing translated label strings.
 	 * @param {string} labels.questionLabel Label for question field.
 	 * @param {string} labels.answerLabel   Label for answer field.
 	 * @param {string} labels.removeLabel   Label for remove button.
@@ -85,7 +86,7 @@
 	 * @since 1.0.0
 	 *
 	 * @param {jQuery} $container The FAQ container element.
-	 * @param {Object} labels Object containing translated label strings.
+	 * @param {Object} labels     Object containing translated label strings.
 	 *
 	 * @return {void}
 	 */
@@ -112,7 +113,7 @@
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param {jQuery}  $item The FAQ item element to remove.
+	 * @param {jQuery}  $item   The FAQ item element to remove.
 	 * @param {boolean} confirm Whether to show confirmation dialog.
 	 *
 	 * @return {void}

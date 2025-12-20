@@ -4,7 +4,8 @@
  * Shared utility functions for WordPress admin functionality.
  * Provides safe console logging and user-friendly error notifications.
  *
- * @package    Dynamic_Online_Services
+ * @param      $
+ * @package
  * @subpackage Assets/JavaScript
  * @since      1.0.0
  */
@@ -70,9 +71,9 @@
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param {string} message Error message to display to the user.
-	 * @param {Object} options Optional configuration object.
-	 * @param {string} options.type Notice type: 'error', 'warning', 'success', 'info'. Default: 'error'.
+	 * @param {string} message             Error message to display to the user.
+	 * @param {Object} options             Optional configuration object.
+	 * @param {string} options.type        Notice type: 'error', 'warning', 'success', 'info'. Default: 'error'.
 	 * @param {number} options.autoDismiss Auto-dismiss delay in milliseconds. Default: 10000. Set to 0 to disable.
 	 *
 	 * @return {void}

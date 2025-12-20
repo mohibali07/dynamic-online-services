@@ -43,14 +43,7 @@ const GeneralSettings = ( { settings, onChange } ) => {
 				title={ __( 'Uninstall', 'dynamic-online-services' ) }
 				initialOpen={ false }
 			>
-				<div
-					style={ {
-						padding: '16px',
-						border: '1px solid #d63638',
-						borderRadius: '4px',
-						backgroundColor: '#fcf0f1',
-					} }
-				>
+				<div className="dynos-warning-box">
 					<OptionControl
 						label={ __(
 							'Delete Data on Uninstall',
@@ -65,16 +58,9 @@ const GeneralSettings = ( { settings, onChange } ) => {
 						settings={ settings }
 						onChange={ onChange }
 					/>
-					<p
-						style={ {
-							color: '#d63638',
-							marginTop: '10px',
-							marginBottom: 0,
-							fontStyle: 'italic',
-						} }
-					>
+					<p>
 						{ __(
-							'Warning: Enabling this will permanently delete all services and settings when you uninstall the plugin.',
+							'⚠️ Warning: Enabling this will permanently delete all services and settings when you uninstall the plugin.',
 							'dynamic-online-services'
 						) }
 					</p>

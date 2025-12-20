@@ -24,6 +24,23 @@ class FaqsTest extends TestCase
 	{
 		parent::setUp();
 		\WP_Mock::setUp();
+		// Global mocks
+		\WP_Mock::userFunction('get_option', ['return' => []]);
+		\WP_Mock::userFunction('wp_parse_args', ['return' => []]);
+		\WP_Mock::userFunction('get_transient', ['return' => false]);
+		\WP_Mock::userFunction('set_transient', ['return' => true]);
+		\WP_Mock::userFunction('sanitize_title', ['return_arg' => 0]);
+        \WP_Mock::userFunction('sanitize_text_field', ['return' => 'sanitized-text']);
+        \WP_Mock::userFunction('is_admin', ['return' => false]);
+        \WP_Mock::userFunction('absint', ['return' => 50]);
+        \WP_Mock::userFunction('esc_html__', ['return_arg' => 0]);
+        \WP_Mock::userFunction('esc_html', ['return_arg' => 0]);
+        \WP_Mock::userFunction('current_user_can', ['return' => false]);
+        \WP_Mock::userFunction('shortcode_atts', [
+            'return' => function($defaults, $atts) {
+                return is_array($atts) ? array_merge($defaults, $atts) : $defaults;
+            }
+        ]);
 	}
 
 	/**
@@ -40,10 +57,13 @@ class FaqsTest extends TestCase
 	 */
 	public function test_init_registers_shortcode(): void
 	{
-		\WP_Mock::expectActionAdded('shortcode', \WP_Mock\Functions::type('array'));
+		\WP_Mock::userFunction('add_shortcode', [
+			'times' => 1,
+			'args' => ['service_faqs_accordion', [\TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs::class, 'render']],
+		]);
 
-		// Verify class exists
-		$this->assertTrue(class_exists('TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs'));
+		\TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs::init();
+		$this->assertTrue(true);
 	}
 
 	/**
@@ -54,16 +74,13 @@ class FaqsTest extends TestCase
 		\WP_Mock::userFunction('__')
 			->andReturn('Frequently Asked Questions');
 
-		\WP_Mock::userFunction('dynos_sanitize_cpt_settings')
-			->andReturn(['service_slug' => 'services']);
-
 		\WP_Mock::userFunction('is_singular')
 			->once()
 			->with('services')
 			->andReturn(false);
 
-		// Verify method exists
-		$this->assertTrue(method_exists('TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs', 'render'));
+		$result = \TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs::render([]);
+		$this->assertEquals('', $result);
 	}
 
 	/**
@@ -74,9 +91,6 @@ class FaqsTest extends TestCase
 		\WP_Mock::userFunction('__')
 			->andReturn('Frequently Asked Questions');
 
-		\WP_Mock::userFunction('dynos_sanitize_cpt_settings')
-			->andReturn(['service_slug' => 'services']);
-
 		\WP_Mock::userFunction('is_singular')
 			->once()
 			->with('services')
@@ -85,11 +99,16 @@ class FaqsTest extends TestCase
 		\WP_Mock::userFunction('get_queried_object')
 			->andReturn((object)['ID' => 123, 'post_type' => 'services']);
 
+        // Mock dynos_get_service_faqs
+        \WP_Mock::userFunction('dynos_get_service_faqs', [
+            'return' => []
+        ]);
+
 		\WP_Mock::onFilter('dynos_faqs_empty_content')
 			->with('', 123)
 			->reply('');
 
-		// Verify method exists
-		$this->assertTrue(method_exists('TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs', 'render'));
+		$result = \TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs::render([]);
+		$this->assertEquals('', $result);
 	}
 }

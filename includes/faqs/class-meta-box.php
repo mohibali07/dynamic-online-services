@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace TechmireSolutions\DynamicOnlineServices\FAQs;
 
-use TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization;
+use TechmireSolutions\DynamicOnlineServices\Cpt\Sanitization;
 
 use WP_Post;
 

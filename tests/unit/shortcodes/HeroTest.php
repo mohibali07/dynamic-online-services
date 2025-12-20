@@ -24,6 +24,22 @@ class HeroTest extends TestCase
 	{
 		parent::setUp();
 		\WP_Mock::setUp();
+		// Global mocks
+		\WP_Mock::userFunction('get_option', ['return' => []]);
+		\WP_Mock::userFunction('wp_parse_args', ['return' => []]);
+		\WP_Mock::userFunction('get_transient', ['return' => false]);
+		\WP_Mock::userFunction('set_transient', ['return' => true]);
+		\WP_Mock::userFunction('sanitize_title', ['return_arg' => 0]);
+        \WP_Mock::userFunction('sanitize_text_field', ['return' => 'sanitized-text']);
+        \WP_Mock::userFunction('is_admin', ['return' => false]);
+        \WP_Mock::userFunction('absint', ['return' => 50]);
+        \WP_Mock::userFunction('esc_html__', ['return_arg' => 0]);
+        \WP_Mock::userFunction('esc_html', ['return_arg' => 0]);
+        \WP_Mock::userFunction('shortcode_atts', [
+            'return' => function($defaults, $atts) {
+                return is_array($atts) ? array_merge($defaults, $atts) : $defaults;
+            }
+        ]);
 	}
 
 	/**
@@ -40,10 +56,11 @@ class HeroTest extends TestCase
 	 */
 	public function test_init_registers_shortcodes(): void
 	{
-		\WP_Mock::expectActionAdded('shortcode', \WP_Mock\Functions::type('array'));
+		\WP_Mock::userFunction('add_shortcode')
+			->times(2);
 
-		// Verify class exists
-		$this->assertTrue(class_exists('TechmireSolutions\DynamicOnlineServices\Shortcodes\Hero'));
+		\TechmireSolutions\DynamicOnlineServices\Shortcodes\Hero::init();
+		$this->assertTrue(true);
 	}
 
 	/**
@@ -51,16 +68,14 @@ class HeroTest extends TestCase
 	 */
 	public function test_render_category_hero_wrong_context(): void
 	{
-		\WP_Mock::userFunction('dynos_sanitize_cpt_settings')
-			->andReturn(['taxonomy_slug' => 'service-category']);
-
+        // Default taxonomy_slug is 'services_category'
 		\WP_Mock::userFunction('is_tax')
 			->once()
 			->with('service-category')
 			->andReturn(false);
 
-		// Verify method exists
-		$this->assertTrue(method_exists('TechmireSolutions\DynamicOnlineServices\Shortcodes\Hero', 'render_category_hero'));
+		$result = \TechmireSolutions\DynamicOnlineServices\Shortcodes\Hero::render_category_hero([]);
+		$this->assertEquals('', $result);
 	}
 
 	/**
@@ -68,15 +83,13 @@ class HeroTest extends TestCase
 	 */
 	public function test_render_service_hero_wrong_context(): void
 	{
-		\WP_Mock::userFunction('dynos_sanitize_cpt_settings')
-			->andReturn(['service_slug' => 'services']);
-
+        // Default service_slug is 'service'
 		\WP_Mock::userFunction('is_singular')
 			->once()
 			->with('services')
 			->andReturn(false);
 
-		// Verify method exists
-		$this->assertTrue(method_exists('TechmireSolutions\DynamicOnlineServices\Shortcodes\Hero', 'render_service_hero'));
+		$result = \TechmireSolutions\DynamicOnlineServices\Shortcodes\Hero::render_service_hero([]);
+		$this->assertEquals('', $result);
 	}
 }

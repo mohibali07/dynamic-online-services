@@ -2,17 +2,17 @@
     "packages": [
         {
             "name": "10up/wp_mock",
-            "version": "1.1.0",
-            "version_normalized": "1.1.0.0",
+            "version": "dev-fix-php-deprecated-notices-nullable",
+            "version_normalized": "dev-fix-php-deprecated-notices-nullable",
             "source": {
                 "type": "git",
                 "url": "https://github.com/10up/wp_mock.git",
-                "reference": "f25b5895ed31bf5e7036fe0c666664364ae011c2"
+                "reference": "38d3e1942d8d8c2dddd332f24b0c108108ee1b0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/10up/wp_mock/zipball/f25b5895ed31bf5e7036fe0c666664364ae011c2",
-                "reference": "f25b5895ed31bf5e7036fe0c666664364ae011c2",
+                "url": "https://api.github.com/repos/10up/wp_mock/zipball/38d3e1942d8d8c2dddd332f24b0c108108ee1b0f",
+                "reference": "38d3e1942d8d8c2dddd332f24b0c108108ee1b0f",
                 "shasum": ""
             },
             "require": {
@@ -35,7 +35,7 @@
                 "sebastian/comparator": "^4.0.8",
                 "sempro/phpunit-pretty-print": "^1.4"
             },
-            "time": "2025-03-12T00:36:13+00:00",
+            "time": "2025-12-02T15:52:11+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -53,7 +53,7 @@
             "description": "A mocking library to take the pain out of unit testing for WordPress",
             "support": {
                 "issues": "https://github.com/10up/wp_mock/issues",
-                "source": "https://github.com/10up/wp_mock/tree/1.1.0"
+                "source": "https://github.com/10up/wp_mock/tree/fix-php-deprecated-notices-nullable"
             },
             "install-path": "../10up/wp_mock"
         },

@@ -1,0 +1,368 @@
+/**
+ * Dynamic Online Services - Admin Settings Page Styles
+ * Modern 2025 UI Design System
+ */
+
+/* ============================================
+   CSS CUSTOM PROPERTIES - Design Tokens
+   ============================================ */
+
+:root {
+    /* Brand Colors - Deep & Premium */
+    --dynos-primary: #6366f1;
+    /* Indigo 500 */
+    --dynos-primary-dark: #4338ca;
+    /* Indigo 700 */
+    --dynos-primary-light: #818cf8;
+    /* Indigo 400 */
+    --dynos-primary-soft: #e0e7ff;
+    /* Indigo 100 */
+
+    --dynos-accent: #f43f5e;
+    /* Rose 500 */
+    --dynos-accent-dark: #e11d48;
+    /* Rose 700 */
+
+    /* Neutral Scale */
+    --dynos-bg-app: #f3f4f6;
+    /* Gray 100 - Main App Background */
+    --dynos-bg-surface: #ffffff;
+    /* White - Card/Sidebar Background */
+    --dynos-bg-surface-alt: #f9fafb;
+    /* Gray 50 */
+
+    --dynos-text-main: #111827;
+    /* Gray 900 */
+    --dynos-text-secondary: #4b5563;
+    /* Gray 600 */
+    --dynos-text-muted: #9ca3af;
+    /* Gray 400 */
+    --dynos-text-inverse: #ffffff;
+
+    --dynos-border: #e5e7eb;
+    /* Gray 200 */
+    --dynos-border-focus: #6366f1;
+
+    /* Semantic Colors */
+    --dynos-success: #10b981;
+    --dynos-warning: #f59e0b;
+    --dynos-danger: #ef4444;
+
+    /* Shadows */
+    --dynos-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --dynos-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --dynos-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --dynos-shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+    /* Radius */
+    --dynos-radius-sm: 0.375rem;
+    --dynos-radius-md: 0.5rem;
+    --dynos-radius-lg: 0.75rem;
+    --dynos-radius-xl: 1rem;
+
+    /* Spacing */
+    --dynos-space-2: 0.5rem;
+    --dynos-space-3: 0.75rem;
+    --dynos-space-4: 1rem;
+    --dynos-space-6: 1.5rem;
+    --dynos-space-8: 2rem;
+
+    /* Typography */
+    --dynos-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ============================================
+   LAYOUT STRUCTURE (Vertical Sidebar)
+   ============================================ */
+
+/* Reset & Base */
+.dynos-settings-wrap {
+    margin: 0 -20px 0 -20px;
+    padding: 0;
+    font-family: var(--dynos-font-sans);
+    background-color: var(--dynos-bg-app);
+    min-height: calc(100vh - 32px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Container Grid */
+.dynos-app-container {
+    display: flex !important;
+    min-height: 100vh;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+    flex-direction: row !important;
+    /* Force row direction on desktop */
+    align-items: flex-start;
+}
+
+/* Sidebar Navigation */
+.dynos-sidebar {
+    width: 280px !important;
+    flex-shrink: 0;
+    min-width: 280px;
+    background: var(--dynos-bg-surface);
+    border-right: 1px solid var(--dynos-border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 32px;
+    height: calc(100vh - 32px);
+    z-index: 10;
+}
+
+.dynos-sidebar-header {
+    padding: var(--dynos-space-6) var(--dynos-space-4);
+    border-bottom: 1px solid var(--dynos-border);
+}
+
+.dynos-sidebar-header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+    color: var(--dynos-text-main);
+    display: flex;
+    align-items: center;
+    gap: var(--dynos-space-2);
+}
+
+.dynos-sidebar-header h1 .dashicon {
+    color: var(--dynos-primary);
+    font-size: 1.5rem;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.dynos-sidebar-nav {
+    flex: 1;
+    padding: var(--dynos-space-4);
+    overflow-y: auto;
+}
+
+.dynos-nav-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: var(--dynos-space-3) var(--dynos-space-4);
+    margin-bottom: var(--dynos-space-2);
+    border: none;
+    border-radius: var(--dynos-radius-md);
+    background: transparent;
+    color: var(--dynos-text-secondary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    gap: var(--dynos-space-3);
+    -webkit-appearance: none;
+}
+
+.dynos-nav-item:hover {
+    background-color: var(--dynos-bg-surface-alt);
+    color: var(--dynos-primary);
+}
+
+.dynos-nav-item.active {
+    background-color: var(--dynos-primary-soft);
+    color: var(--dynos-primary-dark);
+    font-weight: 600;
+}
+
+.dynos-nav-item .dashicon {
+    font-size: 1.25rem;
+}
+
+.dynos-sidebar-footer {
+    padding: var(--dynos-space-4);
+    border-top: 1px solid var(--dynos-border);
+}
+
+/* Save Button in Sidebar */
+.dynos-save-btn {
+    width: 100%;
+    display: flex !important;
+    justify-content: center;
+    padding: var(--dynos-space-3) !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    background-color: var(--dynos-primary) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: var(--dynos-radius-md) !important;
+    box-shadow: var(--dynos-shadow-md);
+    transition: transform 0.1s;
+    cursor: pointer;
+}
+
+.dynos-save-btn:hover:not(:disabled) {
+    background-color: var(--dynos-primary-dark) !important;
+    transform: translateY(-1px);
+}
+
+/* Main Content Area */
+.dynos-main-content {
+    flex: 1;
+    padding: var(--dynos-space-8);
+    position: relative;
+    max-width: 1000px;
+}
+
+/* ============================================
+   COMPONENT STYLES
+   ============================================ */
+
+/* PanelBody / Cards */
+.components-panel__body {
+    background: var(--dynos-bg-surface);
+    border: 1px solid var(--dynos-border);
+    border-radius: var(--dynos-radius-lg);
+    box-shadow: var(--dynos-shadow-sm);
+    margin-bottom: var(--dynos-space-6);
+    overflow: hidden;
+}
+
+.components-panel__body-title {
+    background: transparent;
+    padding: var(--dynos-space-4) var(--dynos-space-6);
+    min-height: 40px;
+}
+
+.components-panel__body-title button {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dynos-text-main);
+}
+
+.components-panel__body-title:hover {
+    background: var(--dynos-bg-surface-alt);
+}
+
+/* Form Controls - OptionControl.js Layout */
+.dynos-option-control {
+    margin-bottom: var(--dynos-space-6);
+    padding-bottom: var(--dynos-space-6);
+    border-bottom: 1px solid var(--dynos-bg-app);
+}
+
+.dynos-option-control:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+/* Responsive Grid for Form Controls (Desktop) */
+@media (min-width: 960px) {
+    .dynos-option-control {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: var(--dynos-space-6);
+        align-items: start;
+    }
+}
+
+.dynos-control-header {
+    margin-bottom: var(--dynos-space-2);
+}
+
+.dynos-control-label {
+    display: block;
+    font-weight: 600;
+    color: var(--dynos-text-main);
+    margin-bottom: var(--dynos-space-1);
+    font-size: 0.95rem;
+}
+
+.dynos-control-help {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--dynos-text-secondary);
+    line-height: 1.4;
+}
+
+/* Input Styling */
+.components-text-control__input,
+.components-select-control__input,
+.components-textarea-control__input {
+    border: 1px solid var(--dynos-border) !important;
+    border-radius: var(--dynos-radius-md) !important;
+    padding: 10px 12px !important;
+    font-size: 0.95rem !important;
+    box-shadow: var(--dynos-shadow-inner) !important;
+    transition: all 0.2s !important;
+}
+
+.components-text-control__input:focus,
+.components-select-control__input:focus {
+    border-color: var(--dynos-primary) !important;
+    box-shadow: 0 0 0 3px var(--dynos-primary-soft) !important;
+    outline: none;
+}
+
+/* Toggle Control */
+.components-form-toggle.is-checked .components-form-toggle__track {
+    background-color: var(--dynos-primary) !important;
+}
+
+.dynos-section-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--dynos-text-main);
+    margin-bottom: var(--dynos-space-2);
+    letter-spacing: -0.025em;
+}
+
+.dynos-section-desc {
+    font-size: 1.1rem;
+    color: var(--dynos-text-secondary);
+    margin-bottom: var(--dynos-space-8);
+}
+
+/* ============================================
+   RESPONSIVE (Mobile First)
+   ============================================ */
+
+@media (max-width: 960px) {
+    .dynos-app-container {
+        flex-direction: column !important;
+    }
+
+    .dynos-sidebar {
+        width: 100% !important;
+        height: auto;
+        position: relative;
+        top: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--dynos-border);
+    }
+
+    .dynos-sidebar-nav {
+        display: flex;
+        overflow-x: auto;
+        padding: var(--dynos-space-2);
+        white-space: nowrap;
+    }
+
+    .dynos-nav-item {
+        width: auto;
+        margin-right: var(--dynos-space-2);
+        margin-bottom: 0;
+    }
+
+    .dynos-main-content {
+        padding: var(--dynos-space-4);
+    }
+}
+
+@media (max-width: 600px) {
+    .dynos-option-control {
+        display: block;
+    }
+}
+
+.components-snackbar-list {
+    z-index: 100000;
+}

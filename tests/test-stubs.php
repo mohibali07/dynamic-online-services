@@ -1,5 +1,8 @@
 <?php
 
+
+declare(strict_types=1);
+
 if (!function_exists('add_shortcode')) {
     function add_shortcode($tag, $callback) {
         if (class_exists('SpyHelper')) {

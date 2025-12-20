@@ -41,29 +41,37 @@ class ActivatorTest extends TestCase
 	 */
 	public function test_activate_sets_activation_flag(): void
 	{
-		// Mock requirements check
-		\WP_Mock::userFunction('dynos_check_requirements')
-			->once()
-			->andReturn(true);
-
-		// Mock options migration
 		\WP_Mock::userFunction('get_option')
 			->andReturn(false);
 
-		\WP_Mock::userFunction('update_option')
-			->andReturn(true);
-
-		// Mock set_transient for activation flag
-		\WP_Mock::userFunction('set_transient')
-			->with('dynos_plugin_activated', true, 30)
+		\WP_Mock::userFunction('add_option')
 			->once()
 			->andReturn(true);
+
+		\WP_Mock::userFunction('deactivate_plugins')
+			->never();
+
+        // Stub/Mock requirements check logic (which is private/internal PHP check)
+        // Since check_requirements is private and checks PHP version (true), we don't mock it directly.
+        // It does NOT call dynos_check_requirements globally.
+        // So remove that expectation.
+
+		\WP_Mock::userFunction('set_transient')
+			->once()
+			->with('dynos_plugin_activated', true, 30)
+			->andReturn(true);
+
+         // Mock global vars for check_requirements
+         global $wp_version;
+         $wp_version = '6.0';
 
 		// Mock flush_rewrite_rules
 		\WP_Mock::userFunction('flush_rewrite_rules')
 			->once();
 
-		// This test verifies the method exists and can be called
+		// Actually call the method
+		Activator::activate();
+
 		$this->assertTrue(method_exists(Activator::class, 'activate'));
 	}
 
@@ -72,21 +80,29 @@ class ActivatorTest extends TestCase
 	 */
 	public function test_activate_handles_requirements_failure(): void
 	{
-		\WP_Mock::userFunction('dynos_check_requirements')
-			->once()
+		\WP_Mock::userFunction('get_option')
 			->andReturn(false);
+
+		\WP_Mock::userFunction('add_option')
+			->once()
+			->andReturn(true);
+
+        // To simulate failure, we need check_requirements to return false.
+        // But check_requirements is private and checks constants/globals.
+        // We can mock $wp_version to be old.
+        global $wp_version;
+        $wp_version = '4.0';
 
 		\WP_Mock::userFunction('deactivate_plugins')
 			->once();
-
-		\WP_Mock::userFunction('__')
-			->once()
-			->andReturn('Error message');
 
 		\WP_Mock::userFunction('set_transient')
 			->with('dynos_activation_error', \WP_Mock\Functions::type('string'), 30)
 			->once()
 			->andReturn(true);
+
+		// Actually call the method
+		Activator::activate();
 
 		// Verify method exists
 		$this->assertTrue(method_exists(Activator::class, 'activate'));

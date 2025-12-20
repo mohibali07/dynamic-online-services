@@ -29,13 +29,13 @@ function dynos_load_plugin_files(): void
 	require_once DYNOS_PLUGIN_DIR . 'includes/settings-registration.php';
 	require_once DYNOS_PLUGIN_DIR . 'includes/settings-renderer.php';
 	require_once DYNOS_PLUGIN_DIR . 'includes/helpers.php';
-	require_once DYNOS_PLUGIN_DIR . 'includes/post-types/class-service-post-type.php';
+	require_once DYNOS_PLUGIN_DIR . 'cpt/class-service-post-type.php';
 	require_once DYNOS_PLUGIN_DIR . 'includes/taxonomy-fields.php';
 	require_once DYNOS_PLUGIN_DIR . 'includes/faqs/meta-box.php';
-	require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/class-faqs.php';
-	require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/class-category.php';
-	require_once DYNOS_PLUGIN_DIR . 'includes/shortcodes/class-hero.php';
-	require_once DYNOS_PLUGIN_DIR . 'includes/settings-page.php';
+	require_once DYNOS_PLUGIN_DIR . 'frontend/shortcodes/class-faqs.php';
+	require_once DYNOS_PLUGIN_DIR . 'frontend/shortcodes/class-category.php';
+	require_once DYNOS_PLUGIN_DIR . 'frontend/shortcodes/class-hero.php';
+	require_once DYNOS_PLUGIN_DIR . 'admin/settings/loader.php';
 	require_once DYNOS_PLUGIN_DIR . 'includes/front-end-scripts.php';
 	require_once DYNOS_PLUGIN_DIR . 'includes/admin-scripts.php';
 

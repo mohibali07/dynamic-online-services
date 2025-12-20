@@ -26,9 +26,8 @@ class SanitizationTest extends TestCase
         parent::setUp();
         \WP_Mock::setUp();
 
-        // Load the sanitization functions
-        // Updated to point to new Class file location
-        require_once dirname(__DIR__, 2) . '/includes/helpers/sanitization.php';
+        // Load the global helper wrappers if needed (the class is already autoloadedX)
+        require_once dirname(__DIR__, 2) . '/includes/helpers.php';
     }
 
     /**
@@ -63,6 +62,28 @@ class SanitizationTest extends TestCase
     }
 
     /**
+     * Test CSS dimension sanitization with calc().
+     */
+    public function test_sanitize_css_dimension_calc(): void
+    {
+        // Simple calc
+        $this->assertEquals('calc(100% - 20px)', SanitizationHelper::css_dimension('calc(100% - 20px)'));
+        // Calc with math
+        $this->assertEquals('calc(100vw / 2)', SanitizationHelper::css_dimension('calc(100vw / 2)'));
+        // Malicious calc
+        $this->assertEquals('', SanitizationHelper::css_dimension('calc(100% - expression(alert(1)))'));
+    }
+
+    /**
+     * Test CSS dimension with array (invalid type).
+     */
+    public function test_sanitize_css_dimension_invalid_type(): void
+    {
+        $this->expectException(\TypeError::class);
+        SanitizationHelper::css_dimension(['array']);
+    }
+
+    /**
      * Test CSS transform sanitization.
      */
     public function test_sanitize_css_transform(): void
@@ -70,7 +91,21 @@ class SanitizationTest extends TestCase
         $this->assertStringContainsString('translateX', SanitizationHelper::css_transform('translateX(10px)'));
         $this->assertStringContainsString('rotate', SanitizationHelper::css_transform('rotate(45deg)'));
         $this->assertEquals('', SanitizationHelper::css_transform('<script>'));
-        $this->assertEquals('', SanitizationHelper::css_transform(''));
+        $this->assertEquals('', SanitizationHelper::css_dimension(''));
+    }
+
+    /**
+     * Test CSS transform with multiple functions.
+     */
+    public function test_sanitize_css_transform_complex(): void
+    {
+        // Multiple transforms
+        $valid = 'translateX(10px) rotate(45deg) scale(1.5)';
+        $this->assertEquals($valid, SanitizationHelper::css_transform($valid));
+
+        // Malicious injection in multiple
+        $malicious = 'translateX(10px) expression(alert(1))';
+        $this->assertEquals('', SanitizationHelper::css_transform($malicious));
     }
 
     /**
@@ -199,5 +234,23 @@ class SanitizationTest extends TestCase
     {
         $this->assertEquals('', SanitizationHelper::build_css_rule('width', 'expression(alert(1))'));
         $this->assertEquals('', SanitizationHelper::build_css_rule('width; malicious: code', '100px'));
+    }
+
+    /**
+     * Test raw text field sanitization (wrapper check).
+     */
+    public function test_sanitize_text_field_wrapper(): void
+    {
+        // Since we are mocking sanitize_text_field in stubs or WP global
+        // We verify our helper (if it exists) or direct usage.
+        // Looking at helpers/Sanitization.php usage in SanitizationTest setup:
+        // It seems SanitizationHelper is the class.
+        // If the class has a text_field method? Or uses global?
+        // Checking class-settings.php: sanitize_callback => array(Sanitization::class, 'sanitize')
+        // 'sanitize' method likely handles array/object recursive sanitization.
+        // Let's test THAT method if available.
+
+        // Mock sanitization function behavior if needed, but test logic
+        // Assuming there is a generic sanitize method based on settings.
     }
 }

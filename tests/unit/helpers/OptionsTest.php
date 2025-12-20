@@ -25,6 +25,7 @@ class OptionsTest extends TestCase
 	{
 		parent::setUp();
 		\WP_Mock::setUp();
+		Options::reset_cache();
 	}
 
 	/**
@@ -110,12 +111,6 @@ class OptionsTest extends TestCase
 		\WP_Mock::userFunction('set_transient')
 			->twice()
 			->andReturn(true);
-
-		\WP_Mock::userFunction('maybe_serialize')
-			->once()
-			->andReturnUsing(function ($data) {
-				return serialize($data);
-			});
 
 		Options::maybe_invalidate_cache($old_value, $new_value, 'dynos_options');
 

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace TechmireSolutions\DynamicOnlineServices\FAQs;
 
-use TechmireSolutions\DynamicOnlineServices\PostTypes\Sanitization as PostTypeSanitization;
+use TechmireSolutions\DynamicOnlineServices\Cpt\Sanitization as PostTypeSanitization;
 
 use TechmireSolutions\DynamicOnlineServices\Helpers\AdminNotices;
 use TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization;
@@ -127,7 +127,7 @@ class Saver {
 		}
 
 		// Enforce maximum FAQ limit to prevent memory issues
-		$max_faqs = defined('DYNOS_MAX_FAQS_PER_POST') ? DYNOS_MAX_FAQS_PER_POST : 100;
+		$max_faqs = \TechmireSolutions\DynamicOnlineServices\Core\Configuration::get_max_faqs_per_post();
 		if (count($new_faqs) > $max_faqs) {
 			// Truncate to maximum allowed
 			$new_faqs = array_slice($new_faqs, 0, $max_faqs);
