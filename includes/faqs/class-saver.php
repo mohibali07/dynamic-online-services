@@ -83,11 +83,13 @@ class Saver {
 		// Process FAQs from POST data
 		// Questions are sanitized as plain text, answers allow HTML (wp_kses_post)
 		// FIX: Add is_array() check to prevent fatal error if POST data is malformed
-		$raw_questions = isset( $_POST['faqs_question'] ) ? wp_unslash( $_POST['faqs_question'] ) : array();
-		$raw_answers   = isset( $_POST['faqs_answer'] ) ? wp_unslash( $_POST['faqs_answer'] ) : array();
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization happens in array_map below
+		$raw_questions = isset( $_POST['faqs_question'] ) && is_array( $_POST['faqs_question'] ) ? wp_unslash( $_POST['faqs_question'] ) : array();
+		$raw_answers   = isset( $_POST['faqs_answer'] ) && is_array( $_POST['faqs_answer'] ) ? wp_unslash( $_POST['faqs_answer'] ) : array();
+		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-		$faqs_questions = is_array( $raw_questions ) ? array_map( 'sanitize_text_field', $raw_questions ) : array();
-		$faqs_answers   = is_array( $raw_answers ) ? array_map( 'wp_kses_post', $raw_answers ) : array();
+		$faqs_questions = array_map( 'sanitize_text_field', $raw_questions );
+		$faqs_answers   = array_map( 'wp_kses_post', $raw_answers );
 
 		// Validate arrays have same length
 		// This ensures each question has a corresponding answer

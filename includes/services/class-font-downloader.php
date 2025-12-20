@@ -123,7 +123,12 @@ class FontDownloader
 
 		// Create .htaccess for security
 		$htaccess_content = "# Protect fonts directory\n<FilesMatch \"\\.(woff2?|ttf|eot)$\">\n\tHeader set Access-Control-Allow-Origin \"*\"\n</FilesMatch>\n";
-		file_put_contents($this->fonts_dir . '/.htaccess', $htaccess_content);
+		global $wp_filesystem;
+		if (empty($wp_filesystem)) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+		$wp_filesystem->put_contents($this->fonts_dir . '/.htaccess', $htaccess_content, FS_CHMOD_FILE);
 
 		return true;
 	}
@@ -199,7 +204,7 @@ class FontDownloader
 		}
 
 		// Generate filename from URL
-		$filename = basename(parse_url($url, PHP_URL_PATH));
+		$filename = basename(wp_parse_url($url, PHP_URL_PATH));
 		if (empty($filename)) {
 			error_log('Dynamic Online Services: Invalid font URL (no filename): ' . $url);
 			return false;
@@ -213,8 +218,8 @@ class FontDownloader
 		}
 
 		// FIX: Check available disk space before downloading
-		$free_space = @disk_free_space($font_subdir);
-		if ($free_space !== false && $free_space < (5 * 1024 * 1024)) { // Require at least 5MB free
+		$free_space = disk_free_space($font_subdir);
+		if (false !== $free_space && $free_space < (5 * 1024 * 1024)) { // Require at least 5MB free
 			error_log('Dynamic Online Services: Insufficient disk space for font download. Free: ' . $free_space);
 			return false;
 		}
@@ -268,9 +273,14 @@ class FontDownloader
 			}
 		}
 
-		// Save file with error handling
-		$saved = @file_put_contents($local_path, $font_data);
-		if ($saved === false) {
+		// Save file with error handling using WP_Filesystem
+		global $wp_filesystem;
+		if (empty($wp_filesystem)) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+		$saved = $wp_filesystem->put_contents($local_path, $font_data, FS_CHMOD_FILE);
+		if (false === $saved) {
 			error_log('Dynamic Online Services: Failed to save font file: ' . $local_path . ' (check permissions)');
 			return false;
 		}
@@ -300,9 +310,14 @@ class FontDownloader
 			$local_css = str_replace($remote_url, $local_url, $local_css);
 		}
 
-		// Save CSS file
-		$saved = file_put_contents($css_file, $local_css);
-		if ($saved === false) {
+		// Save CSS file using WP_Filesystem
+		global $wp_filesystem;
+		if (empty($wp_filesystem)) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+		$saved = $wp_filesystem->put_contents($css_file, $local_css, FS_CHMOD_FILE);
+		if (false === $saved) {
 			error_log('Dynamic Online Services: Failed to save CSS file: ' . $css_file);
 			return false;
 		}

@@ -53,10 +53,17 @@ class Autoloader {
 		// Convert class name to kebab-case
 		$class_file = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $class_file ) );
 
-		// Convert directory parts to lowercase
+		// Convert directory parts to kebab-case (same as class names)
 		$directory = '';
 		if ( ! empty( $parts ) ) {
-			$directory = strtolower( implode( '/', $parts ) ) . '/';
+			// Convert each directory part to kebab-case
+			$kebab_parts = array_map(
+				function( $part ) {
+					return strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $part ) );
+				},
+				$parts
+			);
+			$directory = implode( '/', $kebab_parts ) . '/';
 		}
 
 		// Try class- prefix

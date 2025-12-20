@@ -1,0 +1,393 @@
+/**
+ * Service Cards Styles
+ * Mobile-First Design with RTL Support, Accessibility & Dark Mode
+ */
+
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+	--card-bg-color: #fff;
+	--card-border-color: #ddd;
+	--card-text-color: inherit;
+	--card-primary-color: #007cba;
+	--card-bg-hover: #fff;
+	--card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	--card-shadow-hover: 0 8px 12px rgba(0, 0, 0, 0.15);
+	--card-radius: 18px;
+	--card-spacing: 20px;
+	--card-min-height: 400px;
+	--card-image-height: 232px;
+	--card-transition-duration: 0.2s;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+
+	:root {
+		--card-bg-color: #1d2327;
+		--card-border-color: #3c434a;
+		--card-text-color: #c3c4c7;
+		--card-primary-color: #72aee6;
+		--card-bg-hover: #2c3338;
+		--card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+		--card-shadow-hover: 0 8px 12px rgba(0, 0, 0, 0.4);
+	}
+}
+
+
+/* ============================================
+   Grid Layout
+   ============================================ */
+.service-card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: var(--wp--style--block-gap, var(--card-spacing));
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	column-gap: var(--wp--style--block-gap, var(--card-spacing));
+	row-gap: calc(var(--wp--style--block-gap, var(--card-spacing)) * 2);
+	container-type: inline-size;
+	container-name: services-grid;
+}
+
+/* WordPress theme dark mode */
+.is-dark-theme .service-card-grid {
+	--card-bg-color: #1d2327;
+	--card-border-color: #3c434a;
+	--card-text-color: #c3c4c7;
+	--card-primary-color: #72aee6;
+	--card-bg-hover: #2c3338;
+	--card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+	--card-shadow-hover: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================
+   Service Card
+   ============================================ */
+.service-card {
+	border-radius: var(--card-radius);
+	box-shadow: var(--card-shadow);
+	transition:
+		transform var(--card-transition-duration) ease,
+		box-shadow var(--card-transition-duration) ease;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: var(--card-min-height);
+	background: var(--card-bg-color);
+	color: var(--card-text-color);
+	contain: layout paint;
+	content-visibility: auto;
+	contain-intrinsic-size: auto 400px;
+	position: relative;
+	animation: dynos-fade-in 0.5s ease-out backwards;
+}
+
+@keyframes dynos-fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* Hover effect for pointer devices only */
+	@media (hover: hover) and (pointer: fine) {
+
+		.service-card:hover {
+			transform: translateY(-5px);
+			box-shadow: var(--card-shadow-hover);
+		}
+	}
+
+	/* Focus state for keyboard navigation */
+	.service-card:focus-within {
+		outline: 2px solid var(--card-primary-color);
+		outline-offset: 2px;
+	}
+
+	/* ============================================
+   Card Image
+   ============================================ */
+	.service-card-image-link {
+		display: block;
+		height: var(--card-image-height);
+		border-radius: var(--card-radius);
+		overflow: hidden;
+		flex-shrink: 0;
+		position: relative;
+	}
+
+	.service-card-image-link:focus-visible {
+		outline: 3px solid var(--card-primary-color);
+		outline-offset: 2px;
+	}
+
+	.service-card-image {
+		width: 100%;
+		height: var(--card-image-height);
+		object-fit: cover;
+		display: block;
+		z-index: 10;
+		position: relative;
+		border-radius: var(--card-radius);
+		transition: transform var(--card-transition-duration) ease;
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+
+		.service-card-image-link:hover .service-card-image {
+			transform: scale(1.05);
+		}
+	}
+
+	/* ============================================
+   Card Content
+   ============================================ */
+	.service-card-content {
+		padding-block: 24px;
+		padding-inline: 15px;
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		margin-block-start: -16px;
+		border-radius: 0 0 var(--card-radius) var(--card-radius);
+		align-items: center;
+		background: inherit;
+		position: relative;
+		z-index: 11;
+	}
+
+	/* ============================================
+   Card Title
+   ============================================ */
+	.service-card-title {
+		font-size: 1.25rem;
+		margin-block-start: 0;
+		margin-block-end: 10px;
+		margin-inline: 0;
+		text-decoration: none;
+		text-align: center;
+		line-height: 1.3;
+		color: inherit;
+	}
+
+	.service-card-title a {
+		text-decoration: none;
+		transition: color var(--card-transition-duration) ease;
+		color: var(--card-primary-color);
+		padding-block: 5px;
+		padding-inline: 0;
+		display: block;
+	}
+
+	.service-card-title a:hover {
+		color: var(--card-bg-hover) !important;
+	}
+
+	.service-card-title a:focus-visible {
+		outline: 2px solid var(--card-primary-color);
+		outline-offset: 4px;
+		border-radius: 4px;
+	}
+
+	/* ============================================
+   Card Description
+   ============================================ */
+	.service-card-description {
+		font-size: 0.9rem;
+		text-align: center;
+		margin-block-end: var(--card-spacing);
+		margin-block-start: 0;
+		margin-inline: 0;
+		flex-grow: 1;
+		line-height: 1.5;
+		color: var(--card-text-color);
+	}
+
+	/* ============================================
+   Card Link (CTA Button)
+   ============================================ */
+	.service-card-link {
+		display: inline-block;
+		padding-block: 12px;
+		padding-inline: 28px;
+		text-decoration: none;
+		border-radius: 6px;
+		text-align: center;
+		font-size: 0.9rem;
+		font-weight: 500;
+		transition:
+			background-color var(--card-transition-duration) ease,
+			color var(--card-transition-duration) ease,
+			transform var(--card-transition-duration) ease;
+		width: auto;
+		margin-block-start: auto;
+		margin-block-end: 0;
+		background-color: var(--card-primary-color);
+		color: var(--card-bg-hover);
+		min-height: 44px;
+		box-sizing: border-box;
+		line-height: 1.2;
+		border: 2px solid var(--card-primary-color);
+	}
+
+	.service-card-link:hover {
+		background-color: var(--card-bg-hover) !important;
+		color: var(--card-primary-color);
+		border-color: var(--card-primary-color);
+	}
+
+	.service-card-link:focus-visible {
+		outline: 3px solid var(--card-primary-color);
+		outline-offset: 3px;
+	}
+
+	.service-card-link:active {
+		transform: scale(0.98);
+	}
+
+	/* ============================================
+   Container Queries (Responsive Design)
+   ============================================ */
+	@container services-grid (max-width: 480px) {
+
+		.service-card-content {
+			padding-block: var(--card-spacing);
+			padding-inline: 10px;
+		}
+
+		.service-card-title {
+			font-size: 1.15rem;
+		}
+
+		.service-card-image,
+		.service-card-image-link {
+			height: 200px;
+		}
+
+		.service-card {
+			min-height: auto;
+		}
+	}
+
+	@container services-grid (min-width: 768px) {
+
+		.service-card-grid {
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		}
+	}
+
+	@container services-grid (min-width: 1024px) {
+
+		.service-card-grid {
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		}
+
+		.service-card-title {
+			font-size: 1.35rem;
+		}
+	}
+
+	/* ============================================
+   High Contrast Mode Support
+   ============================================ */
+	@media (prefers-contrast: high) {
+
+		.service-card {
+			border: 2px solid currentcolor;
+		}
+
+		.service-card-link {
+			border-width: 3px;
+		}
+
+		.service-card:focus-within {
+			outline-width: 3px;
+		}
+	}
+
+	/* ============================================
+   Accessibility - Reduced Motion
+   ============================================ */
+	@media (prefers-reduced-motion: reduce) {
+
+		.service-card,
+		.service-card-image,
+		.service-card-title a,
+		.service-card-link {
+			transition-duration: 0.01ms !important;
+		}
+
+		.service-card:hover {
+			transform: none;
+		}
+
+		.service-card-image-link:hover .service-card-image {
+			transform: none;
+		}
+
+		.service-card-link:active {
+			transform: none;
+		}
+	}
+
+	/* ============================================
+   Print Styles
+   ============================================ */
+	@media print {
+
+		.service-card-grid {
+			display: block;
+			column-count: 2;
+			column-gap: var(--card-spacing);
+		}
+
+		.service-card {
+			box-shadow: none;
+			border: 1px solid #000;
+			page-break-inside: avoid;
+			break-inside: avoid;
+			margin-block-end: var(--card-spacing);
+			min-height: auto;
+			display: block;
+		}
+
+		.service-card-image-link {
+			height: auto;
+			max-height: 150px;
+		}
+
+		.service-card-image {
+			height: auto;
+			max-height: 150px;
+		}
+
+		.service-card-link {
+			display: none;
+		}
+
+		.service-card-title a {
+			color: #000 !important;
+		}
+
+		.service-card-description {
+			color: #000;
+		}
+	}
+
+	/* ============================================
+   Responsive Images Support
+   ============================================ */
+	@media (min-resolution: 2dppx) {
+
+		.service-card-image {
+			image-rendering: -webkit-optimize-contrast;
+			image-rendering: crisp-edges;
+		}
+	}

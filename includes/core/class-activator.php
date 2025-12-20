@@ -30,6 +30,12 @@ class Activator {
 	 */
 	public static function activate(): void {
 		try {
+			// Initialize plugin options with defaults if they don't exist
+			if (false === get_option('dynos_options')) {
+				$defaults = \TechmireSolutions\DynamicOnlineServices\Settings\Defaults::get_options();
+				add_option('dynos_options', $defaults);
+			}
+
 			// Load error handler if not already loaded
 			if ( ! function_exists( 'dynos_handle_activation_error' ) ) {
 				$plugin_dir = defined( 'DYNOS_PLUGIN_DIR' ) ? DYNOS_PLUGIN_DIR : plugin_dir_path( dirname( __DIR__, 2 ) );
@@ -129,6 +135,24 @@ class Activator {
 
 		$service_slug  = $settings['service_post_type_slug'] ?? $defaults['service_post_type_slug'];
 		$taxonomy_slug = $settings['service_taxonomy_slug'] ?? $defaults['service_taxonomy_slug'];
+
+		// Manually load required classes since autoloader may not be available during activation
+		$plugin_dir = defined( 'DYNOS_PLUGIN_DIR' ) ? DYNOS_PLUGIN_DIR : plugin_dir_path( dirname( __DIR__, 2 ) );
+
+		// Load interface first
+		if ( file_exists( $plugin_dir . 'includes/interfaces/Registrable.php' ) ) {
+			require_once $plugin_dir . 'includes/interfaces/Registrable.php';
+		}
+
+		// Load post type class
+		if ( file_exists( $plugin_dir . 'includes/post-types/class-service-post-type.php' ) ) {
+			require_once $plugin_dir . 'includes/post-types/class-service-post-type.php';
+		}
+
+		// Load taxonomy class
+		if ( file_exists( $plugin_dir . 'includes/taxonomies/class-service-category-taxonomy.php' ) ) {
+			require_once $plugin_dir . 'includes/taxonomies/class-service-category-taxonomy.php';
+		}
 
 		// Instantiate registration classes
 		// Note: we can't easily rely on the Plugin class instance here during static activation

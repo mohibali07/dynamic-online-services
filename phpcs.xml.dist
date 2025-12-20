@@ -21,7 +21,7 @@
 	<rule ref="WordPress.WP"/>
 	<rule ref="WordPress.Security"/>
 	<rule ref="WordPress.PHP"/>
-	
+
 	<!-- Minimum supported WordPress version -->
 	<config name="minimum_supported_wp_version" value="6.9"/>
 
@@ -34,10 +34,11 @@
 		</properties>
 	</rule>
 
-	<!-- Naming conventions - Accept dynos_ prefix only -->
+	<!-- Naming conventions - Accept dynos_ prefix and TechmireSolutions namespace -->
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
+				<element value="TechmireSolutions"/>
 				<element value="dynos"/>
 				<element value="DYNOS"/>
 				<element value="DynamicOnlineServices"/>

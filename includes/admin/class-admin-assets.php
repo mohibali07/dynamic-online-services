@@ -74,12 +74,25 @@ class AdminAssets
 		if (file_exists($script_asset_path)) {
 			$script_asset = require $script_asset_path;
 
+			// Enqueue wp-api-fetch for REST API requests
+			wp_enqueue_script('wp-api-fetch');
+
 			wp_enqueue_script(
 				'dynos-settings-app',
 				$script_url,
-				$script_asset['dependencies'],
+				array_merge($script_asset['dependencies'], array('wp-api-fetch')),
 				$script_asset['version'],
 				true
+			);
+
+			// Set up REST API authentication
+			wp_localize_script(
+				'wp-api-fetch',
+				'wpApiSettings',
+				array(
+					'root'  => esc_url_raw(rest_url()),
+					'nonce' => wp_create_nonce('wp_rest'),
+				)
 			);
 
 			// Localize script for initial data using the correct handle
@@ -88,7 +101,7 @@ class AdminAssets
 			'dynos-settings-app',
 			'dynosSettings',
 			array(
-				'apiUrl'         => esc_url_raw(rest_url('dynamic-online-services/v1/')),
+				'apiUrl'         => esc_url_raw(rest_url('wp/v2/settings')),
 				'nonce'          => wp_create_nonce('wp_rest'),
 				'maxGridColumns' => isset($options['max_grid_columns']) ? absint($options['max_grid_columns']) : 6,
 				'minGridColumns' => isset($options['min_grid_columns']) ? absint($options['min_grid_columns']) : 1,

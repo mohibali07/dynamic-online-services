@@ -1,0 +1,63 @@
+PHPUnit 9.6.31 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.5.0
+Configuration: /Users/syedaalin/Documents/dynamic-online-services/phpunit.xml.dist
+Warning:       No code coverage driver available
+
+E.PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 4096 bytes) in /Users/syedaalin/Documents/dynamic-online-services/vendor/mockery/mockery/library/Mockery/Loader/EvalLoader.php(30) : eval()'d code on line 897
+Stack trace:
+#0 /Users/syedaalin/Documents/dynamic-online-services/vendor/mockery/mockery/library/Mockery/Loader/EvalLoader.php(30) : eval()'d code(419): Mockery_0__wp_api->_mockery_handleMethodCall('get_the_ID', Array)
+#1 [internal function]: Mockery_0__wp_api->__call('get_the_ID', Array)
+#2 /Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Functions/Handler.php(52): call_user_func_array(Array, Array)
+#3 /Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Functions.php(339): WP_Mock\Functions\Handler::handleFunction('get_the_ID', Array)
+#4 [internal function]: WP_Mock\Functions->{closure:WP_Mock\Functions::replaceFunction():338}()
+#5 /Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/CallRerouting.php(265): call_user_func_array(Object(Closure), Array)
+#6 /Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/CallRerouting.php(296): Patchwork\CallRerouting\dispatchTo(Object(Closure))
+#7 /Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/Stack.php(27): {closure:Patchwork\CallRerouting\dispatch():288}()
+#8 /Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/CallRerouting.php(288): Patchwork\Stack\pushFor(15, NULL, Object(Closure), Array)
+#9 /Users/syedaalin/Documents/dynamic-online-services/tests/stubs.php(169): Patchwork\CallRerouting\dispatch('', NULL, 'get_the_ID', 15, NULL, Array)
+#10 /Users/syedaalin/Documents/dynamic-online-services/includes/shortcodes/class-cards.php(138): get_the_ID()
+#11 /Users/syedaalin/Documents/dynamic-online-services/includes/shortcodes/class-cards.php(86): TechmireSolutions\DynamicOnlineServices\Shortcodes\Cards->generate_output(Array)
+#12 /Users/syedaalin/Documents/dynamic-online-services/includes/shortcodes/class-abstract-shortcode.php(51): TechmireSolutions\DynamicOnlineServices\Shortcodes\Cards->render(Array)
+#13 /Users/syedaalin/Documents/dynamic-online-services/tests/unit/shortcodes/CardsTest.php(127): TechmireSolutions\DynamicOnlineServices\Shortcodes\AbstractShortcode->render_callback(Array)
+#14 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestCase.php(1617): DynamicOnlineServices\Tests\Unit\Shortcodes\CardsTest->test_render_parses_attributes()
+#15 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestCase.php(1223): PHPUnit\Framework\TestCase->runTest()
+#16 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestResult.php(729): PHPUnit\Framework\TestCase->runBare()
+#17 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestCase.php(973): PHPUnit\Framework\TestResult->run(Object(DynamicOnlineServices\Tests\Unit\Shortcodes\CardsTest))
+#18 /Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php(123): PHPUnit\Framework\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#19 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestSuite.php(685): WP_Mock\Tools\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#20 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/TextUI/TestRunner.php(651): PHPUnit\Framework\TestSuite->run(Object(PHPUnit\Framework\TestResult))
+#21 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/TextUI/Command.php(146): PHPUnit\TextUI\TestRunner->run(Object(PHPUnit\Framework\TestSuite), Array, Array, true)
+#22 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/TextUI/Command.php(99): PHPUnit\TextUI\Command->run(Array, true)
+#23 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/phpunit(107): PHPUnit\TextUI\Command::main()
+#24 /Users/syedaalin/Documents/dynamic-online-services/vendor/bin/phpunit(122): include('/Users/syedaali...')
+#25 {main}
+
+Fatal error: Allowed memory size of 134217728 bytes exhausted (tried to allocate 4096 bytes) in /Users/syedaalin/Documents/dynamic-online-services/vendor/mockery/mockery/library/Mockery/Loader/EvalLoader.php(30) : eval()'d code on line 897
+Stack trace:
+#0 /Users/syedaalin/Documents/dynamic-online-services/vendor/mockery/mockery/library/Mockery/Loader/EvalLoader.php(30) : eval()'d code(419): Mockery_0__wp_api->_mockery_handleMethodCall('get_the_ID', Array)
+#1 [internal function]: Mockery_0__wp_api->__call('get_the_ID', Array)
+#2 /Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Functions/Handler.php(52): call_user_func_array(Array, Array)
+#3 /Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Functions.php(339): WP_Mock\Functions\Handler::handleFunction('get_the_ID', Array)
+#4 [internal function]: WP_Mock\Functions->{closure:WP_Mock\Functions::replaceFunction():338}()
+#5 /Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/CallRerouting.php(265): call_user_func_array(Object(Closure), Array)
+#6 /Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/CallRerouting.php(296): Patchwork\CallRerouting\dispatchTo(Object(Closure))
+#7 /Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/Stack.php(27): {closure:Patchwork\CallRerouting\dispatch():288}()
+#8 /Users/syedaalin/Documents/dynamic-online-services/vendor/antecedent/patchwork/src/CallRerouting.php(288): Patchwork\Stack\pushFor(15, NULL, Object(Closure), Array)
+#9 /Users/syedaalin/Documents/dynamic-online-services/tests/stubs.php(169): Patchwork\CallRerouting\dispatch('', NULL, 'get_the_ID', 15, NULL, Array)
+#10 /Users/syedaalin/Documents/dynamic-online-services/includes/shortcodes/class-cards.php(138): get_the_ID()
+#11 /Users/syedaalin/Documents/dynamic-online-services/includes/shortcodes/class-cards.php(86): TechmireSolutions\DynamicOnlineServices\Shortcodes\Cards->generate_output(Array)
+#12 /Users/syedaalin/Documents/dynamic-online-services/includes/shortcodes/class-abstract-shortcode.php(51): TechmireSolutions\DynamicOnlineServices\Shortcodes\Cards->render(Array)
+#13 /Users/syedaalin/Documents/dynamic-online-services/tests/unit/shortcodes/CardsTest.php(127): TechmireSolutions\DynamicOnlineServices\Shortcodes\AbstractShortcode->render_callback(Array)
+#14 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestCase.php(1617): DynamicOnlineServices\Tests\Unit\Shortcodes\CardsTest->test_render_parses_attributes()
+#15 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestCase.php(1223): PHPUnit\Framework\TestCase->runTest()
+#16 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestResult.php(729): PHPUnit\Framework\TestCase->runBare()
+#17 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestCase.php(973): PHPUnit\Framework\TestResult->run(Object(DynamicOnlineServices\Tests\Unit\Shortcodes\CardsTest))
+#18 /Users/syedaalin/Documents/dynamic-online-services/vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php(123): PHPUnit\Framework\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#19 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/Framework/TestSuite.php(685): WP_Mock\Tools\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#20 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/TextUI/TestRunner.php(651): PHPUnit\Framework\TestSuite->run(Object(PHPUnit\Framework\TestResult))
+#21 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/TextUI/Command.php(146): PHPUnit\TextUI\TestRunner->run(Object(PHPUnit\Framework\TestSuite), Array, Array, true)
+#22 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/src/TextUI/Command.php(99): PHPUnit\TextUI\Command->run(Array, true)
+#23 /Users/syedaalin/Documents/dynamic-online-services/vendor/phpunit/phpunit/phpunit(107): PHPUnit\TextUI\Command::main()
+#24 /Users/syedaalin/Documents/dynamic-online-services/vendor/bin/phpunit(122): include('/Users/syedaali...')
+#25 {main}

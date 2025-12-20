@@ -53,7 +53,7 @@ class ServicePostType implements Registrable
 			throw new \InvalidArgumentException(
 				sprintf(
 					'Post type slug "%s" exceeds maximum length of 20 characters',
-					$sanitized_slug
+					esc_html( $sanitized_slug )
 				)
 			);
 		}
@@ -109,9 +109,11 @@ class ServicePostType implements Registrable
 		$singular_name = apply_filters('dynos_service_singular_name', $singular_name);
 		$plural_name = apply_filters('dynos_service_plural_name', $plural_name);
 
+		// phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralText -- Dynamic post type names from settings
 		return array(
 			'name' => _x($plural_name, 'Post Type General Name', 'dynamic-online-services'),
 			'singular_name' => _x($singular_name, 'Post Type Singular Name', 'dynamic-online-services'),
+			// phpcs:enable WordPress.WP.I18n.NonSingularStringLiteralText
 			'menu_name' => $plural_name,
 			'name_admin_bar' => $singular_name,
 			/* translators: %s: Plural name of the post type */

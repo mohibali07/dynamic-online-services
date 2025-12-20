@@ -63,12 +63,12 @@ class CardsQueryService
 		// FIX: Enforce maximum posts per page to prevent memory exhaustion
 		// -1 means "unlimited" which is dangerous on sites with 1000+ posts
 		// Protect against both unlimited (-1) and excessive values
-		if ($limit === -1 || $limit > DYNOS_MAX_POSTS_PER_PAGE) {
+		if (-1 === $limit || $limit > DYNOS_MAX_POSTS_PER_PAGE) {
 			$limit = DYNOS_MAX_POSTS_PER_PAGE;
 		}
 
 		// Allow 0 to disable query (edge case for custom filtering)
-		if ($limit < 0 && $limit !== -1) {
+		if (0 > $limit && -1 !== $limit) {
 			$limit = DYNOS_MAX_POSTS_PER_PAGE;
 		}
 

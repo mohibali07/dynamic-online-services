@@ -50,8 +50,19 @@ class Settings
 	 */
 	private function __construct()
 	{
+		// Manually require sanitization class due to autoloader timing issues on frontend
+		if ( ! class_exists( 'TechmireSolutions\\DynamicOnlineServices\\Settings\\Sanitization' ) ) {
+			require_once DYNOS_PLUGIN_DIR . 'includes/settings/class-sanitization.php';
+		}
+
 		add_action('admin_menu', array($this, 'add_menu'));
+
+		// This registers the actual option and setting definition (Runs on Admin + REST)
 		add_action('admin_init', array($this, 'register_settings'));
+		add_action('rest_api_init', array($this, 'register_settings'));
+
+		// This adds the UI sections and fields (Runs on Admin ONLY)
+		add_action('admin_init', array($this, 'add_settings_fields'));
 	}
 
 	/**
@@ -69,10 +80,16 @@ class Settings
 	}
 
 	/**
-	 * Register settings.
+	 * Register settings (Safe for REST API).
 	 */
 	public function register_settings(): void
 	{
+		// Ensure option exists in database before registering
+		// This is critical for REST API exposure
+		if (false === get_option('dynos_options')) {
+			add_option('dynos_options', Defaults::get_options());
+		}
+
 		// Register setting with sanitization callback
 		register_setting(
 			'Dynamic_Online_Services',
@@ -85,51 +102,79 @@ class Settings
 					'schema' => array(
 						'type'       => 'object',
 						'properties' => array(
-							// We allow dynamic properties since it's a large options array
-							// Ideal world: define every property here.
+							// We map specific properties to ensure they appear even if empty
+							'max_grid_columns' => array( 'type' => 'integer' ),
+							'min_grid_columns' => array( 'type' => 'integer' ),
 						),
 						'additionalProperties' => true,
 					),
 				),
 			)
 		);
+	}
 
-		// Dynamically register sections and fields from Config
-		$config_map = \TechmireSolutions\DynamicOnlineServices\Settings\Config::get_map();
+	/**
+	 * Add settings sections and fields (Admin UI only).
+	 */
+	public function add_settings_fields(): void
+	{
+		// Parse config and add sections/fields
+		$config = \TechmireSolutions\DynamicOnlineServices\Settings\Config::get_map();
 
-		foreach ($config_map as $section_key => $section_data) {
-			// Register section
+		foreach ($config as $section_key => $section_data) {
 			add_settings_section(
 				$section_data['id'],
 				$section_data['title'],
-				'__return_null',
+				null,
 				'Dynamic_Online_Services'
 			);
 
-			// Register fields for this section
 			if (isset($section_data['fields']) && is_array($section_data['fields'])) {
 				foreach ($section_data['fields'] as $field_id => $field_data) {
 					$args = array(
-						'name'    => $field_id,
-						'default' => $field_data['default'] ?? '',
 						'label_for' => $field_id,
+						'class' => $field_data['class'] ?? '',
 					);
 
-					// Merge any additional args from config
-					if (isset($field_data['args']) && is_array($field_data['args'])) {
-						$args = array_merge($args, $field_data['args']);
-					}
+					// Pass field data to render callback
+					$args = array_merge($args, $field_data);
 
 					add_settings_field(
 						$field_id,
 						$field_data['title'],
-						$field_data['callback'],
+						array($this, 'render_field'),
 						'Dynamic_Online_Services',
 						$section_data['id'],
 						$args
 					);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Render field callback.
+	 *
+	 * @param array $args Field arguments.
+	 */
+	public function render_field(array $args): void
+	{
+		$options = get_option('dynos_options');
+		$field_id = $args['label_for'];
+		$value = isset($options[$field_id]) ? $options[$field_id] : (isset($args['default']) ? $args['default'] : '');
+
+		// Use the callback defined in config if available, or a default renderer
+		if (isset($args['callback']) && is_callable($args['callback'])) {
+			call_user_func($args['callback'], $args, $value);
+		} elseif (isset($args['callback']) && is_string($args['callback']) && function_exists($args['callback'])) {
+			call_user_func($args['callback'], $args, $value);
+		} else {
+             // Fallback renderer (simple text input)
+             printf(
+                 '<input type="text" id="%1$s" name="dynos_options[%1$s]" value="%2$s" class="regular-text" />',
+                 esc_attr($field_id),
+                 esc_attr($value)
+             );
 		}
 	}
 }

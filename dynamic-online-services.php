@@ -90,14 +90,14 @@ if (!defined('DYNOS_MIN_WP_VERSION')) {
  * @since 1.1.0
  */
 // Check cache first for performance
-$tablet_breakpoint = get_transient('dynos_breakpoint_tablet_cached');
-if (false === $tablet_breakpoint) {
+$dynos_tablet_breakpoint = get_transient('dynos_breakpoint_tablet_cached');
+if (false === $dynos_tablet_breakpoint) {
 	// Run filter and cache result
-	$tablet_breakpoint = apply_filters('dynos_breakpoint_tablet', '768px');
-	set_transient('dynos_breakpoint_tablet_cached', $tablet_breakpoint, DAY_IN_SECONDS);
+	$dynos_tablet_breakpoint = apply_filters('dynos_breakpoint_tablet', '768px');
+	set_transient('dynos_breakpoint_tablet_cached', $dynos_tablet_breakpoint, DAY_IN_SECONDS);
 }
 if (!defined('DYNOS_BREAKPOINT_TABLET')) {
-	define('DYNOS_BREAKPOINT_TABLET', $tablet_breakpoint);
+	define('DYNOS_BREAKPOINT_TABLET', $dynos_tablet_breakpoint);
 }
 
 /**
@@ -112,14 +112,14 @@ if (!defined('DYNOS_BREAKPOINT_TABLET')) {
  * @since 1.1.0
  */
 // Check cache first for performance
-$mobile_breakpoint = get_transient('dynos_breakpoint_mobile_cached');
-if (false === $mobile_breakpoint) {
+$dynos_mobile_breakpoint = get_transient('dynos_breakpoint_mobile_cached');
+if (false === $dynos_mobile_breakpoint) {
 	// Run filter and cache result
-	$mobile_breakpoint = apply_filters('dynos_breakpoint_mobile', '480px');
-	set_transient('dynos_breakpoint_mobile_cached', $mobile_breakpoint, DAY_IN_SECONDS);
+	$dynos_mobile_breakpoint = apply_filters('dynos_breakpoint_mobile', '480px');
+	set_transient('dynos_breakpoint_mobile_cached', $dynos_mobile_breakpoint, DAY_IN_SECONDS);
 }
 if (!defined('DYNOS_BREAKPOINT_MOBILE')) {
-	define('DYNOS_BREAKPOINT_MOBILE', $mobile_breakpoint);
+	define('DYNOS_BREAKPOINT_MOBILE', $dynos_mobile_breakpoint);
 }
 
 /**
@@ -130,9 +130,9 @@ if (!defined('DYNOS_BREAKPOINT_MOBILE')) {
  * @since 1.1.0
  */
 // Always run filter for transparency
-$max_columns = (int) apply_filters('dynos_max_grid_columns', 6);
+$dynos_max_columns = (int) apply_filters('dynos_max_grid_columns', 6);
 if (!defined('DYNOS_MAX_GRID_COLUMNS')) {
-	define('DYNOS_MAX_GRID_COLUMNS', $max_columns);
+	define('DYNOS_MAX_GRID_COLUMNS', $dynos_max_columns);
 }
 
 /**
@@ -143,9 +143,9 @@ if (!defined('DYNOS_MAX_GRID_COLUMNS')) {
  * @since 1.1.0
  */
 // Always run filter for transparency
-$min_columns = (int) apply_filters('dynos_min_grid_columns', 1);
+$dynos_min_columns = (int) apply_filters('dynos_min_grid_columns', 1);
 if (!defined('DYNOS_MIN_GRID_COLUMNS')) {
-	define('DYNOS_MIN_GRID_COLUMNS', $min_columns);
+	define('DYNOS_MIN_GRID_COLUMNS', $dynos_min_columns);
 }
 
 /**
@@ -157,9 +157,9 @@ if (!defined('DYNOS_MIN_GRID_COLUMNS')) {
  * @since 1.1.0
  */
 // Always run filter for transparency
-$max_depth = (int) apply_filters('dynos_max_taxonomy_depth', 10);
+$dynos_max_depth = (int) apply_filters('dynos_max_taxonomy_depth', 10);
 if (!defined('DYNOS_MAX_TAXONOMY_DEPTH')) {
-	define('DYNOS_MAX_TAXONOMY_DEPTH', $max_depth);
+	define('DYNOS_MAX_TAXONOMY_DEPTH', $dynos_max_depth);
 }
 
 /**
@@ -170,9 +170,9 @@ if (!defined('DYNOS_MAX_TAXONOMY_DEPTH')) {
  * @since 1.1.0
  */
 // Always run filter for transparency
-$excerpt_length = (int) apply_filters('dynos_default_excerpt_length', 20);
+$dynos_excerpt_length = (int) apply_filters('dynos_default_excerpt_length', 20);
 if (!defined('DYNOS_DEFAULT_EXCERPT_LENGTH')) {
-	define('DYNOS_DEFAULT_EXCERPT_LENGTH', $excerpt_length);
+	define('DYNOS_DEFAULT_EXCERPT_LENGTH', $dynos_excerpt_length);
 }
 
 /**
@@ -208,9 +208,9 @@ if (!defined('DYNOS_DEFAULT_EXCERPT_LENGTH')) {
  * @since 1.1.0
  */
 // Always run filter for transparency
-$max_posts = (int) apply_filters('dynos_max_posts_per_page', 1000);
+$dynos_max_posts = (int) apply_filters('dynos_max_posts_per_page', 1000);
 if (!defined('DYNOS_MAX_POSTS_PER_PAGE')) {
-	define('DYNOS_MAX_POSTS_PER_PAGE', $max_posts);
+	define('DYNOS_MAX_POSTS_PER_PAGE', $dynos_max_posts);
 }
 
 
@@ -222,9 +222,9 @@ if (!defined('DYNOS_MAX_POSTS_PER_PAGE')) {
  * @since 1.1.0
  */
 // Always run filter for transparency
-$grid_min_width = apply_filters('dynos_default_grid_min_width', '280px');
+$dynos_grid_min_width = apply_filters('dynos_default_grid_min_width', '280px');
 if (!defined('DYNOS_DEFAULT_GRID_MIN_WIDTH')) {
-	define('DYNOS_DEFAULT_GRID_MIN_WIDTH', $grid_min_width);
+	define('DYNOS_DEFAULT_GRID_MIN_WIDTH', $dynos_grid_min_width);
 }
 
 /**
@@ -236,9 +236,9 @@ if (!defined('DYNOS_DEFAULT_GRID_MIN_WIDTH')) {
  * @since 1.1.1
  */
 // Always run filter for transparency
-$max_faqs = (int) apply_filters('dynos_max_faqs_per_post', 100);
+$dynos_max_faqs = (int) apply_filters('dynos_max_faqs_per_post', 100);
 if (!defined('DYNOS_MAX_FAQS_PER_POST')) {
-	define('DYNOS_MAX_FAQS_PER_POST', $max_faqs);
+	define('DYNOS_MAX_FAQS_PER_POST', $dynos_max_faqs);
 }
 
 // Load Autoloader.
