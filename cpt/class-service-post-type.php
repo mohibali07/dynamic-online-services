@@ -54,7 +54,7 @@ class ServicePostType implements Registrable
 			throw new \InvalidArgumentException(
 				sprintf(
 					'Post type slug "%s" exceeds maximum length of 20 characters',
-					esc_html( $sanitized_slug )
+					esc_html($sanitized_slug)
 				)
 			);
 		}
@@ -171,7 +171,7 @@ class ServicePostType implements Registrable
 			'label' => __('Service', 'dynamic-online-services'),
 			'description' => __('Post Type Description', 'dynamic-online-services'),
 			'labels' => $labels,
-			'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
+			'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'),
 			'hierarchical' => false,
 			'public' => true,
 			'show_ui' => true,
