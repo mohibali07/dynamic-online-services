@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
  * Tooltip Component
  * Reusable tooltip for contextual help
  *
- * @param {Object}          props          - Component props
- * @param {string}          props.content  - Tooltip content
- * @param {React.ReactNode} props.children - Trigger element (optional)
- * @param {string}          props.position - Tooltip position: 'top', 'bottom', 'left', 'right'
+ * @param {Object} props          Component props.
+ * @param {string} props.content  Tooltip content.
+ * @param {Object} props.children Trigger element (optional).
+ * @param {string} props.position Tooltip position: 'top', 'bottom', 'left', 'right'.
  */
 const Tooltip = ( { content, children, position = 'top' } ) => {
 	const [ isVisible, setIsVisible ] = useState( false );

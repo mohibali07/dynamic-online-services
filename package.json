@@ -47,5 +47,9 @@
 		"@wordpress/scripts": "^30.0.0",
 		"dotenv": "^17.2.3",
 		"jest-environment-jsdom": "^30.2.0"
+	},
+	"dependencies": {
+		"@wordpress/icons": "^11.4.0",
+		"prop-types": "^15.8.1"
 	}
 }

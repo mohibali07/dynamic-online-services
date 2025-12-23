@@ -5,6 +5,8 @@ import {
 	RangeControl,
 	Popover,
 	Button,
+	SelectControl,
+	TextareaControl,
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalUnitControl as UnitControl,
 } from '@wordpress/components';
@@ -20,10 +22,11 @@ import PropTypes from 'prop-types';
  * @param {Object}   props
  * @param {string}   props.label     Label for the setting.
  * @param {string}   props.help      Help text/Description.
- * @param {string}   props.type      'text', 'number', 'color', 'toggle', 'range', 'unit'.
+ * @param {string}   props.type      'text', 'number', 'color', 'toggle', 'range', 'unit', 'select', 'textarea'.
  * @param {string}   props.optionKey The key in dynos_options.
  * @param {Object}   props.settings  The full settings object.
  * @param {Function} props.onChange  Callback when value changes.
+ * @param {Array}    [props.options] Optional options for 'select' type.
  */
 const OptionControl = ( {
 	label,
@@ -32,6 +35,7 @@ const OptionControl = ( {
 	optionKey,
 	settings,
 	onChange,
+	options,
 } ) => {
 	const value = settings[ optionKey ];
 	const [ showPopover, setShowPopover ] = useState( false );
@@ -55,44 +59,23 @@ const OptionControl = ( {
 				);
 			case 'color':
 				return (
-					<div
-						style={ {
-							display: 'flex',
-							alignItems: 'center',
-							gap: '10px',
-						} }
-					>
+					<div className="dynos-color-picker-trigger">
 						<Button
-							style={ {
-								backgroundColor: value,
-								width: '36px',
-								height: '36px',
-								borderRadius: '50%',
-								border: '1px solid #ccc',
-								cursor: 'pointer',
-								boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-							} }
+							className="dynos-color-swatch"
+							style={ { backgroundColor: value } }
 							onClick={ () => setShowPopover( ! showPopover ) }
 							aria-label={ __(
 								'Select color',
 								'dynamic-online-services'
 							) }
 						/>
-						<code
-							style={ {
-								background: '#f0f0f1',
-								padding: '4px 8px',
-								borderRadius: '4px',
-							} }
-						>
-							{ value }
-						</code>
+						<code className="dynos-color-code">{ value }</code>
 						{ showPopover && (
 							<Popover
 								position="bottom left"
 								onClose={ () => setShowPopover( false ) }
 							>
-								<div style={ { padding: '16px' } }>
+								<div className="dynos-popover-content">
 									<ColorPalette
 										colors={
 											window.dynosSettings
@@ -156,6 +139,21 @@ const OptionControl = ( {
 						] }
 					/>
 				);
+			case 'select':
+				return (
+					<SelectControl
+						value={ value }
+						options={ options }
+						onChange={ handleChange }
+					/>
+				);
+			case 'textarea':
+				return (
+					<TextareaControl
+						value={ value }
+						onChange={ handleChange }
+					/>
+				);
 			case 'number':
 				return (
 					<TextControl
@@ -206,10 +204,18 @@ OptionControl.propTypes = {
 		'range',
 		'unit',
 		'tel',
+		'select',
+		'textarea',
 	] ),
 	optionKey: PropTypes.string.isRequired,
 	settings: PropTypes.object.isRequired,
 	onChange: PropTypes.func.isRequired,
+	options: PropTypes.arrayOf(
+		PropTypes.shape( {
+			label: PropTypes.string,
+			value: PropTypes.string,
+		} )
+	),
 };
 
 OptionControl.defaultProps = {

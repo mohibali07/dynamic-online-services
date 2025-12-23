@@ -83,7 +83,7 @@ if (!defined('DYNOS_MIN_WP_VERSION')) {
 if (file_exists(DYNOS_PLUGIN_DIR . 'vendor/autoload.php')) {
 	require_once DYNOS_PLUGIN_DIR . 'vendor/autoload.php';
 }
-require_once DYNOS_PLUGIN_DIR . 'includes/class-autoloader.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/Autoloader.php';
 \TechmireSolutions\DynamicOnlineServices\Autoloader::run();
 
 // Check requirements before loading plugin.
@@ -92,8 +92,8 @@ if (!\TechmireSolutions\DynamicOnlineServices\Core\Requirements::check()) {
 }
 
 // Register activation, deactivation, and uninstall hooks.
-require_once DYNOS_PLUGIN_DIR . 'includes/core/class-activator.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/core/class-uninstaller.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/core/Activator.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/core/Uninstaller.php';
 
 register_activation_hook(__FILE__, array('\TechmireSolutions\DynamicOnlineServices\Core\Activator', 'activate'));
 register_deactivation_hook(__FILE__, array('\TechmireSolutions\DynamicOnlineServices\Core\Deactivator', 'deactivate'));

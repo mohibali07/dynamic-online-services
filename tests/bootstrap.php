@@ -24,7 +24,7 @@ if (!defined('DYNOS_PLUGIN_URL')) define('DYNOS_PLUGIN_URL', 'http://example.com
 if (!defined('DYNOS_VERSION')) define('DYNOS_VERSION', '1.1.3');
 
 // Manually require the Autoloader
-require_once DYNOS_PLUGIN_DIR . 'includes/class-autoloader.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/Autoloader.php';
 \TechmireSolutions\DynamicOnlineServices\Autoloader::run();
 
 // Load Proxy Stubs (NOW they delegate to WP_Mock's functions)

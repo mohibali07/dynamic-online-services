@@ -6,49 +6,49 @@
  * @package
  */
 
-document.addEventListener('DOMContentLoaded', function () {
-	const wrapper = document.querySelector('.dynos-whatsapp-wrapper');
-	const cta = document.querySelector('.dynos-whatsapp-cta');
+document.addEventListener( 'DOMContentLoaded', function () {
+	const wrapper = document.querySelector( '.dynos-whatsapp-wrapper' );
+	const cta = document.querySelector( '.dynos-whatsapp-cta' );
 
-	if (wrapper) {
+	if ( wrapper ) {
 		// 1. Initial CTA Display Logic
-		if (cta) {
-			const delay = parseInt(cta.getAttribute('data-delay'), 10) || 0;
-			setTimeout(function () {
+		if ( cta ) {
+			const delay = parseInt( cta.getAttribute( 'data-delay' ), 10 ) || 0;
+			setTimeout( function () {
 				cta.style.display = 'block';
-			}, delay * 1000);
+			}, delay * 1000 );
 		}
 
 		// 2. Drag and Drop Logic
-		if (wrapper.getAttribute('data-draggable') === 'true') {
-			initDraggable(wrapper);
+		if ( wrapper.getAttribute( 'data-draggable' ) === 'true' ) {
+			initDraggable( wrapper );
 		}
 	}
 
 	// Exit Intent (Show if not already shown)
-	document.addEventListener('mouseleave', function (e) {
-		if (e.clientY < 0 && cta && cta.style.display === 'none') {
+	document.addEventListener( 'mouseleave', function ( e ) {
+		if ( e.clientY < 0 && cta && cta.style.display === 'none' ) {
 			cta.style.display = 'block';
 		}
-	});
-});
+	} );
+} );
 
 /**
  * Initialize Draggable Logic
  * @param {HTMLElement} elm
  */
-function initDraggable(elm) {
+function initDraggable( elm ) {
 	let pos1 = 0,
 		pos2 = 0,
 		pos3 = 0,
 		pos4 = 0;
 	let isDragging = false;
-	const buttonLink = elm.querySelector('a');
+	const buttonLink = elm.querySelector( 'a' );
 
 	// Restore position from localStorage
-	const savedPos = localStorage.getItem('dynos_whatsapp_pos');
-	if (savedPos) {
-		const pos = JSON.parse(savedPos);
+	const savedPos = localStorage.getItem( 'dynos_whatsapp_pos' );
+	if ( savedPos ) {
+		const pos = JSON.parse( savedPos );
 		elm.style.top = pos.top;
 		elm.style.left = pos.left;
 		// Reset other positioning to avoid conflicts
@@ -66,10 +66,10 @@ function initDraggable(elm) {
 	elm.onmousedown = dragMouseDown;
 	elm.ontouchstart = dragMouseDown;
 
-	function dragMouseDown(e) {
+	function dragMouseDown( e ) {
 		// e = e || window.event; // Standardize event
 		// Allow clicking the close button on CTA without dragging
-		if (e.target.classList.contains('dynos-cta-close')) {
+		if ( e.target.classList.contains( 'dynos-cta-close' ) ) {
 			return;
 		}
 
@@ -79,8 +79,8 @@ function initDraggable(elm) {
 
 		isDragging = false;
 		// Get initial cursor position
-		pos3 = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-		pos4 = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+		pos3 = e.clientX || ( e.touches ? e.touches[ 0 ].clientX : 0 );
+		pos4 = e.clientY || ( e.touches ? e.touches[ 0 ].clientY : 0 );
 
 		document.onmouseup = closeDragElement;
 		document.onmousemove = elementDrag;
@@ -88,14 +88,14 @@ function initDraggable(elm) {
 		document.ontouchmove = elementDrag;
 	}
 
-	function elementDrag(e) {
+	function elementDrag( e ) {
 		isDragging = true;
 		// e = e || window.event;
 		// e.preventDefault(); // Prevent text selection/scrolling
 
 		// Calculate new cursor position
-		const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-		const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+		const clientX = e.clientX || ( e.touches ? e.touches[ 0 ].clientX : 0 );
+		const clientY = e.clientY || ( e.touches ? e.touches[ 0 ].clientY : 0 );
 
 		pos1 = pos3 - clientX;
 		pos2 = pos4 - clientY;
@@ -104,7 +104,7 @@ function initDraggable(elm) {
 
 		// Set the element's new position
 		// We first need to ensure we have swapped to top/left positioning if not already
-		if (elm.style.top === '' || elm.style.bottom !== 'auto') {
+		if ( elm.style.top === '' || elm.style.bottom !== 'auto' ) {
 			const rect = elm.getBoundingClientRect();
 			elm.style.top = rect.top + 'px';
 			elm.style.left = rect.left + 'px';
@@ -126,10 +126,18 @@ function initDraggable(elm) {
 		const elHeight = elm.offsetHeight;
 
 		// Boundary logic
-		if (newTop < 0) newTop = 0;
-		if (newLeft < 0) newLeft = 0;
-		if (newTop + elHeight > winHeight) newTop = winHeight - elHeight;
-		if (newLeft + elWidth > winWidth) newLeft = winWidth - elWidth;
+		if ( newTop < 0 ) {
+			newTop = 0;
+		}
+		if ( newLeft < 0 ) {
+			newLeft = 0;
+		}
+		if ( newTop + elHeight > winHeight ) {
+			newTop = winHeight - elHeight;
+		}
+		if ( newLeft + elWidth > winWidth ) {
+			newLeft = winWidth - elWidth;
+		}
 
 		elm.style.top = newTop + 'px';
 		elm.style.left = newLeft + 'px';
@@ -142,23 +150,23 @@ function initDraggable(elm) {
 		document.ontouchend = null;
 		document.ontouchmove = null;
 
-		if (isDragging) {
+		if ( isDragging ) {
 			// Save position
 			const pos = {
 				top: elm.style.top,
-				left: elm.style.left
+				left: elm.style.left,
 			};
-			localStorage.setItem('dynos_whatsapp_pos', JSON.stringify(pos));
+			localStorage.setItem( 'dynos_whatsapp_pos', JSON.stringify( pos ) );
 
 			// Prevent accidental click if it was a drag
 			// We need to add a temporary click block
-			if (buttonLink) {
-				const preventClick = function (clickE) {
+			if ( buttonLink ) {
+				const preventClick = function ( clickE ) {
 					clickE.preventDefault();
 					clickE.stopPropagation();
-					buttonLink.removeEventListener('click', preventClick);
+					buttonLink.removeEventListener( 'click', preventClick );
 				};
-				buttonLink.addEventListener('click', preventClick);
+				buttonLink.addEventListener( 'click', preventClick );
 			}
 		}
 	}
@@ -168,17 +176,17 @@ function initDraggable(elm) {
  * Handle WhatsApp click analytics
  * @param {HTMLElement} element
  */
-window.dynosWhatsAppClick = function (element) {
-	if (element.dataset.analytics === 'true') {
-		if (typeof gtag === 'function') {
-			gtag('event', 'click', {
+window.dynosWhatsAppClick = function ( element ) {
+	if ( element.dataset.analytics === 'true' ) {
+		if ( typeof gtag === 'function' ) {
+			gtag( 'event', 'click', {
 				event_category: 'Contact',
 				event_label: 'WhatsApp',
 				transport_type: 'beacon',
-			});
+			} );
 		}
-		if (typeof fbq === 'function') {
-			fbq('track', 'Contact');
+		if ( typeof fbq === 'function' ) {
+			fbq( 'track', 'Contact' );
 		}
 	}
 };
@@ -187,10 +195,10 @@ window.dynosWhatsAppClick = function (element) {
  * Toggle agent selection modal
  * @param {Event} event
  */
-window.dynosToggleAgentModal = function (event) {
+window.dynosToggleAgentModal = function ( event ) {
 	event.preventDefault();
-	const modal = document.getElementById('dynos-agent-modal');
-	if (modal) {
+	const modal = document.getElementById( 'dynos-agent-modal' );
+	if ( modal ) {
 		modal.style.display =
 			modal.style.display === 'none' || modal.style.display === ''
 				? 'flex'
@@ -199,9 +207,9 @@ window.dynosToggleAgentModal = function (event) {
 };
 
 // Close modal when clicking outside
-window.onclick = function (event) {
-	const modal = document.getElementById('dynos-agent-modal');
-	if (modal && event.target === modal) {
+window.onclick = function ( event ) {
+	const modal = document.getElementById( 'dynos-agent-modal' );
+	if ( modal && event.target === modal ) {
 		modal.style.display = 'none';
 	}
 };

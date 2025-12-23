@@ -1,18 +1,42 @@
-import {
-	PanelBody,
-	SelectControl,
-	TextareaControl,
-	TextControl,
-	Button,
-} from '@wordpress/components';
+import { PanelBody, Button } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import OptionControl from './OptionControl';
 
 const WhatsAppSettings = ( { settings, onChange } ) => {
-	const handleSelectChange = ( key, value ) => {
+	const handleAgentChange = ( index, agentUpdates ) => {
+		const newAgents = [ ...( settings.whatsapp_agents || [] ) ];
+		newAgents[ index ] = {
+			...newAgents[ index ],
+			...agentUpdates,
+		};
 		onChange( {
 			...settings,
-			[ key ]: value,
+			whatsapp_agents: newAgents,
+		} );
+	};
+
+	const removeAgent = ( index ) => {
+		const newAgents = [ ...( settings.whatsapp_agents || [] ) ];
+		newAgents.splice( index, 1 );
+		onChange( {
+			...settings,
+			whatsapp_agents: newAgents,
+		} );
+	};
+
+	const addAgent = () => {
+		const newAgents = [
+			...( settings.whatsapp_agents || [] ),
+			{
+				name: '',
+				number: '',
+				label: '',
+				avatar_url: '',
+			},
+		];
+		onChange( {
+			...settings,
+			whatsapp_agents: newAgents,
 		} );
 	};
 
@@ -51,7 +75,7 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 					settings={ settings }
 					onChange={ onChange }
 				/>
-				<TextareaControl
+				<OptionControl
 					label={ __(
 						'Pre-filled Message',
 						'dynamic-online-services'
@@ -60,10 +84,10 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 						'Message to send when user clicks the button. Supports {current_page_url}, {page_title}.',
 						'dynamic-online-services'
 					) }
-					value={ settings.whatsapp_message || '' }
-					onChange={ ( value ) =>
-						handleSelectChange( 'whatsapp_message', value )
-					}
+					type="textarea"
+					optionKey="whatsapp_message"
+					settings={ settings }
+					onChange={ onChange }
 				/>
 			</PanelBody>
 
@@ -75,9 +99,10 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 				initialOpen={ false }
 			>
 				<div className="dynos-grid-2">
-					<SelectControl
+					<OptionControl
 						label={ __( 'Icon Style', 'dynamic-online-services' ) }
-						value={ settings.whatsapp_icon_style || 'default' }
+						type="select"
+						optionKey="whatsapp_icon_style"
 						options={ [
 							{
 								label: __(
@@ -101,13 +126,13 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 								value: 'avatar',
 							},
 						] }
-						onChange={ ( value ) =>
-							handleSelectChange( 'whatsapp_icon_style', value )
-						}
+						settings={ settings }
+						onChange={ onChange }
 					/>
-					<SelectControl
+					<OptionControl
 						label={ __( 'Position', 'dynamic-online-services' ) }
-						value={ settings.whatsapp_position || 'right' }
+						type="select"
+						optionKey="whatsapp_position"
 						options={ [
 							{
 								label: __(
@@ -124,9 +149,8 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 								value: 'left',
 							},
 						] }
-						onChange={ ( value ) =>
-							handleSelectChange( 'whatsapp_position', value )
-						}
+						settings={ settings }
+						onChange={ onChange }
 					/>
 				</div>
 
@@ -240,12 +264,13 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 				initialOpen={ false }
 			>
 				<div className="dynos-grid-2">
-					<SelectControl
+					<OptionControl
 						label={ __(
 							'Show On Pages',
 							'dynamic-online-services'
 						) }
-						value={ settings.whatsapp_visibility || 'all' }
+						type="select"
+						optionKey="whatsapp_visibility"
 						options={ [
 							{
 								label: __(
@@ -262,9 +287,8 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 								value: 'home',
 							},
 						] }
-						onChange={ ( value ) =>
-							handleSelectChange( 'whatsapp_visibility', value )
-						}
+						settings={ settings }
+						onChange={ onChange }
 					/>
 					<OptionControl
 						label={ __(
@@ -305,7 +329,7 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 					/>
 				</div>
 
-				<hr />
+				<div className="dynos-divider" />
 
 				<OptionControl
 					label={ __( 'Enable Schedule', 'dynamic-online-services' ) }
@@ -344,36 +368,35 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 							/>
 						</div>
 
-						<SelectControl
+						<OptionControl
 							label={ __(
 								'Timezone',
 								'dynamic-online-services'
 							) }
-							value={ settings.whatsapp_timezone || 'UTC' }
+							type="select"
+							optionKey="whatsapp_timezone"
 							options={
 								window.dynosSettings?.timezones || [
 									{ label: 'UTC', value: 'UTC' },
 								]
 							}
-							onChange={ ( value ) =>
-								handleSelectChange( 'whatsapp_timezone', value )
-							}
 							help={ __(
 								'Select your timezone.',
 								'dynamic-online-services'
 							) }
+							settings={ settings }
+							onChange={ onChange }
 						/>
 
-						<hr />
+						<div className="dynos-divider" />
 
-						<SelectControl
+						<OptionControl
 							label={ __(
 								'Offline Behavior',
 								'dynamic-online-services'
 							) }
-							value={
-								settings.whatsapp_offline_behavior || 'hide'
-							}
+							type="select"
+							optionKey="whatsapp_offline_behavior"
 							options={ [
 								{
 									label: __(
@@ -390,35 +413,28 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 									value: 'show',
 								},
 							] }
-							onChange={ ( value ) =>
-								handleSelectChange(
-									'whatsapp_offline_behavior',
-									value
-								)
-							}
 							help={ __(
 								'What to do when outside business hours.',
 								'dynamic-online-services'
 							) }
+							settings={ settings }
+							onChange={ onChange }
 						/>
 
 						{ settings.whatsapp_offline_behavior === 'show' && (
-							<TextareaControl
+							<OptionControl
 								label={ __(
 									'Offline Message',
 									'dynamic-online-services'
 								) }
-								value={ settings.whatsapp_offline_text || '' }
-								onChange={ ( value ) =>
-									handleSelectChange(
-										'whatsapp_offline_text',
-										value
-									)
-								}
+								type="textarea"
+								optionKey="whatsapp_offline_text"
 								help={ __(
 									'Message to display when offline.',
 									'dynamic-online-services'
 								) }
+								settings={ settings }
+								onChange={ onChange }
 							/>
 						) }
 					</>
@@ -448,26 +464,9 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 					<div className="dynos-agents-list">
 						{ ( settings.whatsapp_agents || [] ).map(
 							( agent, index ) => (
-								<div
-									key={ index }
-									className="dynos-agent-item"
-									style={ {
-										background: '#f8f9fa',
-										padding: '15px',
-										marginBottom: '15px',
-										borderRadius: '4px',
-										border: '1px solid #ddd',
-									} }
-								>
-									<div
-										style={ {
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-											marginBottom: '10px',
-										} }
-									>
-										<h4 style={ { margin: 0 } }>
+								<div key={ index } className="dynos-agent-item">
+									<div className="dynos-agent-header">
+										<h4>
 											{ sprintf(
 												/* translators: %d is the agent number */
 												__(
@@ -481,17 +480,9 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 											isDestructive
 											isSmall
 											variant="secondary"
-											onClick={ () => {
-												const newAgents = [
-													...( settings.whatsapp_agents ||
-														[] ),
-												];
-												newAgents.splice( index, 1 );
-												onChange( {
-													...settings,
-													whatsapp_agents: newAgents,
-												} );
-											} }
+											onClick={ () =>
+												removeAgent( index )
+											}
 										>
 											{ __(
 												'Remove',
@@ -500,115 +491,75 @@ const WhatsAppSettings = ( { settings, onChange } ) => {
 										</Button>
 									</div>
 									<div className="dynos-grid-2">
-										<TextControl
+										<OptionControl
 											label={ __(
 												'Name',
 												'dynamic-online-services'
 											) }
-											value={ agent.name }
-											onChange={ ( val ) => {
-												const newAgents = [
-													...( settings.whatsapp_agents ||
-														[] ),
-												];
-												newAgents[ index ] = {
-													...newAgents[ index ],
-													name: val,
-												};
-												onChange( {
-													...settings,
-													whatsapp_agents: newAgents,
-												} );
-											} }
+											type="text"
+											optionKey="name"
+											settings={ agent }
+											onChange={ ( val ) =>
+												handleAgentChange( index, {
+													name: val.name,
+												} )
+											}
 										/>
-										<TextControl
+										<OptionControl
 											label={ __(
 												'Number (e.g., 92300…)',
 												'dynamic-online-services'
 											) }
 											type="tel"
-											value={ agent.number }
-											onChange={ ( val ) => {
-												const newAgents = [
-													...( settings.whatsapp_agents ||
-														[] ),
-												];
-												newAgents[ index ] = {
-													...newAgents[ index ],
-													number: val,
-												};
-												onChange( {
-													...settings,
-													whatsapp_agents: newAgents,
-												} );
-											} }
+											optionKey="number"
+											settings={ agent }
+											onChange={ ( val ) =>
+												handleAgentChange( index, {
+													number: val.number,
+												} )
+											}
 										/>
 									</div>
-									<TextControl
+									<OptionControl
 										label={ __(
 											'Role / Label',
 											'dynamic-online-services'
 										) }
-										value={ agent.label }
-										placeholder="e.g. Sales Support"
-										onChange={ ( val ) => {
-											const newAgents = [
-												...( settings.whatsapp_agents ||
-													[] ),
-											];
-											newAgents[ index ] = {
-												...newAgents[ index ],
-												label: val,
-											};
-											onChange( {
-												...settings,
-												whatsapp_agents: newAgents,
-											} );
-										} }
+										type="text"
+										optionKey="label"
+										help={ __(
+											'e.g. Sales Support',
+											'dynamic-online-services'
+										) }
+										settings={ agent }
+										onChange={ ( val ) =>
+											handleAgentChange( index, {
+												label: val.label,
+											} )
+										}
 									/>
-									<TextControl
+									<OptionControl
 										label={ __(
 											'Avatar URL (Optional)',
 											'dynamic-online-services'
 										) }
-										value={ agent.avatar_url || '' }
-										placeholder="https://example.com/avatar.jpg"
-										onChange={ ( val ) => {
-											const newAgents = [
-												...( settings.whatsapp_agents ||
-													[] ),
-											];
-											newAgents[ index ] = {
-												...newAgents[ index ],
-												avatar_url: val,
-											};
-											onChange( {
-												...settings,
-												whatsapp_agents: newAgents,
-											} );
-										} }
+										type="text"
+										optionKey="avatar_url"
+										help={ __(
+											'https://example.com/avatar.jpg',
+											'dynamic-online-services'
+										) }
+										settings={ agent }
+										onChange={ ( val ) =>
+											handleAgentChange( index, {
+												avatar_url: val.avatar_url,
+											} )
+										}
 									/>
 								</div>
 							)
 						) }
-						<Button
-							isSecondary
-							onClick={ () => {
-								const newAgents = [
-									...( settings.whatsapp_agents || [] ),
-									{
-										name: '',
-										number: '',
-										label: '',
-										avatar_url: '',
-									},
-								];
-								onChange( {
-									...settings,
-									whatsapp_agents: newAgents,
-								} );
-							} }
-						>
+						<Button isSecondary onClick={ addAgent }>
 							{ __( 'Add New Agent', 'dynamic-online-services' ) }
 						</Button>
 					</div>

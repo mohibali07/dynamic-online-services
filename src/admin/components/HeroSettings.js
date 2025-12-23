@@ -1,4 +1,4 @@
-import { PanelBody, SelectControl } from '@wordpress/components';
+import { PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import OptionControl from './OptionControl';
 
@@ -120,13 +120,14 @@ const HeroSettings = ( { settings, onChange } ) => {
 				title={ __( 'Typography', 'dynamic-online-services' ) }
 				initialOpen={ false }
 			>
-				<SelectControl
+				<OptionControl
 					label={ __( 'Google Font', 'dynamic-online-services' ) }
 					help={ __(
 						'Choose a Google Font for hero titles.',
 						'dynamic-online-services'
 					) }
-					value={ settings?.hero_google_font || 'sans-serif' }
+					type="select"
+					optionKey="hero_google_font"
 					options={ [
 						{ label: 'Default (sans-serif)', value: 'sans-serif' },
 						{ label: 'Inter', value: 'Inter' },
@@ -142,9 +143,8 @@ const HeroSettings = ( { settings, onChange } ) => {
 						{ label: 'Raleway', value: 'Raleway' },
 						{ label: 'Merriweather', value: 'Merriweather' },
 					] }
-					onChange={ ( value ) =>
-						onChange( 'hero_google_font', value )
-					}
+					settings={ settings }
+					onChange={ onChange }
 				/>
 
 				<OptionControl
@@ -159,7 +159,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 					onChange={ onChange }
 				/>
 
-				<hr style={ { margin: '20px 0' } } />
+				<div className="dynos-divider" />
 				<h3>{ __( 'Title Font Sizes', 'dynamic-online-services' ) }</h3>
 				<OptionControl
 					label={ __(
@@ -201,7 +201,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 					onChange={ onChange }
 				/>
 
-				<hr style={ { margin: '20px 0' } } />
+				<div className="dynos-divider" />
 				<h3>
 					{ __(
 						'Description Font Sizes',
@@ -296,13 +296,14 @@ const HeroSettings = ( { settings, onChange } ) => {
 					settings={ settings }
 					onChange={ onChange }
 				/>
-				<SelectControl
+				<OptionControl
 					label={ __( 'Text Alignment', 'dynamic-online-services' ) }
 					help={ __(
 						'Horizontal text alignment inside the hero.',
 						'dynamic-online-services'
 					) }
-					value={ settings?.hero_text_alignment || 'center' }
+					type="select"
+					optionKey="hero_text_alignment"
 					options={ [
 						{
 							label: __( 'Left', 'dynamic-online-services' ),
@@ -317,11 +318,10 @@ const HeroSettings = ( { settings, onChange } ) => {
 							value: 'right',
 						},
 					] }
-					onChange={ ( value ) =>
-						onChange( 'hero_text_alignment', value )
-					}
+					settings={ settings }
+					onChange={ onChange }
 				/>
-				<SelectControl
+				<OptionControl
 					label={ __(
 						'Vertical Alignment',
 						'dynamic-online-services'
@@ -330,7 +330,8 @@ const HeroSettings = ( { settings, onChange } ) => {
 						'Vertical position of content inside the hero.',
 						'dynamic-online-services'
 					) }
-					value={ settings?.hero_vertical_alignment || 'center' }
+					type="select"
+					optionKey="hero_vertical_alignment"
 					options={ [
 						{
 							label: __( 'Top', 'dynamic-online-services' ),
@@ -345,9 +346,8 @@ const HeroSettings = ( { settings, onChange } ) => {
 							value: 'bottom',
 						},
 					] }
-					onChange={ ( value ) =>
-						onChange( 'hero_vertical_alignment', value )
-					}
+					settings={ settings }
+					onChange={ onChange }
 				/>
 			</PanelBody>
 
@@ -365,7 +365,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 						'Show a call-to-action button in the hero.',
 						'dynamic-online-services'
 					) }
-					type="checkbox"
+					type="toggle"
 					optionKey="hero_cta_enabled"
 					settings={ settings }
 					onChange={ onChange }
@@ -400,7 +400,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 							settings={ settings }
 							onChange={ onChange }
 						/>
-						<SelectControl
+						<OptionControl
 							label={ __(
 								'Button Style',
 								'dynamic-online-services'
@@ -409,7 +409,8 @@ const HeroSettings = ( { settings, onChange } ) => {
 								'Visual style of the button.',
 								'dynamic-online-services'
 							) }
-							value={ settings?.hero_cta_style || 'primary' }
+							type="select"
+							optionKey="hero_cta_style"
 							options={ [
 								{
 									label: __(
@@ -433,9 +434,8 @@ const HeroSettings = ( { settings, onChange } ) => {
 									value: 'outline',
 								},
 							] }
-							onChange={ ( value ) =>
-								onChange( 'hero_cta_style', value )
-							}
+							settings={ settings }
+							onChange={ onChange }
 						/>
 						<OptionControl
 							label={ __(
@@ -446,7 +446,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 								'Open link in a new browser tab.',
 								'dynamic-online-services'
 							) }
-							type="checkbox"
+							type="toggle"
 							optionKey="hero_cta_new_tab"
 							settings={ settings }
 							onChange={ onChange }
@@ -469,7 +469,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 						'Use a video as the hero background.',
 						'dynamic-online-services'
 					) }
-					type="checkbox"
+					type="toggle"
 					optionKey="hero_video_enabled"
 					settings={ settings }
 					onChange={ onChange }
@@ -513,7 +513,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 								'Automatically play video on page load.',
 								'dynamic-online-services'
 							) }
-							type="checkbox"
+							type="toggle"
 							optionKey="hero_video_autoplay"
 							settings={ settings }
 							onChange={ onChange }
@@ -524,7 +524,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 								'Loop the video continuously.',
 								'dynamic-online-services'
 							) }
-							type="checkbox"
+							type="toggle"
 							optionKey="hero_video_loop"
 							settings={ settings }
 							onChange={ onChange }
@@ -535,7 +535,7 @@ const HeroSettings = ( { settings, onChange } ) => {
 								'Mute the video audio.',
 								'dynamic-online-services'
 							) }
-							type="checkbox"
+							type="toggle"
 							optionKey="hero_video_muted"
 							settings={ settings }
 							onChange={ onChange }
@@ -555,18 +555,18 @@ const HeroSettings = ( { settings, onChange } ) => {
 						'Apply CSS-only parallax scrolling effect to background.',
 						'dynamic-online-services'
 					) }
-					type="checkbox"
+					type="toggle"
 					optionKey="hero_parallax_enabled"
 					settings={ settings }
 					onChange={ onChange }
 				/>
 				{ settings?.hero_parallax_enabled && (
-					<p className="dynos-info-box">
+					<div className="dynos-info-box">
 						{ __(
 							'Parallax effect respects prefers-reduced-motion. Uses CSS background-attachment: fixed for GPU acceleration.',
 							'dynamic-online-services'
 						) }
-					</p>
+					</div>
 				) }
 			</PanelBody>
 		</div>

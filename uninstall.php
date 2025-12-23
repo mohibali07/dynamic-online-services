@@ -20,7 +20,7 @@ if ( ! defined( 'DYNOS_PLUGIN_DIR' ) ) {
 }
 
 // Include the uninstaller class.
-require_once DYNOS_PLUGIN_DIR . 'includes/core/class-uninstaller.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/core/Uninstaller.php';
 
 // Run the uninstall.
 \TechmireSolutions\DynamicOnlineServices\Core\Uninstaller::uninstall();
