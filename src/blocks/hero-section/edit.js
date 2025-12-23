@@ -4,7 +4,6 @@ import {
 	InspectorControls,
 	MediaUpload,
 	RichText,
-	InnerBlocks,
 } from '@wordpress/block-editor';
 import {
 	PanelBody,

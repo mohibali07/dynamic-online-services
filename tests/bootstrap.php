@@ -60,6 +60,14 @@ WP_Mock::userFunction('register_deactivation_hook', ['return' => true]);
 WP_Mock::userFunction('wp_die', ['return' => true]);
 WP_Mock::userFunction('admin_url', ['return' => 'http://example.com/wp-admin/']);
 WP_Mock::userFunction('get_admin_url', ['return' => 'http://example.com/wp-admin/']);
+WP_Mock::userFunction('register_post_type', ['return' => true]);
+WP_Mock::userFunction('register_taxonomy', ['return' => true]);
+WP_Mock::userFunction('register_block_type', ['return' => true]);
+WP_Mock::userFunction('flush_rewrite_rules', ['return' => true]);
+WP_Mock::userFunction('get_post_type_object', ['return' => null]);
+WP_Mock::userFunction('get_object_taxonomies', ['return' => []]);
+WP_Mock::userFunction('date_i18n', ['return' => 'Date']);
+WP_Mock::userFunction('wp_post_revision_title', ['return' => 'Revision']);
 
 // Dynos Helper Stubs (to satisfy function_exists checks in namespaced code)
 WP_Mock::userFunction('dynos_validate_term_object', ['return_arg' => 0]);
@@ -76,7 +84,7 @@ if (!function_exists('plugin_dir_path')) { function plugin_dir_path($file) { ret
 if (!function_exists('esc_html')) { function esc_html($text) { return $text; } }
 if (!function_exists('__')) { function __($text, $domain = 'default') { return $text; } }
 if (!function_exists('sanitize_title')) { function sanitize_title($title, $fallback = '', $context = 'save') { return strtolower(str_replace(' ', '-', (string)$title)); } }
-if (!function_exists('sanitize_text_field')) { function sanitize_text_field($str) { return (string)$str; } }
+if (!function_exists('sanitize_text_field')) { function sanitize_text_field($str) { return is_string($str) ? trim($str) : (string)$str; } }
 
 if (!function_exists('is_admin')) { function is_admin() { return false; } }
 if (!function_exists('absint')) { function absint($val) { return abs((int)$val); } }

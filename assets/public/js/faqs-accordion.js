@@ -9,7 +9,7 @@
  * @since      1.0.0
  */
 
-(function () {
+( function () {
 	'use strict';
 
 	// Constants for// Animation timing
@@ -29,28 +29,28 @@
 	 *
 	 * @return {void}
 	 */
-	function closeAllFaqsExcept(allQuestions, currentQuestion) {
-		if (!allQuestions || allQuestions.length === 0) {
+	function closeAllFaqsExcept( allQuestions, currentQuestion ) {
+		if ( ! allQuestions || allQuestions.length === 0 ) {
 			return;
 		}
 
-		allQuestions.forEach(function (question) {
+		allQuestions.forEach( function ( question ) {
 			// Skip the current question
-			if (question === currentQuestion) {
+			if ( question === currentQuestion ) {
 				return;
 			}
 
 			// Remove active state
-			question.classList.remove(CLASS_ACTIVE);
-			question.setAttribute('aria-expanded', 'false');
+			question.classList.remove( CLASS_ACTIVE );
+			question.setAttribute( 'aria-expanded', 'false' );
 
 			// Hide the answer
 			const answer = question.nextElementSibling;
-			if (answer && answer.classList.contains('faq-answer')) {
-				answer.classList.remove(CLASS_SHOW);
-				answer.setAttribute('aria-hidden', 'true');
+			if ( answer && answer.classList.contains( 'faq-answer' ) ) {
+				answer.classList.remove( CLASS_SHOW );
+				answer.setAttribute( 'aria-hidden', 'true' );
 			}
-		});
+		} );
 	}
 
 	/**
@@ -64,16 +64,16 @@
 	 *
 	 * @return {void}
 	 */
-	function toggleFaqItem(question, isActive, allQuestions) {
-		if (!question) {
+	function toggleFaqItem( question, isActive, allQuestions ) {
+		if ( ! question ) {
 			return;
 		}
 
 		const answer = question.nextElementSibling;
 
 		// Validate that answer element exists and is the correct element
-		if (!answer || !answer.classList.contains('faq-answer')) {
-			if (typeof window.sosConsoleLog === 'function') {
+		if ( ! answer || ! answer.classList.contains( 'faq-answer' ) ) {
+			if ( typeof window.sosConsoleLog === 'function' ) {
 				window.sosConsoleLog(
 					'warn',
 					'FAQ answer element not found for question:',
@@ -84,31 +84,31 @@
 		}
 
 		// Close all other FAQs first
-		closeAllFaqsExcept(allQuestions, question);
+		closeAllFaqsExcept( allQuestions, question );
 
 		// Toggle current FAQ
-		if (isActive) {
+		if ( isActive ) {
 			// Close this FAQ
-			question.classList.remove(CLASS_ACTIVE);
-			question.setAttribute('aria-expanded', 'false');
-			answer.classList.remove(CLASS_SHOW);
-			answer.setAttribute('aria-hidden', 'true');
+			question.classList.remove( CLASS_ACTIVE );
+			question.setAttribute( 'aria-expanded', 'false' );
+			answer.classList.remove( CLASS_SHOW );
+			answer.setAttribute( 'aria-hidden', 'true' );
 		} else {
 			// Open this FAQ
-			question.classList.add(CLASS_ACTIVE);
-			question.setAttribute('aria-expanded', 'true');
-			answer.classList.add(CLASS_SHOW);
-			answer.setAttribute('aria-hidden', 'false');
+			question.classList.add( CLASS_ACTIVE );
+			question.setAttribute( 'aria-expanded', 'true' );
+			answer.classList.add( CLASS_SHOW );
+			answer.setAttribute( 'aria-hidden', 'false' );
 
 			// Set focus to the opened answer for screen readers
 			// Use tabindex -1 to make it programmatically focusable
-			answer.setAttribute('tabindex', '-1');
-			answer.focus({ preventScroll: true });
+			answer.setAttribute( 'tabindex', '-1' );
+			answer.focus( { preventScroll: true } );
 
 			// Remove tabindex after focus to maintain natural tab order
-			setTimeout(function () {
-				answer.removeAttribute('tabindex');
-			}, 100);
+			setTimeout( function () {
+				answer.removeAttribute( 'tabindex' );
+			}, 100 );
 		}
 	}
 
@@ -124,11 +124,11 @@
 	 *
 	 * @return {void}
 	 */
-	function handleKeyboardNavigation(event, question) {
+	function handleKeyboardNavigation( event, question ) {
 		const key = event.key;
 
 		// Handle Enter and Space to toggle
-		if (key === 'Enter' || key === ' ') {
+		if ( key === 'Enter' || key === ' ' ) {
 			event.preventDefault();
 			question.click();
 			return;
@@ -136,39 +136,39 @@
 
 		// Handle arrow keys for navigation between questions
 		const allQuestions = Array.from(
-			document.querySelectorAll(SELECTOR_FAQ_QUESTION)
+			document.querySelectorAll( SELECTOR_FAQ_QUESTION )
 		);
-		const currentIndex = allQuestions.indexOf(question);
+		const currentIndex = allQuestions.indexOf( question );
 
-		if (currentIndex === -1) {
+		if ( currentIndex === -1 ) {
 			return;
 		}
 
 		let targetIndex = currentIndex;
 
-		if (key === 'ArrowDown' || key === 'Down') {
+		if ( key === 'ArrowDown' || key === 'Down' ) {
 			event.preventDefault();
 			// Move to next question
-			targetIndex = (currentIndex + 1) % allQuestions.length;
-		} else if (key === 'ArrowUp' || key === 'Up') {
+			targetIndex = ( currentIndex + 1 ) % allQuestions.length;
+		} else if ( key === 'ArrowUp' || key === 'Up' ) {
 			event.preventDefault();
 			// Move to previous question
 			targetIndex =
-				(currentIndex - 1 + allQuestions.length) %
+				( currentIndex - 1 + allQuestions.length ) %
 				allQuestions.length;
-		} else if (key === 'Home') {
+		} else if ( key === 'Home' ) {
 			event.preventDefault();
 			// Move to first question
 			targetIndex = 0;
-		} else if (key === 'End') {
+		} else if ( key === 'End' ) {
 			event.preventDefault();
 			// Move to last question
 			targetIndex = allQuestions.length - 1;
 		}
 
 		// Focus the target question
-		if (targetIndex !== currentIndex && allQuestions[targetIndex]) {
-			allQuestions[targetIndex].focus();
+		if ( targetIndex !== currentIndex && allQuestions[ targetIndex ] ) {
+			allQuestions[ targetIndex ].focus();
 		}
 	}
 
@@ -182,63 +182,63 @@
 	 * @return {void}
 	 */
 	function initializeFaqAccordion() {
-		const faqQuestions = document.querySelectorAll(SELECTOR_FAQ_QUESTION);
+		const faqQuestions = document.querySelectorAll( SELECTOR_FAQ_QUESTION );
 
 		// Defensive check: return early if no FAQ questions found
-		if (!faqQuestions || faqQuestions.length === 0) {
+		if ( ! faqQuestions || faqQuestions.length === 0 ) {
 			return;
 		}
 
-		faqQuestions.forEach(function (question, index) {
+		faqQuestions.forEach( function ( question, index ) {
 			// Ensure proper ARIA attributes are set
-			if (!question.hasAttribute('role')) {
-				question.setAttribute('role', 'button');
+			if ( ! question.hasAttribute( 'role' ) ) {
+				question.setAttribute( 'role', 'button' );
 			}
-			if (!question.hasAttribute('aria-expanded')) {
-				question.setAttribute('aria-expanded', 'false');
+			if ( ! question.hasAttribute( 'aria-expanded' ) ) {
+				question.setAttribute( 'aria-expanded', 'false' );
 			}
-			if (!question.hasAttribute('tabindex')) {
-				question.setAttribute('tabindex', '0');
+			if ( ! question.hasAttribute( 'tabindex' ) ) {
+				question.setAttribute( 'tabindex', '0' );
 			}
 
 			// Add unique ID for accessibility if not present
-			if (!question.id) {
+			if ( ! question.id ) {
 				question.id = 'faq-question-' + index;
 			}
 
 			// Link answer to question via aria-controls
 			const answer = question.nextElementSibling;
-			if (answer && answer.classList.contains('faq-answer')) {
-				if (!answer.id) {
+			if ( answer && answer.classList.contains( 'faq-answer' ) ) {
+				if ( ! answer.id ) {
 					answer.id = 'faq-answer-' + index;
 				}
-				question.setAttribute('aria-controls', answer.id);
-				answer.setAttribute('aria-labelledby', question.id);
-				answer.setAttribute('aria-hidden', 'true');
+				question.setAttribute( 'aria-controls', answer.id );
+				answer.setAttribute( 'aria-labelledby', question.id );
+				answer.setAttribute( 'aria-hidden', 'true' );
 			}
 
 			// Handle click events
-			question.addEventListener('click', function () {
-				const isActive = this.classList.contains(CLASS_ACTIVE);
-				toggleFaqItem(this, isActive, faqQuestions);
-			});
+			question.addEventListener( 'click', function () {
+				const isActive = this.classList.contains( CLASS_ACTIVE );
+				toggleFaqItem( this, isActive, faqQuestions );
+			} );
 
 			// Handle keyboard navigation
-			question.addEventListener('keydown', function (e) {
-				handleKeyboardNavigation(e, this);
-			});
-		});
+			question.addEventListener( 'keydown', function ( e ) {
+				handleKeyboardNavigation( e, this );
+			} );
+		} );
 	}
 
 	/**
 	 * Initialize on DOM Content Loaded.
 	 */
-	document.addEventListener('DOMContentLoaded', function () {
+	document.addEventListener( 'DOMContentLoaded', function () {
 		try {
 			initializeFaqAccordion();
-		} catch (error) {
+		} catch ( error ) {
 			// Log error to console in development
-			if (typeof window.sosConsoleLog === 'function') {
+			if ( typeof window.sosConsoleLog === 'function' ) {
 				window.sosConsoleLog(
 					'error',
 					'SOS FAQs Accordion Error:',
@@ -246,5 +246,5 @@
 				);
 			}
 		}
-	});
-})();
+	} );
+} )();

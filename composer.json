@@ -26,7 +26,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"TechmireSolutions\\DynamicOnlineServices\\": "includes/"
+			"TechmireSolutions\\DynamicOnlineServices\\": "includes/",
+			"TechmireSolutions\\DynamicOnlineServices\\Admin\\": "admin/",
+			"TechmireSolutions\\DynamicOnlineServices\\Cpt\\": "cpt/",
+			"TechmireSolutions\\DynamicOnlineServices\\Shortcodes\\": "frontend/shortcodes/",
+			"TechmireSolutions\\DynamicOnlineServices\\Renderers\\": "frontend/renderers/",
+			"TechmireSolutions\\DynamicOnlineServices\\Services\\": "frontend/services/"
 		}
 	},
 	"config": {

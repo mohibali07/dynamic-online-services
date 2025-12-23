@@ -31,7 +31,7 @@ if ( ! function_exists( 'dynos_validate_orderby' ) ) {
 if ( ! function_exists( 'dynos_log_error' ) ) {
 	function dynos_log_error( $message, $level = 'error', $context = array() ) {
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( sprintf( 'DYNOS [%s]: %s %s', strtoupper( $level ), $message, json_encode( $context ) ) );
+		error_log( sprintf( 'DYNOS [%s]: %s %s', strtoupper( $level ), $message, wp_json_encode( $context ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional debug logging
 		}
 	}
 }

@@ -213,6 +213,14 @@ class Cache
 	 */
 	public static function clear_on_post_save(int $post_id): void
 	{
+		// Nonce verification to prevent CSRF.
+		if (isset($_POST['_wpnonce']) && !wp_verify_nonce(sanitize_text_field(wp_unslash((string)$_POST['_wpnonce'])), 'update-post_' . $post_id)) {
+			// If it's not a standard post save, check for quick edit
+			if (isset($_POST['_inline_edit']) && !wp_verify_nonce(sanitize_text_field(wp_unslash((string)$_POST['_inline_edit'])), 'inlineeditnonce')) {
+				return;
+			}
+		}
+
 		// Clear post caches (always needed)
 		self::clear('dynos_posts_*');
 
@@ -221,13 +229,12 @@ class Cache
 		$taxonomy_modified = false;
 
 		// Check for taxonomy input in POST data (taxonomy assignment)
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Checking presence, not using value
+		// We use current_user_can as a basic permission check here since different pages use different nonces
 		if (isset($_POST['tax_input']) && is_array($_POST['tax_input'])) {
 			$taxonomy_modified = true;
 		}
 
 		// Check for quick edit taxonomy changes
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Checking presence, not using value
 		if (isset($_POST['_inline_edit']) || isset($_POST['action']) && 'inline-save' === $_POST['action']) {
 			// Quick edit might change taxonomies, be conservative
 			$post_type = get_post_type($post_id);

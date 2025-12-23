@@ -5,11 +5,11 @@
  * This file documents all available hooks and filters in the plugin.
  * This file is for documentation purposes only and is not loaded.
  *
- * @package Dynamic_Online_Services
- * @subpackage Documentation
- */
-
 declare(strict_types=1);
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * FILTERS

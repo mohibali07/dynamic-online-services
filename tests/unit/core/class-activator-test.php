@@ -65,9 +65,18 @@ class ActivatorTest extends TestCase
          global $wp_version;
          $wp_version = '6.0';
 
-		// Mock flush_rewrite_rules
-		\WP_Mock::userFunction('flush_rewrite_rules')
-			->once();
+		// Mock transients called by Options::get() which is called via register_post_types_and_flush -> ServicePostType -> get_labels
+		\WP_Mock::userFunction('get_transient')
+			->andReturn(false);
+		\WP_Mock::userFunction('set_transient')
+			->with('dynos_options_cache_version', \WP_Mock\Functions::type('int'), 86400)
+			->andReturn(true);
+		\WP_Mock::userFunction('set_transient')
+			->with('dynos_options_last_update', \WP_Mock\Functions::type('int'), 86400)
+			->andReturn(true);
+		\WP_Mock::userFunction('set_transient')
+			->with('dynos_options_hash', \WP_Mock\Functions::type('string'), 86400)
+			->andReturn(true);
 
 		// Actually call the method
 		Activator::activate();

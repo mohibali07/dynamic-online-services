@@ -3,7 +3,7 @@
         'name' => 'techmire-solutions/dynamic-online-services',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'daf9334daacc77aa2457ec0b2878dfd0ab4b8142',
+        'reference' => '161a4a134fc5c18619cc23e16ec3704f3b2279aa',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -373,7 +373,7 @@
         'techmire-solutions/dynamic-online-services' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'daf9334daacc77aa2457ec0b2878dfd0ab4b8142',
+            'reference' => '161a4a134fc5c18619cc23e16ec3704f3b2279aa',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -73,3 +73,13 @@ function dynos_checkbox_field_callback( $args ): void {
 function dynos_radio_field_callback( $args ): void {
 	\TechmireSolutions\DynamicOnlineServices\Settings\FieldRenderers::radio_field_callback( $args );
 }
+
+/**
+ * Render agents repeater field callback.
+ *
+ * @since 1.2.0
+ * @param array $args Field arguments.
+ */
+function dynos_agents_repeater_field_callback( $args ): void {
+	\TechmireSolutions\DynamicOnlineServices\Settings\FieldRenderers::agents_repeater_field_callback( $args );
+}

@@ -99,8 +99,8 @@ class PostTypeTest extends TestCase
         \WP_Mock::userFunction('__')
             ->andReturn('Service updated.');
 
-        \WP_Mock::userFunction('sprintf')
-            ->andReturn('Service restored');
+        \WP_Mock::userFunction('__')
+            ->andReturn('Service updated.');
 
         \WP_Mock::userFunction('wp_post_revision_title')
             ->andReturn('Revision');
@@ -132,8 +132,8 @@ class PostTypeTest extends TestCase
         \WP_Mock::userFunction('__')
             ->andReturn('Service updated.');
 
-        \WP_Mock::userFunction('sprintf')
-            ->andReturn('Service restored');
+        \WP_Mock::userFunction('__')
+            ->andReturn('Service updated.');
 
         \WP_Mock::userFunction('wp_post_revision_title')
             ->with(123, false) // Should be sanitized to 123

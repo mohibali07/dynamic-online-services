@@ -163,6 +163,14 @@ const OptionControl = ( {
 						onChange={ handleChange }
 					/>
 				);
+			case 'tel':
+				return (
+					<TextControl
+						type="tel"
+						value={ value }
+						onChange={ handleChange }
+					/>
+				);
 			default:
 				return (
 					<TextControl
@@ -176,6 +184,7 @@ const OptionControl = ( {
 	return (
 		<div className="dynos-option-control">
 			<div className="dynos-control-header">
+				{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
 				<label className="dynos-control-label">{ label }</label>
 				{ help && <span className="dynos-control-help">{ help }</span> }
 			</div>

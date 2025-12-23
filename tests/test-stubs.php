@@ -267,3 +267,8 @@ if (!function_exists('wp_send_json_error')) {
         return true;
     }
 }
+if (!function_exists('register_block_type')) {
+    function register_block_type($name, $args = array()) {
+        return true;
+    }
+}

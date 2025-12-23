@@ -127,10 +127,6 @@ class Category {
 		$total_pages   = $services_data['total_pages'];
 		$current_page  = $services_data['current_page'];
 
-        // DEBUG
-        fwrite(STDERR, "DEBUG: generate_output - child_categories count: " . count($child_categories) . "\n");
-        fwrite(STDERR, "DEBUG: generate_output - service_items count: " . count($service_items) . "\n");
-
 		$items_to_display = array_merge( $child_categories, $service_items );
 		$items_to_display = apply_filters( 'dynos_category_content_items', $items_to_display, $term );
 

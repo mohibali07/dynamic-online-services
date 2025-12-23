@@ -8,6 +8,8 @@
  * @subpackage Services
  */
 
+// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_error_log -- This file intentionally uses error_log for font download failure diagnostics
+
 declare(strict_types=1);
 
 namespace TechmireSolutions\DynamicOnlineServices\Services;

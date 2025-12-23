@@ -135,11 +135,11 @@ class WhatsappRenderer {
 		// Styling.
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		$style_attr = sprintf(
-			'--whatsapp-bg: %s; --whatsapp-icon: %s; bottom: %s; %s: %s;',
+			'--whatsapp-bg: %s; --whatsapp-icon: %s; inset-block-end: %s; %s: %s;',
 			esc_attr( $bg_color ),
 			esc_attr( $icon_color ),
 			esc_attr( $offset_y ),
-			esc_attr( $position ),
+			'left' === $position ? 'inset-inline-start' : 'inset-inline-end',
 			esc_attr( $offset_x )
 		);
 
@@ -212,7 +212,7 @@ class WhatsappRenderer {
 			}
 			.dynos-whatsapp-cta {
 				position: absolute;
-				bottom: 70px;
+				inset-block-end: 70px;
 				width: 200px;
 				background: #fff;
 				color: #333;
@@ -221,15 +221,15 @@ class WhatsappRenderer {
 				box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 				font-size: 14px;
 				line-height: 1.4;
-				right: 0;
+				inset-inline-end: 0;
 				animation: dynosFadeIn 0.5s;
 			}
-			.dynos-position-left .dynos-whatsapp-cta { left: 0; right: auto; }
+			.dynos-position-left .dynos-whatsapp-cta { inset-inline-start: 0; inset-inline-end: auto; }
 
 			.dynos-cta-close {
 				position: absolute;
-				top: 0px;
-				right: 5px;
+				inset-block-start: 0px;
+				inset-inline-end: 5px;
 				font-size: 16px;
 				cursor: pointer;
 				color: #999;
@@ -289,7 +289,7 @@ class WhatsappRenderer {
 				height: 40px;
 				border-radius: 50%;
 				background: #ddd;
-				margin-right: 12px;
+				margin-inline-end: 12px;
 				object-fit: cover;
 			}
 			.dynos-agent-info {
@@ -320,9 +320,24 @@ class WhatsappRenderer {
 		</style>
 
 		<div class="dynos-whatsapp-wrapper" style="<?php echo esc_attr( $style_attr ); ?>; position: fixed; z-index: 9999;">
-			<?php echo $cta_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php
+			echo wp_kses(
+				$cta_html,
+				array(
+					'div'  => array(
+						'class'      => array(),
+						'style'      => array(),
+						'data-delay' => array(),
+					),
+					'span' => array(
+						'class'   => array(),
+						'onclick' => array(),
+					),
+				)
+			);
+			?>
 			<a
-				href="<?php echo $main_href; ?>"
+				href="<?php echo esc_url( $main_href ); ?>"
 				class="<?php echo esc_attr( $class_str ); ?>"
 				style="position: relative; bottom: 0; <?php echo ( 'right' === $position ? 'right: 0;' : 'left: 0;' ); ?>"
 				target="_blank"

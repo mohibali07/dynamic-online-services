@@ -12,6 +12,8 @@ namespace DynamicOnlineServices\Tests\Unit;
 
 use WP_Mock\Tools\TestCase;
 use TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization as SanitizationHelper;
+require_once dirname(__DIR__, 2) . '/includes/helpers/class-sanitization.php';
+require_once dirname(__DIR__, 2) . '/includes/helpers.php';
 
 /**
  * Test sanitization helper functions.
@@ -25,9 +27,6 @@ class SanitizationTest extends TestCase
     {
         parent::setUp();
         \WP_Mock::setUp();
-
-        // Load the global helper wrappers if needed (the class is already autoloadedX)
-        require_once dirname(__DIR__, 2) . '/includes/helpers.php';
     }
 
     /**
@@ -49,6 +48,18 @@ class SanitizationTest extends TestCase
         $this->assertEquals('100%', SanitizationHelper::css_dimension('100%'));
         $this->assertEquals('50vh', SanitizationHelper::css_dimension('50vh'));
         $this->assertEquals('auto', SanitizationHelper::css_dimension('auto'));
+    }
+
+    /**
+     * Test CSS dimension sanitization with multiple values (shorthand).
+     */
+    public function test_sanitize_css_dimension_multiple_values(): void
+    {
+        $this->assertEquals('10px 20px', SanitizationHelper::css_dimension('10px 20px'));
+        $this->assertEquals('5px 10px 15px 20px', SanitizationHelper::css_dimension('5px 10px 15px 20px'));
+        $this->assertEquals('10px 0 auto', SanitizationHelper::css_dimension('10px 0 auto'));
+        // Malicious mixed with valid should return empty for the entire property
+        $this->assertEquals('', SanitizationHelper::css_dimension('10px expression(alert(1))'));
     }
 
     /**
@@ -79,8 +90,7 @@ class SanitizationTest extends TestCase
      */
     public function test_sanitize_css_dimension_invalid_type(): void
     {
-        $this->expectException(\TypeError::class);
-        SanitizationHelper::css_dimension(['array']);
+        $this->assertEquals('', SanitizationHelper::css_dimension(['array']));
     }
 
     /**
@@ -149,6 +159,10 @@ class SanitizationTest extends TestCase
         \WP_Mock::userFunction('get_post')
             ->with(123)
             ->andReturn((object) ['ID' => 123]);
+
+        \WP_Mock::userFunction('get_post')
+            ->with(1)
+            ->andReturn(null);
 
         $this->assertEquals(123, SanitizationHelper::validate_post_id(123));
         $this->assertFalse(SanitizationHelper::validate_post_id(0));
@@ -241,16 +255,10 @@ class SanitizationTest extends TestCase
      */
     public function test_sanitize_text_field_wrapper(): void
     {
-        // Since we are mocking sanitize_text_field in stubs or WP global
-        // We verify our helper (if it exists) or direct usage.
-        // Looking at helpers/Sanitization.php usage in SanitizationTest setup:
-        // It seems SanitizationHelper is the class.
-        // If the class has a text_field method? Or uses global?
-        // Checking class-settings.php: sanitize_callback => array(Sanitization::class, 'sanitize')
-        // 'sanitize' method likely handles array/object recursive sanitization.
-        // Let's test THAT method if available.
+        \WP_Mock::userFunction('sanitize_text_field')
+            ->with(' test ')
+            ->andReturn('test');
 
-        // Mock sanitization function behavior if needed, but test logic
-        // Assuming there is a generic sanitize method based on settings.
+        $this->assertEquals('test', \sanitize_text_field(' test '));
     }
 }

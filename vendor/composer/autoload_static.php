@@ -20,6 +20,11 @@ class ComposerStaticInit6fb3867b276b26929956deb26e73df23
         ),
         'T' =>
         array (
+            'TechmireSolutions\\DynamicOnlineServices\\Shortcodes\\' => 51,
+            'TechmireSolutions\\DynamicOnlineServices\\Services\\' => 49,
+            'TechmireSolutions\\DynamicOnlineServices\\Renderers\\' => 50,
+            'TechmireSolutions\\DynamicOnlineServices\\Cpt\\' => 44,
+            'TechmireSolutions\\DynamicOnlineServices\\Admin\\' => 46,
             'TechmireSolutions\\DynamicOnlineServices\\' => 40,
         ),
         'P' =>
@@ -42,6 +47,26 @@ class ComposerStaticInit6fb3867b276b26929956deb26e73df23
         'WP_Mock\\' =>
         array (
             0 => __DIR__ . '/..' . '/10up/wp_mock/php/WP_Mock',
+        ),
+        'TechmireSolutions\\DynamicOnlineServices\\Shortcodes\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/frontend/shortcodes',
+        ),
+        'TechmireSolutions\\DynamicOnlineServices\\Services\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/frontend/services',
+        ),
+        'TechmireSolutions\\DynamicOnlineServices\\Renderers\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/frontend/renderers',
+        ),
+        'TechmireSolutions\\DynamicOnlineServices\\Cpt\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/cpt',
+        ),
+        'TechmireSolutions\\DynamicOnlineServices\\Admin\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/admin',
         ),
         'TechmireSolutions\\DynamicOnlineServices\\' =>
         array (

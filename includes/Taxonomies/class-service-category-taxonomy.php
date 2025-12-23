@@ -64,7 +64,7 @@ class ServiceCategoryTaxonomy implements Registrable {
 		$labels = $this->get_labels();
 		$args   = $this->get_arguments( $labels );
 
-		register_taxonomy( $this->slug, $this->post_types, $args );
+		\register_taxonomy( $this->slug, $this->post_types, $args );
 	}
 
 	/**

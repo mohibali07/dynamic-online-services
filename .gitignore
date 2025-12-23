@@ -37,9 +37,14 @@ temp_env/
 .DS_Store
 .vscode/
 .idea/
-composer.lock
-package-lock.json
+# Lock files tracked for reproducible builds
+# composer.lock
+# package-lock.json
 playwright-report/
 test-results/
+
+# Debug artifacts (prevent tracking debug files)
 phpunit_debug.log
 debug_capture
+**/debug_*.log
+*_debug.log

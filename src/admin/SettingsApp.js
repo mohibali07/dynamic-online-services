@@ -2,7 +2,7 @@ import { Spinner, Button, SnackbarList, Dashicon } from '@wordpress/components';
 import { useEntityProp } from '@wordpress/core-data';
 import { useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 
 import HeroSettings from './components/HeroSettings';
 import CardSettings from './components/CardSettings';

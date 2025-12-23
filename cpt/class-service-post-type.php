@@ -28,11 +28,6 @@ class ServicePostType implements Registrable
 	 *
 	 * @var string
 	 */
-	/**
-	 * Post type slug.
-	 *
-	 * @var string
-	 */
 	private readonly string $slug;
 
 
@@ -88,7 +83,7 @@ class ServicePostType implements Registrable
 		$labels = $this->get_labels();
 		$args = $this->get_arguments($labels);
 
-		register_post_type($this->slug, $args);
+		\register_post_type($this->slug, $args);
 	}
 
 	/**

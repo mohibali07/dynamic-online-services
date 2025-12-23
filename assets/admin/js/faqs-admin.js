@@ -124,8 +124,6 @@
 			return;
 		}
 
-		const itemId = $item.data( 'faq-id' );
-
 		// Show confirmation if requested and item has content
 		if ( confirm ) {
 			const $question = $item.find( 'input[name="faqs_question[]"]' );
@@ -135,7 +133,7 @@
 				( $answer.val() && $answer.val().trim() !== '' );
 
 			if ( hasContent ) {
-				// Use native confirm dialog
+				// eslint-disable-next-line no-alert -- User confirmation is intentional UX
 				const confirmRemoval = window.confirm(
 					'Are you sure you want to remove this FAQ? Any unsaved content will be lost.'
 				);
@@ -144,6 +142,9 @@
 				}
 			}
 		}
+
+		// Get FAQ ID for logging before removal
+		const itemId = $item.data( 'faq-id' );
 
 		// Remove the item
 		$item.fadeOut( 300, function () {

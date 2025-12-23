@@ -17,13 +17,7 @@
 	const NOTICE_AUTO_DISMISS_DELAY = 10000; // 10 seconds in milliseconds
 	const NOTICE_FADE_DURATION = 400; // Default jQuery fade duration
 
-	/**
-	 * Valid console methods that can be used for logging.
-	 *
-	 * @type {string[]}
-	 * @since 1.0.0
-	 */
-	const VALID_CONSOLE_METHODS = [ 'log', 'error', 'warn', 'info', 'debug' ];
+	// Valid console methods: log, error, warn, info, debug
 
 	/**
 	 * Safe console logging helper.
@@ -34,7 +28,6 @@
 	 * @since 1.0.0
 	 *
 	 * @param {string} method Console method to use ('log', 'error', 'warn', 'info', 'debug').
-	 * @param {...*}   args   Arguments to pass to the console method.
 	 *
 	 * @return {void}
 	 *
@@ -134,7 +127,7 @@
 		// Create notice element with appropriate type class
 		const noticeHtml =
 			'<div class="notice notice-error dynos-js-notice is-dismissible dynos-js-notice"><p>' +
-			message +
+			sanitizedMessage +
 			'</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
 		const $notice = $( noticeHtml );
 

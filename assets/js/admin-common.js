@@ -16,7 +16,6 @@
 	 * Checks if console is available before logging.
 	 *
 	 * @param {string} method Console method ('log', 'error', 'warn', 'info').
-	 * @param {...*}   args   Arguments to pass to console method.
 	 */
 	window.sosConsoleLog = function ( method ) {
 		if (

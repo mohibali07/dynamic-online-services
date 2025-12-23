@@ -34,20 +34,47 @@ class Sanitization
 	 */
 	public static function css_dimension($value): string
 	{
-		if (empty($value)) {
+		if (!is_string($value) || empty($value)) {
 			return '';
 		}
 
-		// Allow alphanumeric, spaces, dots, hyphens, and common CSS units
-		$sanitized = preg_replace('/[^a-zA-Z0-9\s\.\-\%pxrememvhvw]/', '', $value);
-
-		// Validate format: number followed by unit
-		if (!preg_match('/^[\d\.]+(px|rem|em|%|vh|vw|auto)$/i', trim($sanitized)) && trim($sanitized) !== 'auto') {
-			// If doesn't match standard format, try to extract valid parts
-			$sanitized = preg_replace('/[^a-zA-Z0-9\s\.\-\%pxrememvhvw]/', '', $value);
+		// Check for dangerous patterns first
+		$dangerous_patterns = array(
+			'/expression\s*\(/i',
+			'/javascript\s*:/i',
+			'/url\s*\(/i',
+			'/<script/i',
+		);
+		foreach ($dangerous_patterns as $pattern) {
+			if (preg_match($pattern, (string) $value)) {
+				return '';
+			}
 		}
 
-		return trim($sanitized);
+		// Allow calc() and standard dimensions
+		if (stripos(trim($value), 'calc(') === 0) {
+			$sanitized = preg_replace('/[^a-zA-Z0-9\s\.\-\%pxrememvhvw\(\)\+\*\/]/', '', $value);
+			return trim($sanitized);
+		}
+
+		// Split into individual values to handle shorthand (e.g., "10px 20px 5px")
+		$values = preg_split('/\s+/', trim($value));
+		$sanitized_parts = array();
+
+		foreach ($values as $part) {
+			// Allow alphanumeric, dots, hyphens, and common CSS units
+			$part_clean = preg_replace('/[^a-zA-Z0-9\.\-\%pxrememvhvw]/', '', $part);
+
+			// Validate format: number followed by unit, or 'auto', or '0'
+			if (preg_match('/^[\d\.]+(px|rem|em|%|vh|vw|auto)$/i', $part_clean) || $part_clean === '0' || $part_clean === 'auto') {
+				$sanitized_parts[] = $part_clean;
+			} else {
+				// If ANY part is invalid/unrecognized, reject the entire value for safety
+				return '';
+			}
+		}
+
+		return !empty($sanitized_parts) ? implode(' ', $sanitized_parts) : '';
 	}
 
 	/**
@@ -59,7 +86,12 @@ class Sanitization
 	 */
 	public static function css_transform($value): string
 	{
-		if (empty($value)) {
+		if (!is_string($value) || empty($value)) {
+			return '';
+		}
+
+		// Check for dangerous patterns first
+		if (preg_match('/expression\s*\(/i', (string) $value) || preg_match('/javascript\s*:/i', (string) $value)) {
 			return '';
 		}
 
@@ -72,14 +104,17 @@ class Sanitization
 		preg_match_all($pattern, $value, $matches);
 
 		if (!empty($matches[0])) {
-			// Reconstruct from matched valid transforms
-			// This ensures only whitelisted functions are included
-			return implode(' ', $matches[0]);
+			// If the original string contains more than just the valid transforms, it might be an injection attempt
+			// Let's check if the reconstructed string is significantly different from a stripped original
+			$reconstructed = implode(' ', $matches[0]);
+			$stripped_original = preg_replace('/\s+/', ' ', trim($value));
+
+			// If we matched something but the original had "expression" or other stuff that was skipped,
+			// we should be careful. But we already checked for "expression" above.
+			return $reconstructed;
 		}
 
-		// Fallback: strip dangerous characters but keep safe ones
-		// Used when no valid transform functions are found
-		return preg_replace('/[^a-zA-Z0-9\s\(\)\.\-\%px,]/', '', $value);
+		return '';
 	}
 
 	/**
@@ -133,7 +168,8 @@ class Sanitization
 				return self::css_dimension($value);
 			default:
 				// General sanitization: remove potentially dangerous characters
-				return wp_strip_all_tags($value);
+				$sanitized = wp_strip_all_tags($value);
+				return (string) $sanitized;
 		}
 	}
 
@@ -259,8 +295,8 @@ class Sanitization
 			return false;
 		}
 
-		$term_id = absint($term_id);
-		if (0 === $term_id) {
+		$term_id = (int) $term_id;
+		if ($term_id <= 0) {
 			return false;
 		}
 
@@ -336,7 +372,7 @@ class Sanitization
 			return $default;
 		}
 
-		$value = absint($value);
+		$value = (int) $value;
 		if ($value < $min || $value > $max) {
 			return $default;
 		}
@@ -377,10 +413,15 @@ class Sanitization
 			'/<\/script>/i',
 		);
 
-		foreach ($dangerous_patterns as $pattern) {
-			if (preg_match($pattern, $sanitized)) {
-				// If dangerous pattern found, return empty string
-				return '';
+		// Check ORIGINAL value and sanitized value for dangerous patterns
+		$values_to_check = array($value, $sanitized);
+
+		foreach ($values_to_check as $check_val) {
+			foreach ($dangerous_patterns as $pattern) {
+				if (preg_match($pattern, (string) $check_val)) {
+					// If dangerous pattern found in either, return empty string
+					return '';
+				}
 			}
 		}
 

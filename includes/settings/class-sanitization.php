@@ -34,7 +34,10 @@ class Sanitization
 			return Defaults::get_options();
 		}
 
-		error_log('Dynos Sanitization Incoming: ' . print_r($options, true));
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional debug logging
+			error_log( 'Dynos Sanitization Incoming: ' . wp_json_encode( $options ) );
+		}
 
 		$sanitized = array();
 		$defaults = Defaults::get_options();

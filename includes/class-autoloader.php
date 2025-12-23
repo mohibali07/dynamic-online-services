@@ -131,6 +131,7 @@ class Autoloader {
 			require_once $file_path_trait;
 		} else {
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional debug logging
 				error_log(
 					sprintf(
 						'DYNOS Autoloader: Class file not found for %s. Tried: %s, %s, %s',

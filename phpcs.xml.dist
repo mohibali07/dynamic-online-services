@@ -8,7 +8,7 @@
 	<!-- Exclude patterns -->
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
-    <exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/.git/*</exclude-pattern>
 
@@ -49,5 +49,15 @@
 	<!-- Exclude file naming rules for PSR-4 autoloaded classes -->
 	<rule ref="WordPress.Files.FileName">
 		<exclude-pattern>*/includes/*</exclude-pattern>
+		<exclude-pattern>*/cpt/*</exclude-pattern>
+		<exclude-pattern>*/frontend/renderers/*</exclude-pattern>
+		<exclude-pattern>*/frontend/shortcodes/*</exclude-pattern>
+		<exclude-pattern>*/frontend/services/*</exclude-pattern>
+		<exclude-pattern>*/admin/*</exclude-pattern>
+	</rule>
+
+	<!-- Disable deprecated POSIX sniff (use PHPCompatibility instead) -->
+	<rule ref="WordPress.PHP.POSIXFunctions">
+		<severity>0</severity>
 	</rule>
 </ruleset>

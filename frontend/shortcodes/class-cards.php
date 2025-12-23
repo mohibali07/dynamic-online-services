@@ -145,9 +145,16 @@ class Cards
 
 	/**
 	 * Load required dependencies.
+	 *
+	 * This method is intentionally empty as the PSR-4 autoloader
+	 * handles all class loading. Retained for backwards compatibility
+	 * and potential future use by extending classes.
+	 *
+	 * @since 1.1.0
+	 * @return void
 	 */
 	protected function load_dependencies(): void
 	{
-		// No longer needing to manually require files as we use Autoloader and Services
+		// Autoloader handles all dependencies - no manual requires needed.
 	}
 }

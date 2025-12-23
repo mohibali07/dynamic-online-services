@@ -305,8 +305,26 @@ The plugin is optimized for performance:
 
 ## Browser Support
 
-- **Modern Browsers**: Full support (Chrome 105+, Safari 16+, Firefox 110+)
-- **Older Browsers**: Graceful degradation (grid auto-fit fallback)
+### Container Queries
+
+This plugin uses CSS Container Queries for component-level responsive layouts. This enables cards and hero sections to adapt based on their container size rather than viewport size.
+
+| Browser | Minimum Version | Release Date |
+|---------|-----------------|--------------|
+| Chrome | 105+ | Aug 2022 |
+| Edge | 105+ | Sep 2022 |
+| Safari | 16+ | Sep 2022 |
+| Firefox | 110+ | Feb 2023 |
+
+**Fallback behavior**: Older browsers gracefully degrade to `auto-fit` grid layouts, which still provide responsive behavior based on viewport width.
+
+### RTL (Right-to-Left) Support
+
+The plugin uses CSS Logical Properties for bidirectional language support:
+
+- **Supported languages**: Arabic, Hebrew, Urdu, Persian, and all RTL languages
+- **Automatic mirroring**: UI elements automatically flip when WordPress is set to an RTL language
+- **No configuration needed**: Works out of the box with WordPress language settings
 
 ## Security
 

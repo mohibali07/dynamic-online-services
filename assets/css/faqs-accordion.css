@@ -47,7 +47,7 @@
     transition: transform 0.3s ease;
     font-weight: bold;
     color: var(--wp--preset--color--primary, #007cba);
-    margin-left: 15px;
+    margin-inline-start: 15px;
     /* Spacing from text */
     flex-shrink: 0;
 }

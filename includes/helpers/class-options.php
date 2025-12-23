@@ -12,6 +12,10 @@ declare(strict_types=1);
 
 namespace TechmireSolutions\DynamicOnlineServices\Helpers;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class Options
  *
@@ -65,8 +69,8 @@ class Options
             if (false !== $last_update) {
                 $current_options = get_option('dynos_options', false);
                 if (false !== $current_options) {
-                    // Modified: Use serialize() instead of maybe_serialize() to ensure string input for md5()
-                    $options_hash = md5(serialize($current_options));
+                    // Use wp_json_encode for safe hashing (WPCS compliant)
+                    $options_hash = md5( (string) wp_json_encode( $current_options ) );
                     $cached_hash = get_transient('dynos_options_hash');
                 if ($cached_hash !== $options_hash) {
                     $force_refresh = true;
@@ -92,7 +96,7 @@ class Options
 
             set_transient('dynos_options_cache_version', time(), DAY_IN_SECONDS);
             set_transient('dynos_options_last_update', time(), DAY_IN_SECONDS);
-            set_transient('dynos_options_hash', md5(serialize(self::$options_cache)), DAY_IN_SECONDS);
+            set_transient('dynos_options_hash', md5( (string) wp_json_encode( self::$options_cache ) ), DAY_IN_SECONDS);
         }
 
         return (array)self::$options_cache;
@@ -127,8 +131,8 @@ class Options
             self::invalidate_cache();
             set_transient('dynos_options_last_update', time(), DAY_IN_SECONDS);
             if (is_array($value)) {
-                // Modified: Use serialize() instead of maybe_serialize()
-                set_transient('dynos_options_hash', md5(serialize($value)), DAY_IN_SECONDS);
+                // Use wp_json_encode for safe hashing (WPCS compliant)
+                set_transient('dynos_options_hash', md5( (string) wp_json_encode( $value ) ), DAY_IN_SECONDS);
             }
         }
     }
@@ -147,8 +151,8 @@ class Options
             self::invalidate_cache();
             set_transient('dynos_options_last_update', time(), DAY_IN_SECONDS);
             if (is_array($value)) {
-                // Modified: Use serialize() instead of maybe_serialize()
-                set_transient('dynos_options_hash', md5(serialize($value)), DAY_IN_SECONDS);
+                // Use wp_json_encode for safe hashing (WPCS compliant)
+                set_transient('dynos_options_hash', md5( (string) wp_json_encode( $value ) ), DAY_IN_SECONDS);
             }
         }
     }
