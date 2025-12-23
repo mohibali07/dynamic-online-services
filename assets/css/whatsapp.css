@@ -14,6 +14,12 @@
 	--whatsapp-z-index: 9999;
 }
 
+.dynos-whatsapp-wrapper[data-draggable="true"] {
+	cursor: move;
+	touch-action: none;
+	/* Prevent scrolling while dragging */
+}
+
 .dynos-whatsapp-button {
 	position: fixed;
 	width: 60px;

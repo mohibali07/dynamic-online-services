@@ -12,6 +12,7 @@ namespace TechmireSolutions\DynamicOnlineServices\Shortcodes;
 
 use TechmireSolutions\DynamicOnlineServices\Helpers\ShortcodeAttributes;
 use WP_Post;
+use TechmireSolutions\DynamicOnlineServices\Helpers\Options;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -46,7 +47,8 @@ class Faqs {
 		}
 
 		// Parse and validate shortcode attributes
-		$default_title = __( 'Frequently Asked Questions', 'dynamic-online-services' );
+		$options       = Options::get();
+		$default_title = Options::get_option( $options, 'faq_default_title', __( 'Frequently Asked Questions', 'dynamic-online-services' ) );
 
 		$atts = ShortcodeAttributes::parse(
 			(array) $atts,

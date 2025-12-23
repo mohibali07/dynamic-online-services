@@ -93,6 +93,13 @@ class ServicePostType implements Registrable
 	 *
 	 * @return array<string, string>
 	 */
+	/**
+	 * Get post type labels.
+	 *
+	 * Labels are pulled from plugin settings and can be filtered.
+	 *
+	 * @return array<string, string>
+	 */
 	private function get_labels(): array
 	{
 		// Get settings for post type names
@@ -167,8 +174,23 @@ class ServicePostType implements Registrable
 	 */
 	private function get_arguments(array $labels): array
 	{
+		$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
+
+		$menu_position = isset($options['service_menu_position']) && '' !== $options['service_menu_position']
+			? (int) $options['service_menu_position']
+			: 5;
+
+		$menu_icon = isset($options['service_menu_icon']) && !empty($options['service_menu_icon'])
+			? $options['service_menu_icon']
+			: 'dashicons-admin-customizer';
+
+		// Get singular name for label
+		$singular_name = isset($options['service_cpt_singular_name']) && !empty($options['service_cpt_singular_name'])
+			? $options['service_cpt_singular_name']
+			: 'Service';
+
 		return array(
-			'label' => __('Service', 'dynamic-online-services'),
+			'label' => $singular_name,
 			'description' => __('Post Type Description', 'dynamic-online-services'),
 			'labels' => $labels,
 			'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'),
@@ -176,8 +198,8 @@ class ServicePostType implements Registrable
 			'public' => true,
 			'show_ui' => true,
 			'show_in_menu' => true,
-			'menu_position' => 5,
-			'menu_icon' => 'dashicons-grid-view',
+			'menu_position' => $menu_position,
+			'menu_icon' => $menu_icon,
 			'show_in_admin_bar' => true,
 			'show_in_nav_menus' => true,
 			'can_export' => true,
@@ -209,6 +231,12 @@ class ServicePostType implements Registrable
 			return $messages;
 		}
 
+		// Get singular name from settings
+		$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
+		$singular_name = isset($options['service_cpt_singular_name']) && !empty($options['service_cpt_singular_name'])
+			? $options['service_cpt_singular_name']
+			: 'Service';
+
 		// Sanitize revision ID if present.
 		$revision_id = filter_input(INPUT_GET, 'revision', FILTER_VALIDATE_INT);
 		$revision_id = $revision_id ? $revision_id : 0;
@@ -222,23 +250,25 @@ class ServicePostType implements Registrable
 			);
 		}
 
+		/* translators: %s: Singular name of the post type */
 		$messages[$this->slug] = array(
 			0 => '', // Unused. Messages start at index 1.
-			1 => __('Service updated.', 'dynamic-online-services'),
+			1 => sprintf(__('%s updated.', 'dynamic-online-services'), $singular_name),
 			2 => __('Custom field updated.', 'dynamic-online-services'),
 			3 => __('Custom field deleted.', 'dynamic-online-services'),
-			4 => __('Service updated.', 'dynamic-online-services'),
-			/* translators: %s: date and time of the revision */
-			5 => $revision_id ? sprintf(__('Service restored to revision from %s', 'dynamic-online-services'), wp_post_revision_title($revision_id, false)) : false,
-			6 => __('Service published.', 'dynamic-online-services'),
-			7 => __('Service saved.', 'dynamic-online-services'),
-			8 => __('Service submitted.', 'dynamic-online-services'),
+			4 => sprintf(__('%s updated.', 'dynamic-online-services'), $singular_name),
+			/* translators: %1$s: Singular name, %2$s: date and time of the revision */
+			5 => $revision_id ? sprintf(__('%1$s restored to revision from %2$s', 'dynamic-online-services'), $singular_name, wp_post_revision_title($revision_id, false)) : false,
+			6 => sprintf(__('%s published.', 'dynamic-online-services'), $singular_name),
+			7 => sprintf(__('%s saved.', 'dynamic-online-services'), $singular_name),
+			8 => sprintf(__('%s submitted.', 'dynamic-online-services'), $singular_name),
 			9 => sprintf(
 				/* translators: 1: Service schedule date */
-				__('Service scheduled for: <strong>%1$s</strong>.', 'dynamic-online-services'),
+				__('%1$s scheduled for: <strong>%2$s</strong>.', 'dynamic-online-services'),
+				$singular_name,
 				$scheduled_date
 			),
-			10 => __('Service draft updated.', 'dynamic-online-services'),
+			10 => sprintf(__('%s draft updated.', 'dynamic-online-services'), $singular_name),
 		);
 
 		return $messages;

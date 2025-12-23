@@ -29,6 +29,15 @@ class Faq {
 			'id'     => 'dynos_faq_section',
 			'title'  => __( 'FAQ Accordion Settings', 'dynamic-online-services' ),
 			'fields' => array(
+				'faq_default_title'       => array(
+					'title'    => __( 'Default FAQ Title', 'dynamic-online-services' ),
+					'callback' => 'dynos_text_field_callback',
+					'default'  => __( 'Frequently Asked Questions', 'dynamic-online-services' ),
+					'args'     => array(
+						'placeholder' => __( 'Frequently Asked Questions', 'dynamic-online-services' ),
+						'description' => __( 'The default title to display above the FAQs if not specified in the shortcode.', 'dynamic-online-services' ),
+					),
+				),
 				'faq_item_border_color'   => array(
 					'title'    => __( 'FAQ Item Border Color', 'dynamic-online-services' ),
 					'callback' => 'dynos_color_field_callback',

@@ -31,7 +31,9 @@
 			"TechmireSolutions\\DynamicOnlineServices\\Cpt\\": "cpt/",
 			"TechmireSolutions\\DynamicOnlineServices\\Shortcodes\\": "frontend/shortcodes/",
 			"TechmireSolutions\\DynamicOnlineServices\\Renderers\\": "frontend/renderers/",
-			"TechmireSolutions\\DynamicOnlineServices\\Services\\": "frontend/services/"
+			"TechmireSolutions\\DynamicOnlineServices\\Services\\": "frontend/services/",
+			"TechmireSolutions\\DynamicOnlineServices\\Marketing\\": "includes/marketing/",
+			"TechmireSolutions\\DynamicOnlineServices\\Api\\": "includes/api/"
 		}
 	},
 	"config": {

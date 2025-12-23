@@ -228,6 +228,26 @@ class Cards {
 						'description' => __( 'CSS box-shadow for the card. Leave empty to disable shadow.', 'dynamic-online-services' ),
 					),
 				),
+				'card_default_columns'         => array(
+					'title'    => __( 'Default Columns', 'dynamic-online-services' ),
+					'callback' => 'dynos_number_field_callback',
+					'default'  => '3',
+					'args'     => array(
+						'min'         => '1',
+						'max'         => '6',
+						'step'        => '1',
+						'description' => __( 'Default number of columns for the cards grid.', 'dynamic-online-services' ),
+					),
+				),
+				'card_default_limit'           => array(
+					'title'    => __( 'Default Posts Limit', 'dynamic-online-services' ),
+					'callback' => 'dynos_number_field_callback',
+					'default'  => '-1',
+					'args'     => array(
+						'step'        => '1',
+						'description' => __( 'Default number of posts to show. Use -1 for all.', 'dynamic-online-services' ),
+					),
+				),
 			),
 		);
 	}

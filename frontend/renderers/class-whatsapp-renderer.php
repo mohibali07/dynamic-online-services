@@ -133,6 +133,7 @@ class WhatsappRenderer {
 		$cta_enabled = Options::get_option( $options, 'whatsapp_cta_enabled', false );
 		$cta_text    = Options::get_option( $options, 'whatsapp_cta_text', '' );
 		$cta_delay   = (int) Options::get_option( $options, 'whatsapp_cta_delay', 5 );
+		$is_draggable = Options::get_option( $options, 'whatsapp_draggable', false );
 
 		// If offline and behavior is 'show', override CTA with offline message.
 		if ( ! $is_open && 'show' === $offline_behavior ) {
@@ -151,7 +152,7 @@ class WhatsappRenderer {
 		}
 
 		?>
-		<div class="dynos-whatsapp-wrapper" style="<?php echo esc_attr( $style_attr ); ?>; position: fixed; z-index: 9999;">
+		<div class="dynos-whatsapp-wrapper" data-draggable="<?php echo $is_draggable ? 'true' : 'false'; ?>" style="<?php echo esc_attr( $style_attr ); ?>; position: fixed; z-index: 9999;">
 			<?php
 			echo wp_kses(
 				$cta_html,

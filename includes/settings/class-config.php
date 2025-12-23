@@ -17,6 +17,7 @@ use TechmireSolutions\DynamicOnlineServices\Settings\Config\Cards;
 use TechmireSolutions\DynamicOnlineServices\Settings\Config\Faq;
 use TechmireSolutions\DynamicOnlineServices\Settings\Config\Advanced;
 use TechmireSolutions\DynamicOnlineServices\Settings\Config\Whatsapp;
+use TechmireSolutions\DynamicOnlineServices\Settings\Config\Marketing;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -128,6 +129,9 @@ class Config {
 
 			// WhatsApp Settings
 			'whatsapp'  => Whatsapp::get_map(),
+
+			// Marketing Settings
+			'marketing' => Marketing::get_map(),
 		);
 	}
 }

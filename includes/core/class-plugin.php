@@ -92,6 +92,11 @@ class Plugin
 		$service_tax = new \TechmireSolutions\DynamicOnlineServices\Taxonomies\ServiceCategoryTaxonomy($taxonomy_slug, array($service_slug));
 		$service_tax->register();
 
+
+		// Register Service Keywords Taxonomy
+		$service_keywords_tax = new \TechmireSolutions\DynamicOnlineServices\Taxonomies\ServiceKeywordsTaxonomy(array($service_slug));
+		$service_keywords_tax->register();
+
 		// Note: faqs-meta-box.php is still required if it wasn't refactored into a class yet.
 		// We marked it as "check if procedural". It is procedural.
 		require_once DYNOS_PLUGIN_DIR . 'includes/faqs/class-meta-box.php';
@@ -107,6 +112,7 @@ class Plugin
 		\TechmireSolutions\DynamicOnlineServices\Shortcodes\Category::init();
 		\TechmireSolutions\DynamicOnlineServices\Shortcodes\Faqs::init();
 		\TechmireSolutions\DynamicOnlineServices\Shortcodes\Hero::init();
+		\TechmireSolutions\DynamicOnlineServices\Shortcodes\MarketingWidgetShortcode::init();
 
 		// Initialize Hero Cache.
 		\TechmireSolutions\DynamicOnlineServices\Cache\HeroCache::init();
@@ -120,6 +126,9 @@ class Plugin
 		// Initialize Renderers.
 		$whatsapp_renderer = new \TechmireSolutions\DynamicOnlineServices\Renderers\WhatsappRenderer();
 		$whatsapp_renderer->init();
+
+		// Initialize API.
+		\TechmireSolutions\DynamicOnlineServices\Api\MarketingController::init();
 	}
 
 	/**

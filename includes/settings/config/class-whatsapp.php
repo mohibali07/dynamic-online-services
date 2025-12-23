@@ -213,6 +213,15 @@ class Whatsapp {
 						'description' => __( 'Message to show when offline.', 'dynamic-online-services' ),
 					),
 				),
+				'whatsapp_draggable'         => array(
+					'title'    => __( 'Draggable Widget', 'dynamic-online-services' ),
+					'callback' => 'dynos_checkbox_field_callback',
+					'default'  => false,
+					'args'     => array(
+						'label'       => __( 'Allow users to drag the button on the screen.', 'dynamic-online-services' ),
+						'description' => __( 'If enabled, visitors can move the WhatsApp button to their preferred location.', 'dynamic-online-services' ),
+					),
+				),
 				'whatsapp_cta_enabled'       => array(
 					'title'    => __( 'Enable Call-to-Action', 'dynamic-online-services' ),
 					'callback' => 'dynos_checkbox_field_callback',

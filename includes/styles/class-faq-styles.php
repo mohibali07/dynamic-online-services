@@ -106,7 +106,7 @@ class FaqStyles
 		// Enqueue base FAQ styles
 		wp_enqueue_style(
 			'sos-faqs-accordion',
-			DYNOS_PLUGIN_URL . 'assets/css/faqs-accordion.css',
+			DYNOS_PLUGIN_URL . 'assets/public/css/faqs-accordion.css',
 			array(),
 			DYNOS_VERSION
 		);

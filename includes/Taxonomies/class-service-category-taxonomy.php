@@ -72,28 +72,43 @@ class ServiceCategoryTaxonomy implements Registrable {
 	 *
 	 * @return array<string, string>
 	 */
+	/**
+	 * Get taxonomy labels.
+	 *
+	 * @return array<string, string>
+	 */
 	private function get_labels(): array {
+		$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
+
+		$singular_name = isset($options['service_tax_singular_name']) && !empty($options['service_tax_singular_name'])
+			? $options['service_tax_singular_name']
+			: 'Service Category';
+
+		$plural_name = isset($options['service_tax_plural_name']) && !empty($options['service_tax_plural_name'])
+			? $options['service_tax_plural_name']
+			: 'Service Categories';
+
 		return array(
-			'name'                       => _x( 'Service Categories', 'Taxonomy General Name', 'dynamic-online-services' ),
-			'singular_name'              => _x( 'Service Category', 'Taxonomy Singular Name', 'dynamic-online-services' ),
-			'menu_name'                  => __( 'Categories', 'dynamic-online-services' ),
-			'all_items'                  => __( 'All Categories', 'dynamic-online-services' ),
-			'parent_item'                => __( 'Parent Category', 'dynamic-online-services' ),
-			'parent_item_colon'          => __( 'Parent Category:', 'dynamic-online-services' ),
-			'new_item_name'              => __( 'New Category Name', 'dynamic-online-services' ),
-			'add_new_item'               => __( 'Add New Category', 'dynamic-online-services' ),
-			'edit_item'                  => __( 'Edit Category', 'dynamic-online-services' ),
-			'update_item'                => __( 'Update Category', 'dynamic-online-services' ),
-			'view_item'                  => __( 'View Category', 'dynamic-online-services' ),
-			'separate_items_with_commas' => __( 'Separate categories with commas', 'dynamic-online-services' ),
-			'add_or_remove_items'        => __( 'Add or remove categories', 'dynamic-online-services' ),
+			'name'                       => _x( $plural_name, 'Taxonomy General Name', 'dynamic-online-services' ),
+			'singular_name'              => _x( $singular_name, 'Taxonomy Singular Name', 'dynamic-online-services' ),
+			'menu_name'                  => $plural_name,
+			'all_items'                  => sprintf( __( 'All %s', 'dynamic-online-services' ), $plural_name ),
+			'parent_item'                => sprintf( __( 'Parent %s', 'dynamic-online-services' ), $singular_name ),
+			'parent_item_colon'          => sprintf( __( 'Parent %s:', 'dynamic-online-services' ), $singular_name ),
+			'new_item_name'              => sprintf( __( 'New %s Name', 'dynamic-online-services' ), $singular_name ),
+			'add_new_item'               => sprintf( __( 'Add New %s', 'dynamic-online-services' ), $singular_name ),
+			'edit_item'                  => sprintf( __( 'Edit %s', 'dynamic-online-services' ), $singular_name ),
+			'update_item'                => sprintf( __( 'Update %s', 'dynamic-online-services' ), $singular_name ),
+			'view_item'                  => sprintf( __( 'View %s', 'dynamic-online-services' ), $singular_name ),
+			'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'dynamic-online-services' ), strtolower( $plural_name ) ),
+			'add_or_remove_items'        => sprintf( __( 'Add or remove %s', 'dynamic-online-services' ), strtolower( $plural_name ) ),
 			'choose_from_most_used'      => __( 'Choose from the most used', 'dynamic-online-services' ),
-			'popular_items'              => __( 'Popular Categories', 'dynamic-online-services' ),
-			'search_items'               => __( 'Search Categories', 'dynamic-online-services' ),
+			'popular_items'              => sprintf( __( 'Popular %s', 'dynamic-online-services' ), $plural_name ),
+			'search_items'               => sprintf( __( 'Search %s', 'dynamic-online-services' ), $plural_name ),
 			'not_found'                  => __( 'Not Found', 'dynamic-online-services' ),
-			'no_terms'                   => __( 'No categories', 'dynamic-online-services' ),
-			'items_list'                 => __( 'Categories list', 'dynamic-online-services' ),
-			'items_list_navigation'      => __( 'Categories list navigation', 'dynamic-online-services' ),
+			'no_terms'                   => sprintf( __( 'No %s', 'dynamic-online-services' ), strtolower( $plural_name ) ),
+			'items_list'                 => sprintf( __( '%s list', 'dynamic-online-services' ), $plural_name ),
+			'items_list_navigation'      => sprintf( __( '%s list navigation', 'dynamic-online-services' ), $plural_name ),
 		);
 	}
 

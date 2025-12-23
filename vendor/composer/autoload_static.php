@@ -23,7 +23,9 @@ class ComposerStaticInit6fb3867b276b26929956deb26e73df23
             'TechmireSolutions\\DynamicOnlineServices\\Shortcodes\\' => 51,
             'TechmireSolutions\\DynamicOnlineServices\\Services\\' => 49,
             'TechmireSolutions\\DynamicOnlineServices\\Renderers\\' => 50,
+            'TechmireSolutions\\DynamicOnlineServices\\Marketing\\' => 50,
             'TechmireSolutions\\DynamicOnlineServices\\Cpt\\' => 44,
+            'TechmireSolutions\\DynamicOnlineServices\\Api\\' => 44,
             'TechmireSolutions\\DynamicOnlineServices\\Admin\\' => 46,
             'TechmireSolutions\\DynamicOnlineServices\\' => 40,
         ),
@@ -60,9 +62,17 @@ class ComposerStaticInit6fb3867b276b26929956deb26e73df23
         array (
             0 => __DIR__ . '/../..' . '/frontend/renderers',
         ),
+        'TechmireSolutions\\DynamicOnlineServices\\Marketing\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/includes/marketing',
+        ),
         'TechmireSolutions\\DynamicOnlineServices\\Cpt\\' =>
         array (
             0 => __DIR__ . '/../..' . '/cpt',
+        ),
+        'TechmireSolutions\\DynamicOnlineServices\\Api\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/includes/api',
         ),
         'TechmireSolutions\\DynamicOnlineServices\\Admin\\' =>
         array (

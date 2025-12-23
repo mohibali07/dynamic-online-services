@@ -107,9 +107,10 @@ class CardStyles
 		}
 
 		// Enqueue base card styles
+		// Enqueue base card styles
 		wp_enqueue_style(
 			'sos-service-cards',
-			DYNOS_PLUGIN_URL . 'assets/css/service-cards.css',
+			DYNOS_PLUGIN_URL . 'assets/public/css/service-cards.css',
 			array(),
 			DYNOS_VERSION
 		);

@@ -71,6 +71,11 @@ class Cards
 		$settings = \TechmireSolutions\DynamicOnlineServices\Cpt\Sanitization::sanitize_cpt_settings();
 		$default_taxonomy = isset($settings['taxonomy_slug']) ? $settings['taxonomy_slug'] : 'service-category';
 
+		// Get default columns and limit from Global Settings
+		$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
+		$default_columns = isset($options['card_default_columns']) ? (string) $options['card_default_columns'] : '3';
+		$default_limit = isset($options['card_default_limit']) ? (string) $options['card_default_limit'] : '-1';
+
 		// Parse attributes
 		$atts = shortcode_atts(
 			array(
@@ -79,8 +84,8 @@ class Cards
 				'taxonomy' => $default_taxonomy,
 				'orderby' => 'date',
 				'order' => 'DESC',
-				'limit' => '-1',
-				'columns' => '3', // Default columns
+				'limit' => $default_limit,
+				'columns' => $default_columns, // Default columns
 				'min_width' => '', // Optional override for card min-width
 				'show_pagination' => 'false',
 				'paged' => get_query_var('paged') ? get_query_var('paged') : 1,

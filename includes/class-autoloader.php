@@ -67,6 +67,12 @@ class Autoloader {
 			case 'FAQs':
 				$base_dir = DYNOS_PLUGIN_DIR . 'includes/faqs/';
 				break;
+			case 'Marketing':
+				$base_dir = DYNOS_PLUGIN_DIR . 'includes/marketing/';
+				break;
+			case 'Api':
+				$base_dir = DYNOS_PLUGIN_DIR . 'includes/api/';
+				break;
 			default:
 				// Fallback for Core, Helpers, Taxonomies, etc.
 				// If it wasn't one of the special moved directories, we assume it's in includes.
