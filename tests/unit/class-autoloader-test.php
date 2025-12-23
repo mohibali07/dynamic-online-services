@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 if ( ! defined( "ABSPATH" ) ) {
 	exit;
@@ -6,8 +7,6 @@ if ( ! defined( "ABSPATH" ) ) {
 /**
  * Autoloader Test
  */
-
-declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use TechmireSolutions\DynamicOnlineServices\Autoloader;

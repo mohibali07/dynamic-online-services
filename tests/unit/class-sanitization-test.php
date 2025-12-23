@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+namespace DynamicOnlineServices\Tests\Unit;
 
 if ( ! defined( "ABSPATH" ) ) {
 	exit;
@@ -9,10 +12,6 @@ if ( ! defined( "ABSPATH" ) ) {
  * @package Dynamic_Online_Services
  * @subpackage Tests
  */
-
-declare(strict_types=1);
-
-namespace DynamicOnlineServices\Tests\Unit;
 
 use WP_Mock\Tools\TestCase;
 use TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization as SanitizationHelper;

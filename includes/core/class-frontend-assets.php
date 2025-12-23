@@ -14,6 +14,7 @@ namespace TechmireSolutions\DynamicOnlineServices\Core;
 
 use TechmireSolutions\DynamicOnlineServices\Styles\CardStyles;
 use TechmireSolutions\DynamicOnlineServices\Styles\FaqStyles;
+use TechmireSolutions\DynamicOnlineServices\Styles\WhatsappStyles;
 
 if (!defined('ABSPATH')) {
 	exit;
@@ -34,5 +35,6 @@ class FrontendAssets
 	{
 		CardStyles::init();
 		FaqStyles::init();
+		WhatsappStyles::init();
 	}
 }

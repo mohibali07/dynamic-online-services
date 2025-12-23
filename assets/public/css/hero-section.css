@@ -7,6 +7,7 @@
    CSS Custom Properties
    ============================================ */
 :root {
+
 	/* Default fallbacks if PHP variables are missing */
 	--hero-overlay-color: #000;
 	--hero-overlay-opacity: 0.5;
@@ -80,6 +81,7 @@
 	opacity: var(--hero-overlay-opacity);
 	z-index: 1;
 	background-color: var(--hero-overlay-color);
+
 	/* Optional: Blend mode if color is not black/white to look better */
 	mix-blend-mode: multiply;
 }
@@ -160,6 +162,7 @@
    Container Queries (Responsive Design)
    ============================================ */
 @container hero-container (min-width: 480px) {
+
 	.category-hero-inner {
 		height: var(--hero-height-tablet);
 	}

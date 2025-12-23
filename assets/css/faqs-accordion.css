@@ -4,84 +4,90 @@
  */
 
 .service-faqs-accordion {
-    width: 100%;
-    margin: 0 auto;
-    container-type: inline-size;
-    container-name: faq-container;
+	width: 100%;
+	margin: 0 auto;
+	container-type: inline-size;
+	container-name: faq-container;
 }
 
 .faq-item {
-    border: 1px solid var(--wp--preset--color--gray-300, #ddd);
-    border-radius: 8px;
-    margin-bottom: 15px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	border: 1px solid var(--wp--preset--color--gray-300, #ddd);
+	border-radius: 8px;
+	margin-bottom: 15px;
+	overflow: hidden;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .faq-question {
-    background-color: var(--wp--preset--color--gray-100, #f7f7f7);
-    padding: 15px 20px;
-    margin: 0;
-    font-size: 1.15rem;
-    cursor: pointer;
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.2s ease;
-    min-height: 50px;
-    /* Ensure > 44px touch target */
-    -webkit-tap-highlight-color: transparent;
-    /* Remove blue highlight on mobile */
+	background-color: var(--wp--preset--color--gray-100, #f7f7f7);
+	padding: 15px 20px;
+	margin: 0;
+	font-size: 1.15rem;
+	cursor: pointer;
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	transition: background-color 0.2s ease;
+	min-height: 50px;
+
+	/* Ensure > 44px touch target */
+	-webkit-tap-highlight-color: transparent;
+
+	/* Remove blue highlight on mobile */
 }
 
 /* Hover-only enhancement */
 @media (hover: hover) {
-    .faq-question:hover {
-        background-color: var(--wp--preset--color--gray-200, #eee);
-    }
+
+	.faq-question:hover {
+		background-color: var(--wp--preset--color--gray-200, #eee);
+	}
 }
 
 .faq-icon {
-    font-size: 1.5rem;
-    transition: transform 0.3s ease;
-    font-weight: bold;
-    color: var(--wp--preset--color--primary, #007cba);
-    margin-inline-start: 15px;
-    /* Spacing from text */
-    flex-shrink: 0;
+	font-size: 1.5rem;
+	transition: transform 0.3s ease;
+	font-weight: 700;
+	color: var(--wp--preset--color--primary, #007cba);
+	margin-inline-start: 15px;
+
+	/* Spacing from text */
+	flex-shrink: 0;
 }
 
 .faq-question.active .faq-icon {
-    transform: rotate(45deg);
+	transform: rotate(45deg);
 }
 
 .faq-answer {
-    padding: 0 20px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
-    background: #fff;
+	padding: 0 20px;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+	background: #fff;
 }
 
 .faq-answer.show {
-    max-height: 1000px;
-    /* Allow for more content on mobile stacking */
-    padding: 20px;
+	max-height: 1000px;
+
+	/* Allow for more content on mobile stacking */
+	padding: 20px;
 }
 
 /* Container Queries */
 @container faq-container (max-width: 480px) {
-    .faq-question {
-        font-size: 1rem;
-        padding: 12px 15px;
-    }
 
-    .faq-icon {
-        font-size: 1.25rem;
-    }
+	.faq-question {
+		font-size: 1rem;
+		padding: 12px 15px;
+	}
 
-    .faq-answer.show {
-        padding: 15px;
-    }
+	.faq-icon {
+		font-size: 1.25rem;
+	}
+
+	.faq-answer.show {
+		padding: 15px;
+	}
 }

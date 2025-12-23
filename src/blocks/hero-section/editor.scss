@@ -1,18 +1,19 @@
 .dynos-hero-section-edit {
-    border: 1px dashed #ccc;
-    min-height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    /* Prevent content spilling */
+	border: 1px dashed #ccc;
+	min-height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+
+	/* Prevent content spilling */
 }
 
 .dynos-hero-section-edit .dynos-hero-content-preview {
-    max-width: 100%;
+	max-width: 100%;
 }
 
 .dynos-hero-section-edit .dynos-hero-title {
-    margin-bottom: 0.5em;
-    font-weight: bold;
+	margin-bottom: 0.5em;
+	font-weight: 700;
 }

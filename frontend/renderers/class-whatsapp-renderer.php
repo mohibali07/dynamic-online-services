@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace TechmireSolutions\DynamicOnlineServices\Renderers;
 
 use TechmireSolutions\DynamicOnlineServices\Helpers\Options;
+use TechmireSolutions\DynamicOnlineServices\Styles\WhatsappStyles;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -30,36 +31,6 @@ class WhatsappRenderer {
 	 */
 	public function init(): void {
 		add_action( 'wp_footer', array( $this, 'render' ) );
-	}
-
-	/**
-	 * Check if the chat should be displayed based on schedule.
-	 *
-	 * @param array $options Plugin options.
-	 * @return bool
-	 */
-	private function is_open( array $options ): bool {
-		$availability = Options::get_option( $options, 'whatsapp_availability', false );
-
-		// If scheduling is not enabled, it's always available.
-		if ( ! $availability ) {
-			return true;
-		}
-
-		$timezone_string = Options::get_option( $options, 'whatsapp_timezone', 'UTC' );
-		try {
-			$timezone = new \DateTimeZone( $timezone_string );
-		} catch ( \Exception $e ) {
-			$timezone = new \DateTimeZone( 'UTC' );
-		}
-
-		$current_time = new \DateTime( 'now', $timezone );
-		$now          = $current_time->format( 'H:i' );
-
-		$start = Options::get_option( $options, 'whatsapp_schedule_start', '09:00' );
-		$end   = Options::get_option( $options, 'whatsapp_schedule_end', '17:00' );
-
-		return $now >= $start && $now <= $end;
 	}
 
 	/**
@@ -82,7 +53,7 @@ class WhatsappRenderer {
 		}
 
 		// 3. Check Schedule & Offline Behavior.
-		$is_open          = $this->is_open( $options );
+		$is_open          = WhatsappStyles::is_open( $options );
 		$offline_behavior = Options::get_option( $options, 'whatsapp_offline_behavior', 'hide' );
 
 		if ( ! $is_open && 'hide' === $offline_behavior ) {
@@ -98,7 +69,6 @@ class WhatsappRenderer {
 
 		// Data Preparation.
 		$number = Options::get_option( $options, 'whatsapp_number', '' );
-		// If explicit number is missing AND agents are not enabled/empty, return.
 		$agents_enabled = Options::get_option( $options, 'whatsapp_agents_enabled', false );
 		$agents         = Options::get_option( $options, 'whatsapp_agents', array() );
 
@@ -130,7 +100,6 @@ class WhatsappRenderer {
 		$is_multi_agent = $agents_enabled && ! empty( $agents ) && is_array( $agents );
 		$main_href      = $is_multi_agent ? 'javascript:void(0);' : esc_url( $main_url );
 		$main_onclick   = $is_multi_agent ? 'dynosToggleAgentModal(event)' : 'dynosWhatsAppClick(this, event)';
-
 
 		// Styling.
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -170,10 +139,6 @@ class WhatsappRenderer {
 			$cta_enabled = true; // Force enable bubble.
 			$cta_delay   = 0;    // Show immediately.
 			$cta_text    = Options::get_option( $options, 'whatsapp_offline_text', 'We are currently offline.' );
-			// If multi-agent is on, maybe disable it for offline mode if specific logic needed?
-			// For now, let's keep it simple: Offline message acts as CTA. Click opens modal or overrides.
-			// If offline, maybe clicking button should show alert if multi-agent?
-			// Let's assume offline message tells them to leave a message, implying they click and go to WA.
 		}
 
 		$cta_html = '';
@@ -186,139 +151,6 @@ class WhatsappRenderer {
 		}
 
 		?>
-		<style>
-			.dynos-whatsapp-button {
-				position: fixed;
-				width: 60px;
-				height: 60px;
-				background-color: var(--whatsapp-bg);
-				color: var(--whatsapp-icon);
-				border-radius: 50%;
-				text-align: center;
-				font-size: 30px;
-				box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
-				z-index: 9999;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				text-decoration: none;
-				transition: transform 0.3s ease;
-			}
-			.dynos-whatsapp-button:hover {
-				transform: scale(1.1);
-			}
-			.dynos-offline {
-				filter: grayscale(100%);
-			}
-			.dynos-whatsapp-cta {
-				position: absolute;
-				inset-block-end: 70px;
-				width: 200px;
-				background: #fff;
-				color: #333;
-				padding: 10px;
-				border-radius: 8px;
-				box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-				font-size: 14px;
-				line-height: 1.4;
-				inset-inline-end: 0;
-				animation: dynosFadeIn 0.5s;
-			}
-			.dynos-position-left .dynos-whatsapp-cta { inset-inline-start: 0; inset-inline-end: auto; }
-
-			.dynos-cta-close {
-				position: absolute;
-				inset-block-start: 0px;
-				inset-inline-end: 5px;
-				font-size: 16px;
-				cursor: pointer;
-				color: #999;
-			}
-			.dynos-whatsapp-icon { width: 35px; height: 35px; fill: currentColor; }
-
-			/* Agent Modal Styles */
-			.dynos-agent-modal-overlay {
-				position: fixed;
-				top: 0; left: 0; width: 100%; height: 100%;
-				background: rgba(0,0,0,0.5);
-				z-index: 10000;
-				display: none;
-				justify-content: center;
-				align-items: center;
-			}
-			.dynos-agent-modal {
-				background: #fff;
-				width: 90%;
-				max-width: 400px;
-				border-radius: 10px;
-				padding: 20px;
-				box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-				position: relative;
-				max-height: 80vh;
-				overflow-y: auto;
-			}
-			.dynos-agent-header {
-				font-weight: bold;
-				font-size: 18px;
-				margin-bottom: 15px;
-				text-align: center;
-				border-bottom: 1px solid #eee;
-				padding-bottom: 10px;
-                color: #333;
-			}
-			.dynos-agent-list {
-				display: flex;
-				flex-direction: column;
-				gap: 10px;
-			}
-			.dynos-agent-item {
-				display: flex;
-				align-items: center;
-				padding: 10px;
-				border: 1px solid #eee;
-				border-radius: 8px;
-				text-decoration: none;
-				color: #333;
-				transition: background 0.2s;
-			}
-			.dynos-agent-item:hover {
-				background: #f9f9f9;
-			}
-			.dynos-agent-avatar {
-				width: 40px;
-				height: 40px;
-				border-radius: 50%;
-				background: #ddd;
-				margin-inline-end: 12px;
-				object-fit: cover;
-			}
-			.dynos-agent-info {
-				display: flex;
-				flex-direction: column;
-			}
-			.dynos-agent-name {
-				font-weight: bold;
-				font-size: 14px;
-			}
-			.dynos-agent-label {
-				font-size: 12px;
-				color: #666;
-			}
-			.dynos-modal-close {
-				position: absolute;
-				top: 10px;
-				right: 15px;
-				font-size: 24px;
-				cursor: pointer;
-				color: #999;
-			}
-
-			@keyframes dynosFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-			@media (min-width: 769px) { .dynos-hide-desktop { display: none !important; } }
-			@media (max-width: 768px) { .dynos-hide-mobile { display: none !important; } }
-		</style>
-
 		<div class="dynos-whatsapp-wrapper" style="<?php echo esc_attr( $style_attr ); ?>; position: fixed; z-index: 9999;">
 			<?php
 			echo wp_kses(
@@ -358,82 +190,14 @@ class WhatsappRenderer {
 			</a>
 		</div>
 
-		<?php if ( $is_multi_agent ) : ?>
-		<div id="dynos-agent-modal" class="dynos-agent-modal-overlay" onclick="if(event.target === this) this.style.display='none';">
-			<div class="dynos-agent-modal">
-				<span class="dynos-modal-close" onclick="document.getElementById('dynos-agent-modal').style.display='none';">&times;</span>
-				<div class="dynos-agent-header"><?php esc_html_e( 'Choose a Support Agent', 'dynamic-online-services' ); ?></div>
-				<div class="dynos-agent-list">
-					<?php foreach ( $agents as $agent ) :
-						$a_number = isset( $agent['number'] ) ? $agent['number'] : '';
-						if ( empty( $a_number ) ) continue;
-						$a_url = 'https://wa.me/' . preg_replace( '/[^0-9]/', '', $a_number );
-						if ( ! empty( $message ) ) {
-							$a_url .= '?text=' . $message;
-						}
-						$a_name = isset( $agent['name'] ) ? $agent['name'] : 'Support Agent';
-						$a_label = isset( $agent['label'] ) ? $agent['label'] : '';
-						$a_avatar = isset( $agent['avatar_url'] ) ? $agent['avatar_url'] : '';
-					?>
-					<a
-						href="<?php echo esc_url( $a_url ); ?>"
-						class="dynos-agent-item"
-						target="_blank"
-						onclick="dynosWhatsAppClick(this, event)"
-						data-analytics="<?php echo esc_attr( $data_analytics ); ?>"
-					>
-						<?php if ( ! empty( $a_avatar ) ) : ?>
-							<img src="<?php echo esc_url( $a_avatar ); ?>" class="dynos-agent-avatar" alt="<?php echo esc_attr( $a_name ); ?>" />
-						<?php else: ?>
-							<div class="dynos-agent-avatar" style="background:#eee; display:flex; align-items:center; justify-content:center; color:#888;">
-								<svg style="width:24px;height:24px;fill:currentColor" viewBox="0 0 448 512"><path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"/></svg>
-							</div>
-						<?php endif; ?>
-						<div class="dynos-agent-info">
-							<span class="dynos-agent-name"><?php echo esc_html( $a_name ); ?></span>
-							<?php if ( ! empty( $a_label ) ) : ?>
-								<span class="dynos-agent-label"><?php echo esc_html( $a_label ); ?></span>
-							<?php endif; ?>
-						</div>
-					</a>
-					<?php endforeach; ?>
-				</div>
-			</div>
-		</div>
-		<?php endif; ?>
-
-		<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			var cta = document.querySelector('.dynos-whatsapp-cta');
-			if (cta) {
-				var delay = parseInt(cta.getAttribute('data-delay'), 10) || 0;
-				setTimeout(function() {
-					cta.style.display = 'block';
-				}, delay * 1000);
-			}
-			// Exit Intent (Show if not already shown)
-			document.addEventListener('mouseleave', function(e) {
-				if(e.clientY < 0 && cta && cta.style.display === 'none') {
-					cta.style.display = 'block';
-				}
-			});
-		});
-
-		function dynosWhatsAppClick(element, event) {
-			if(element.dataset.analytics === 'true') {
-				if(typeof gtag === 'function') { gtag('event', 'click', { 'event_category': 'Contact', 'event_label': 'WhatsApp', 'transport_type': 'beacon' }); }
-				if(typeof fbq === 'function') { fbq('track', 'Contact'); }
-			}
-		}
-
-		function dynosToggleAgentModal(event) {
-			event.preventDefault();
-			var modal = document.getElementById('dynos-agent-modal');
-			if(modal) {
-				modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'flex' : 'none';
-			}
-		}
-		</script>
 		<?php
+		if ( $is_multi_agent ) {
+			$args = array(
+				'agents'         => $agents,
+				'message'        => $message,
+				'data_analytics' => $data_analytics,
+			);
+			include DYNOS_PLUGIN_DIR . 'includes/partials/whatsapp-modal.php';
+		}
 	}
 }

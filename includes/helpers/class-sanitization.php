@@ -66,7 +66,7 @@ class Sanitization
 			$part_clean = preg_replace('/[^a-zA-Z0-9\.\-\%pxrememvhvw]/', '', $part);
 
 			// Validate format: number followed by unit, or 'auto', or '0'
-			if (preg_match('/^[\d\.]+(px|rem|em|%|vh|vw|auto)$/i', $part_clean) || $part_clean === '0' || $part_clean === 'auto') {
+			if (preg_match('/^[\d\.]+(px|rem|em|%|vh|vw|auto)$/i', $part_clean) || '0' === $part_clean || 'auto' === $part_clean) {
 				$sanitized_parts[] = $part_clean;
 			} else {
 				// If ANY part is invalid/unrecognized, reject the entire value for safety
