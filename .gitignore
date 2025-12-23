@@ -1,45 +1,57 @@
-# 📘 The 2025 AI-Agent .gitignore Rule Book
+# 2025 Standard Vibe Coding .gitignore
 
-# 🛡️ Rule 1: Silence the Agent’s "Drafts"
-.agent_logs/
+# THE SHIELD: Block Agent Noise
+
+# Google Antigravity & Agent Artifacts
+.antigravity/
 **/artifacts/
 **/plans/
-claude-progress.txt
+.agent/
+.history/
 
-# 📸 Rule 2: Ignore "Visual Proof"
-**/*.mov
-**/*.mp4
-**/*.png
-**/*.jpg
-.antigravity/
+# Media Blackout (Unless in assets)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
 
-# 🏗️ Rule 3: Sandbox Hygiene (Worktrees & Temp Folders)
-.worktrees/
-temp_env/
-.scratch/
+# Exception for documentation and plugin assets
+!docs/images/*.png
+!assets/**/*.png
+!assets/**/*.jpg
+!assets/**/*.jpeg
+!assets/**/*.gif
+!assets/**/*.svg
+!assets/**/*.webp
 
-# 🧠 Rule 4: The "Keep It Smart" Exception (What NOT to Ignore)
-!/.github/copilot-instructions.md
-!/.cursorrules
-!/.trae/rules/*.md
-!/.windsurf/instructions.yaml
+# Security & Environment (Zero Trust)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets.json
+appsettings.Development.json
 
-# 🔑 Rule 5: Zero-Trust for "Generated Secrets"
-.env*
-!.env.example
+# Dependencies (Sandbox Isolation)
+node_modules/
+.venv/
+__pycache__/
+vendor/
 
 # General Project Ignores
-/node_modules/
-/vendor/
 /build/
 *.zip
 *.log
 .DS_Store
 .vscode/
 .idea/
-# Lock files tracked for reproducible builds
-# composer.lock
-# package-lock.json
 playwright-report/
 test-results/
 
@@ -48,3 +60,4 @@ phpunit_debug.log
 debug_capture
 **/debug_*.log
 *_debug.log
+.phpunit.result.cache

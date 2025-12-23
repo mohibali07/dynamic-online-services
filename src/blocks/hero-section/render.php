@@ -5,6 +5,8 @@
  * @package Dynamic_Online_Services
  */
 
+declare(strict_types=1);
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

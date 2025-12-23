@@ -1,4 +1,8 @@
 <?php
+
+if ( ! defined( "ABSPATH" ) ) {
+	exit;
+}
 /**
  * Category Shortcode Tests
  *

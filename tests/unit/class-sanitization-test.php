@@ -1,4 +1,8 @@
 <?php
+
+if ( ! defined( "ABSPATH" ) ) {
+	exit;
+}
 /**
  * Sanitization Functions Tests
  *
@@ -13,7 +17,7 @@ namespace DynamicOnlineServices\Tests\Unit;
 use WP_Mock\Tools\TestCase;
 use TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization as SanitizationHelper;
 require_once dirname(__DIR__, 2) . '/includes/helpers/class-sanitization.php';
-require_once dirname(__DIR__, 2) . '/includes/helpers.php';
+require_once dirname(__DIR__, 2) . '/includes/functions-helpers.php';
 
 /**
  * Test sanitization helper functions.

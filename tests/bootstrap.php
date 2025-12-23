@@ -93,6 +93,9 @@ if (!function_exists('esc_url')) { function esc_url($t) { return $t; } }
 if (!function_exists('esc_html__')) { function esc_html__($t) { return $t; } }
 if (!function_exists('wp_unslash')) { function wp_unslash($v) { return $v; } }
 if (!function_exists('_x')) { function _x($t, $c, $d='default') { return $t; } }
+if (!function_exists('wp_strip_all_tags')) { function wp_strip_all_tags($t) { return strip_tags($t); } }
+if (!function_exists('wp_kses_post')) { function wp_kses_post($t) { return $t; } }
+if (!function_exists('wp_attachment_is_image')) { function wp_attachment_is_image($id) { return true; } }
 
 // Essential classes
 if (!class_exists('WP_Post')) {

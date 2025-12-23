@@ -443,9 +443,8 @@ class Sanitization
 			return '';
 		}
 
-		// Sanitize property name (alphanumeric, hyphens, underscores only)
-		$property = preg_replace('/[^a-zA-Z0-9\-_]/', '', $property);
-		if (empty($property)) {
+		// Validate property name (alphanumeric, hyphens, underscores only)
+		if (preg_match('/[^a-zA-Z0-9\-_]/', $property)) {
 			return '';
 		}
 
