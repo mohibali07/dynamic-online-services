@@ -86,6 +86,37 @@ class WhatsappStyles
 			DYNOS_VERSION,
 			true // In footer
 		);
+
+		// Dynamic Styles
+		$bg_color   = Options::get_option($options, 'whatsapp_bg_color', '#25D366');
+		$icon_color = Options::get_option($options, 'whatsapp_icon_color', '#FFFFFF');
+		$offset_x   = Options::get_option($options, 'whatsapp_position_offset_x', '20px');
+		$offset_y   = Options::get_option($options, 'whatsapp_position_offset_y', '20px');
+
+		// Sanitize
+		$bg_color   = sanitize_hex_color($bg_color);
+		$icon_color = sanitize_hex_color($icon_color);
+		$offset_x   = \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($offset_x, 'margin');
+		$offset_y   = \TechmireSolutions\DynamicOnlineServices\Helpers\Sanitization::escape_css_value($offset_y, 'margin');
+
+		// Build CSS Vars
+		// We'll use inset properties in CSS, so x/y need to be mapped correctly or just generic offsets
+		$css_vars = array(
+			'--whatsapp-bg'       => $bg_color,
+			'--whatsapp-icon'     => $icon_color,
+			'--whatsapp-offset-x' => $offset_x,
+			'--whatsapp-offset-y' => $offset_y,
+		);
+
+		$css_string = ":root {\n";
+		foreach ($css_vars as $var => $value) {
+			if (!empty($value)) {
+				$css_string .= "\t{$var}: {$value};\n";
+			}
+		}
+		$css_string .= "}\n";
+
+		wp_add_inline_style('sos-whatsapp-style', $css_string);
 	}
 
 	/**

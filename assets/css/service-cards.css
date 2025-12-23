@@ -1,172 +1,224 @@
 /**
  * Service Cards Styles
- * Mobile-First Design
+ * Mobile-First Design with RTL Support, Accessibility & Dark Mode
  */
+
+:root {
+
+	/* Default Fallbacks */
+	--card-bg: #fff;
+	--card-title-color: #333;
+	--card-description-color: #666;
+	--card-btn-bg: #007cba;
+	--card-btn-text: #fff;
+	--card-btn-hover-bg: #fff;
+	--card-btn-hover-text: #007cba;
+	--card-font-family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen-sans, ubuntu, cantarell, "Helvetica Neue", sans-serif;
+
+	/* Dimensions & Spacing */
+	--card-grid-min-width: 260px;
+	--card-col-gap: 20px;
+	--card-row-gap: 40px;
+	--card-radius: 18px;
+	--card-height: 400px;
+	--card-img-height: 232px;
+	--card-content-height: 200px;
+	--card-padding-top: 24px;
+	--card-padding-sides: 10px;
+	--card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	--card-hover-transform: translateY(-5px);
+	--card-hover-transition: 0.2s;
+
+	/* Typography */
+	--card-title-size: 1.25rem;
+	--card-desc-size: 0.9rem;
+	--card-btn-size: 0.9rem;
+}
 
 .service-card-grid {
 	display: grid;
-
-	/* Use minmax with a smaller minimum for very narrow containers, but usually 280px is good.
-       We will trust the container query to handle extreme cases if needed, but auto-fit is robust.
-       Let's use a slightly smaller min to be safe on very small phones (like 320px width devices with padding). */
-	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-	gap: var(--wp--style--block-gap, 20px);
+	grid-template-columns: repeat(auto-fit, minmax(var(--card-grid-min-width), 1fr));
+	gap: var(--card-row-gap) var(--card-col-gap);
 	list-style: none;
 	padding: 0;
 	margin: 0;
-	column-gap: var(--wp--style--block-gap, 20px);
-	row-gap: calc(var(--wp--style--block-gap, 20px) * 2);
 
-	/* Define container for potential internal queries if we wanted to change grid based on its own size,
-       but usually we query the wrapper. Here we define it so children can query it if needed. */
 	container-type: inline-size;
 	container-name: services-grid;
 }
 
 .service-card {
-	border-radius: 18px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	transition: transform 0.2s;
+	border-radius: var(--card-radius);
+	box-shadow: var(--card-shadow);
+	transition: transform var(--card-hover-transition) ease;
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+	min-height: var(--card-height);
+	background: var(--card-bg);
+	position: relative;
+	overflow: hidden;
 
-	/* Changed from fixed 400px to allow content to dictate height, but keep consistent with flex */
-	min-height: 400px;
-	background: var(--wp--preset--color--white, #fff);
-
-	/* Ensure background */
+	/* Ensure content stays within radius */
 }
 
-/* Hover effect is fine as an enhancement, but not required for function */
+/* Hover Effect */
 .service-card:hover {
-	transform: translateY(-5px);
+	transform: var(--card-hover-transform);
 }
 
 .service-card-image-link {
 	display: block;
-	height: 232px;
-	border-radius: 18px;
+	height: var(--card-img-height);
+	border-radius: var(--card-radius);
+
+	/* Fallback/Safety */
 	overflow: hidden;
 	flex-shrink: 0;
 }
 
 .service-card-image {
 	width: 100%;
-	height: 232px;
+	height: 100%;
 	object-fit: cover;
 	display: block;
-	z-index: 10;
-	position: relative;
-	border-radius: 18px;
+	z-index: 1;
 }
 
 .service-card-content {
-	padding: 24px 15px 24px;
+	padding-block-start: var(--card-padding-top);
+	padding-block-end: var(--card-padding-top);
+	padding-inline: var(--card-padding-sides);
 
-	/* Increased side padding slightly */
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
-	margin-top: -16px;
-	border-radius: 0 0 18px 18px;
+
+	/* Negative margin to pull content up if needed, or remove if design changes.
+	   Keeping logic similar to PHP build but using vars. */
+
+	/* margin-top: -16px; removed for cleaner flow, can be re-added via var if needed */
+
+	border-radius: 0 0 var(--card-radius) var(--card-radius);
 	align-items: center;
-	background: inherit;
+	background: var(--card-bg);
+	color: var(--card-title-color);
+	font-family: var(--card-font-family), sans-serif;
 
-	/* Match card background */
-	position: relative;
-	z-index: 11;
-
-	/* Ensure content is above image overlap */
+	z-index: 2;
 }
 
 .service-card-title {
-	font-size: 1.25rem;
-	margin-top: 0;
-	margin-bottom: 10px;
+	font-size: var(--card-title-size);
+	margin-block-start: 0;
+	margin-block-end: 10px;
 	text-decoration: none;
 	text-align: center;
 	line-height: 1.3;
+	color: var(--card-title-color);
 }
 
 .service-card-title a {
 	text-decoration: none;
 	transition: color 0.2s ease;
-	color: var(--wp--preset--color--primary, #007cba);
-
-	/* Ensure touch target on title link is large enough if it were widely clickable,
-       but block link is better usage. Here it's a text link.
-       The title itself isn't a button, but the link inside is. */
-	padding: 5px 0;
-
-	/* Add visual breathing room */
+	color: inherit;
+	padding-block: 5px;
 	display: block;
 }
 
 .service-card-title a:hover {
-	color: var(--wp--preset--color--background, #fff) !important;
+	color: var(--card-title-hover-color, var(--card-btn-text));
 }
 
 .service-card-description {
-	font-size: 0.9rem;
+	font-size: var(--card-desc-size);
 	text-align: center;
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 	flex-grow: 1;
 	line-height: 1.5;
+	color: var(--card-description-color);
 }
 
 .service-card-link {
-	display: inline-block;
-	padding: 12px 28px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-block: 12px;
+	padding-inline: 28px;
 
-	/* Slightly larger padding for touch */
 	text-decoration: none;
 	border-radius: 6px;
-	text-align: center;
-	font-size: 0.9rem;
+	font-size: var(--card-btn-size);
 	font-weight: 500;
 	transition: background-color 0.2s, color 0.2s;
 	width: auto;
-	margin-top: auto;
+	margin-block-start: auto;
 
-	/* margin-bottom removed to keep inside padding */
-	background-color: var(--wp--preset--color--primary, #007cba);
-	color: var(--wp--preset--color--background, #fff);
+	background-color: var(--card-btn-bg);
+	color: var(--card-btn-text) !important;
+
+	/* Force override user agent styles */
 	min-height: 44px;
 
-	/* Touch target enforcement */
-	box-sizing: border-box;
-	line-height: 1.2;
-
-	/* Center text vertically with padding */
+	/* A11y Touch Target */
 }
 
 .service-card-link:hover {
-	background-color: var(--wp--preset--color--background, #fff) !important;
-	color: var(--wp--preset--color--primary, #007cba);
+	background-color: var(--card-btn-hover-bg) !important;
+	color: var(--card-btn-hover-text) !important;
 }
 
-/* Container Queries for Adaptability */
+/* ============================================
+   Accessibility - Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+
+	.service-card {
+		transition: none !important;
+	}
+
+	.service-card:hover {
+		transform: none !important;
+	}
+}
+
+/* ============================================
+   Accessibility - Focus Styles
+   ============================================ */
+.service-card a:focus-visible {
+	outline: 3px solid var(--card-btn-bg);
+	outline-offset: 4px;
+	border-radius: 4px;
+}
+
+/* ============================================
+   High Contrast Mode Support
+   ============================================ */
+@media (prefers-contrast: high) {
+
+	.service-card {
+		border: 2px solid currentcolor;
+	}
+
+	.service-card-link {
+		border: 2px solid currentcolor;
+	}
+}
+
+/* ============================================
+   Container Queries
+   ============================================ */
 @container services-grid (max-width: 480px) {
 
 	.service-card-content {
-		padding: 20px 10px;
+		padding-inline: 15px;
+
+		/* Slightly more breathing room on mobile */
 	}
 
-	.service-card-title {
-		font-size: 1.15rem;
-	}
-
-	.service-card-image,
-	.service-card-image-link {
+	/* Adjust image height for very small cards if needed */
+	.service-card-image-link,
+	.service-card-image {
 		height: 200px;
-
-		/* Smaller image on small cards */
-	}
-
-	.service-card {
-		min-height: auto;
-
-		/* Let content dictate height on small screens */
 	}
 }

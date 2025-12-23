@@ -10,6 +10,7 @@ import {
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import PropTypes from 'prop-types';
 
 /**
  * OptionControl Component.
@@ -191,6 +192,29 @@ const OptionControl = ( {
 			<div className="dynos-control-input">{ renderControl() }</div>
 		</div>
 	);
+};
+
+OptionControl.propTypes = {
+	label: PropTypes.string.isRequired,
+	help: PropTypes.string,
+	type: PropTypes.oneOf( [
+		'text',
+		'number',
+		'color',
+		'toggle',
+		'checkbox',
+		'range',
+		'unit',
+		'tel',
+	] ),
+	optionKey: PropTypes.string.isRequired,
+	settings: PropTypes.object.isRequired,
+	onChange: PropTypes.func.isRequired,
+};
+
+OptionControl.defaultProps = {
+	help: '',
+	type: 'text',
 };
 
 export default OptionControl;

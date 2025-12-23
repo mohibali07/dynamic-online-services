@@ -4,22 +4,44 @@
  * @package Dynamic_Online_Services
  */
 
+:root {
+
+	/* Fallbacks */
+	--whatsapp-bg: #25d366;
+	--whatsapp-icon: #fff;
+	--whatsapp-offset-x: 20px;
+	--whatsapp-offset-y: 20px;
+	--whatsapp-z-index: 9999;
+}
+
 .dynos-whatsapp-button {
 	position: fixed;
 	width: 60px;
 	height: 60px;
-	background-color: var(--whatsapp-bg, #25d366);
-	color: var(--whatsapp-icon, #fff);
+	background-color: var(--whatsapp-bg);
+	color: var(--whatsapp-icon);
 	border-radius: 50%;
 	text-align: center;
 	font-size: 30px;
 	box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
-	z-index: 9999;
+	z-index: var(--whatsapp-z-index);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	text-decoration: none;
 	transition: transform 0.3s ease;
+
+	/* Positioning */
+	inset-block-end: var(--whatsapp-offset-y);
+	inset-inline-end: var(--whatsapp-offset-x);
+}
+
+/* Position overrides handled by classes if needed,
+   but defaulting to 'right' (inline-end) is improved by Logical Props */
+
+.dynos-position-left .dynos-whatsapp-button {
+	inset-inline-end: auto;
+	inset-inline-start: var(--whatsapp-offset-x);
 }
 
 .dynos-whatsapp-button:hover {
@@ -41,9 +63,13 @@
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	font-size: 14px;
 	line-height: 1.4;
+
 	inset-inline-end: 0;
+
 	animation: dynosFadeIn 0.5s;
-	display: none; /* Hidden by default, toggled by JS */
+	display: none;
+
+	/* Hidden by default, toggled by JS */
 }
 
 .dynos-position-left .dynos-whatsapp-cta {
@@ -69,10 +95,7 @@
 /* Agent Modal Styles */
 .dynos-agent-modal-overlay {
 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+	inset: 0;
 	background: rgba(0, 0, 0, 0.5);
 	z-index: 10000;
 	display: none;
@@ -180,5 +203,26 @@
 
 	.dynos-hide-mobile {
 		display: none !important;
+	}
+}
+
+/* Accessibility */
+.dynos-whatsapp-button:focus-visible {
+	outline: 3px solid var(--whatsapp-bg);
+	outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.dynos-whatsapp-button {
+		transition: none;
+	}
+
+	.dynos-whatsapp-button:hover {
+		transform: none;
+	}
+
+	.dynos-whatsapp-cta {
+		animation: none;
 	}
 }

@@ -66,11 +66,7 @@ class TaxonomyTest extends TestCase
      */
     public function test_register_taxonomy_calls_wordpress_function(): void
     {
-        \WP_Mock::userFunction('_x')
-            ->andReturn('Service Categories');
-
-        \WP_Mock::userFunction('__')
-            ->andReturn('Categories');
+        $this->setup_translation_mocks();
 
         \WP_Mock::userFunction('register_taxonomy')
             ->once()
@@ -87,11 +83,7 @@ class TaxonomyTest extends TestCase
      */
     public function test_taxonomy_accepts_multiple_post_types(): void
     {
-        \WP_Mock::userFunction('_x')
-            ->andReturn('Service Categories');
-
-        \WP_Mock::userFunction('__')
-            ->andReturn('Categories');
+        $this->setup_translation_mocks();
 
         \WP_Mock::userFunction('register_taxonomy')
             ->once()
@@ -108,11 +100,7 @@ class TaxonomyTest extends TestCase
      */
     public function test_taxonomy_is_hierarchical(): void
     {
-        \WP_Mock::userFunction('_x')
-            ->andReturn('Service Categories');
-
-        \WP_Mock::userFunction('__')
-            ->andReturn('Categories');
+        $this->setup_translation_mocks();
 
         \WP_Mock::userFunction('register_taxonomy')
             ->once()
@@ -135,11 +123,7 @@ class TaxonomyTest extends TestCase
      */
     public function test_taxonomy_has_rest_api_support(): void
     {
-        \WP_Mock::userFunction('_x')
-            ->andReturn('Service Categories');
-
-        \WP_Mock::userFunction('__')
-            ->andReturn('Categories');
+        $this->setup_translation_mocks();
 
         \WP_Mock::userFunction('register_taxonomy')
             ->once()
@@ -155,5 +139,17 @@ class TaxonomyTest extends TestCase
         $taxonomy->register_taxonomy();
 
         $this->assertConditionsMet();
+    }
+
+    /**
+     * Helper to setup translation mocks.
+     */
+    private function setup_translation_mocks(): void
+    {
+        \WP_Mock::userFunction('_x')
+            ->andReturn('Service Categories');
+
+        \WP_Mock::userFunction('__')
+            ->andReturn('Categories');
     }
 }

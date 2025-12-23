@@ -1,4 +1,4 @@
-import { Spinner, Button, SnackbarList, Dashicon } from '@wordpress/components';
+import { Button, SnackbarList, Dashicon } from '@wordpress/components';
 import { useEntityProp } from '@wordpress/core-data';
 import { useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
@@ -9,6 +9,14 @@ import CardSettings from './components/CardSettings';
 import FaqSettings from './components/FaqSettings';
 import GeneralSettings from './components/GeneralSettings';
 import WhatsAppSettings from './components/WhatsAppSettings';
+import LoadingSkeleton from './components/LoadingSkeleton';
+import SuccessAnimation from './components/SuccessAnimation';
+
+import NavItem from './components/NavItem';
+
+// Import constants and hooks
+import { TABS, KEYBOARD_SHORTCUTS } from './constants';
+import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 
 // Import modern admin styles
 import './admin.css';
@@ -21,8 +29,9 @@ const SettingsApp = () => {
 	);
 	const { saveEditedEntityRecord } = useDispatch( 'core' );
 	const [ isSaving, setIsSaving ] = useState( false );
+	const [ saveSuccess, setSaveSuccess ] = useState( false );
 	const [ notices, setNotices ] = useState( [] );
-	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ activeTab, setActiveTab ] = useState( TABS.GENERAL );
 
 	const updateSettings = ( newSettings ) => {
 		setSettings( {
@@ -33,8 +42,10 @@ const SettingsApp = () => {
 
 	const saveSettings = async () => {
 		setIsSaving( true );
+		setSaveSuccess( false );
 		try {
 			await saveEditedEntityRecord( 'root', 'site', settings.id );
+			setSaveSuccess( true );
 			setNotices( [
 				...notices,
 				{
@@ -67,8 +78,15 @@ const SettingsApp = () => {
 		setNotices( notices.filter( ( notice ) => notice.id !== id ) );
 	};
 
+	// Keyboard shortcut: Cmd/Ctrl + S to save
+	useKeyboardShortcut( KEYBOARD_SHORTCUTS.SAVE, () => {
+		if ( ! isSaving ) {
+			saveSettings();
+		}
+	} );
+
 	if ( ! settings ) {
-		return <Spinner />;
+		return <LoadingSkeleton />;
 	}
 
 	const pluginSettings = settings || {};
@@ -76,31 +94,31 @@ const SettingsApp = () => {
 	// Navigation Items
 	const navItems = [
 		{
-			id: 'general',
+			id: TABS.GENERAL,
 			label: __( 'General', 'dynamic-online-services' ),
 			icon: 'admin-settings',
 			component: GeneralSettings,
 		},
 		{
-			id: 'hero',
+			id: TABS.HERO,
 			label: __( 'Hero Section', 'dynamic-online-services' ),
 			icon: 'cover-image',
 			component: HeroSettings,
 		},
 		{
-			id: 'cards',
+			id: TABS.CARDS,
 			label: __( 'Service Cards', 'dynamic-online-services' ),
 			icon: 'grid-view',
 			component: CardSettings,
 		},
 		{
-			id: 'faqs',
+			id: TABS.FAQS,
 			label: __( 'FAQs', 'dynamic-online-services' ),
 			icon: 'format-chat',
 			component: FaqSettings,
 		},
 		{
-			id: 'whatsapp',
+			id: TABS.WHATSAPP,
 			label: __( 'WhatsApp Widget', 'dynamic-online-services' ),
 			icon: 'whatsapp',
 			component: WhatsAppSettings,
@@ -118,33 +136,33 @@ const SettingsApp = () => {
 				<aside className="dynos-sidebar">
 					<div className="dynos-sidebar-header">
 						<h1>
-							<Dashicon icon="welcome-learn-more" />
+							<Dashicon icon="superhero-alt" />
 							<span>DynOS</span>
 						</h1>
 					</div>
 
 					<nav className="dynos-sidebar-nav">
 						{ navItems.map( ( item ) => (
-							<button
+							<NavItem
 								key={ item.id }
-								type="button"
-								className={ `dynos-nav-item ${
-									activeTab === item.id ? 'active' : ''
-								}` }
-								onClick={ () => setActiveTab( item.id ) }
-							>
-								<Dashicon icon={ item.icon } />
-								{ item.label }
-							</button>
+								id={ item.id }
+								label={ item.label }
+								icon={ item.icon }
+								activeTab={ activeTab }
+								setActiveTab={ setActiveTab }
+							/>
 						) ) }
 					</nav>
 
 					<div className="dynos-sidebar-footer">
 						<Button
-							className="dynos-save-btn"
+							className={ `dynos-save-btn ${
+								saveSuccess ? 'is-success' : ''
+							}` }
 							onClick={ saveSettings }
 							isBusy={ isSaving }
 							disabled={ isSaving }
+							aria-live="polite"
 						>
 							{ isSaving
 								? __( 'Saving…', 'dynamic-online-services' )
@@ -152,6 +170,10 @@ const SettingsApp = () => {
 										'Save Changes',
 										'dynamic-online-services'
 								  ) }
+							<SuccessAnimation
+								show={ saveSuccess }
+								onComplete={ () => setSaveSuccess( false ) }
+							/>
 						</Button>
 					</div>
 				</aside>
@@ -179,10 +201,12 @@ const SettingsApp = () => {
 						</p>
 					</div>
 
-					<ActiveComponent
-						settings={ pluginSettings }
-						onChange={ updateSettings }
-					/>
+					<div className="dynos-panel-wrapper">
+						<ActiveComponent
+							settings={ pluginSettings }
+							onChange={ updateSettings }
+						/>
+					</div>
 				</main>
 			</div>
 		</div>

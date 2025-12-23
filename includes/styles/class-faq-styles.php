@@ -79,38 +79,29 @@ class FaqStyles
 		// Get options
 		$options = Options::get();
 
-		// Get FAQ settings
-		$faq_border_color = Options::get_option($options, 'faq_item_border_color', '#ddd');
-		$faq_border_radius = Options::get_option($options, 'faq_item_border_radius', '8px');
-		$faq_margin_bottom = Options::get_option($options, 'faq_item_margin_bottom', '15px');
-		$faq_box_shadow = Options::get_option($options, 'faq_item_box_shadow', '0 2px 4px rgba(0, 0, 0, 0.05)');
-		$faq_question_bg = Options::get_option($options, 'faq_question_bg_color', '#f7f7f7');
-		$faq_question_bg_hover = Options::get_option($options, 'faq_question_bg_hover', '#eee');
-		$faq_question_text = Options::get_option($options, 'faq_question_text_color', '#333');
-		$faq_answer_text = Options::get_option($options, 'faq_answer_text_color', '#333');
-		$faq_question_padding = Options::get_option($options, 'faq_question_padding', '15px 20px');
-		$faq_question_font_size = Options::get_option($options, 'faq_question_font_size', '1.15rem');
-		$faq_icon_font_size = Options::get_option($options, 'faq_icon_font_size', '1.5rem');
-		$faq_answer_padding = Options::get_option($options, 'faq_answer_padding', '20px');
-		$faq_answer_max_height = Options::get_option($options, 'faq_answer_max_height', '500px');
-		$faq_transition_speed = Options::get_option($options, 'faq_transition_speed', '0.4s');
+		// Defaults
+		$defaults = array(
+			'faq_item_border_color'     => '#ddd',
+			'faq_item_border_radius'    => '8px',
+			'faq_item_margin_bottom'    => '15px',
+			'faq_item_box_shadow'       => '0 2px 4px rgba(0, 0, 0, 0.05)',
+			'faq_question_bg_color'     => '#f7f7f7',
+			'faq_question_bg_hover'     => '#eee',
+			'faq_question_text_color'   => '#333',
+			'faq_answer_text_color'     => '#333',
+			'faq_question_padding'      => '15px 20px',
+			'faq_question_font_size'    => '1.15rem',
+			'faq_icon_font_size'        => '1.5rem',
+			'faq_answer_padding'        => '20px',
+			'faq_answer_max_height'     => '500px',
+			'faq_transition_speed'      => '0.4s',
+		);
 
-		// Sanitize and escape all CSS values to prevent injection
-		$faq_border_color = sanitize_hex_color($faq_border_color);
-		$faq_border_radius = Sanitization::escape_css_value($faq_border_radius, 'border-radius');
-		$faq_margin_bottom = Sanitization::escape_css_value($faq_margin_bottom, 'margin');
-		$faq_box_shadow = Sanitization::escape_css_value($faq_box_shadow, 'box-shadow');
-		$faq_question_bg = sanitize_hex_color($faq_question_bg);
-		$faq_question_bg_hover = sanitize_hex_color($faq_question_bg_hover);
-		$faq_question_text = sanitize_hex_color($faq_question_text);
-		$faq_answer_text = sanitize_hex_color($faq_answer_text);
-		$faq_question_padding = Sanitization::escape_css_value($faq_question_padding, 'padding');
-		$faq_question_font_size = Sanitization::escape_css_value($faq_question_font_size, 'font-size');
-		$faq_icon_font_size = Sanitization::escape_css_value($faq_icon_font_size, 'font-size');
-		$faq_answer_padding = Sanitization::escape_css_value($faq_answer_padding, 'padding');
-		$faq_answer_max_height = Sanitization::escape_css_value($faq_answer_max_height, 'max-height');
-		$faq_transition_speed = Sanitization::escape_css_value($faq_transition_speed, '');
-
+		// Get settings
+		$settings = array();
+		foreach ($defaults as $key => $default) {
+			$settings[$key] = Options::get_option($options, $key, $default);
+		}
 
 		// Enqueue base FAQ styles
 		wp_enqueue_style(
@@ -128,43 +119,45 @@ class FaqStyles
 			true
 		);
 
-		// Build dynamic CSS using safe CSS building functions
-		$dynamic_css = '.faq-item {';
-		$dynamic_css .= Sanitization::build_css_rule('border', '1px solid ' . $faq_border_color);
-		$dynamic_css .= Sanitization::build_css_rule('border-radius', $faq_border_radius);
-		$dynamic_css .= Sanitization::build_css_rule('margin-bottom', $faq_margin_bottom);
-		$dynamic_css .= Sanitization::build_css_rule('box-shadow', $faq_box_shadow);
-		$dynamic_css .= '}';
+		// Sanitize Colors
+		$colors = array(
+			'faq_item_border_color', 'faq_question_bg_color', 'faq_question_bg_hover',
+			'faq_question_text_color', 'faq_answer_text_color'
+		);
+		foreach ($colors as $color_key) {
+			$settings[$color_key] = sanitize_hex_color($settings[$color_key]);
+		}
 
-		$dynamic_css .= '.faq-question {';
-		$dynamic_css .= Sanitization::build_css_rule('background-color', $faq_question_bg);
-		$dynamic_css .= Sanitization::build_css_rule('color', $faq_question_text);
-		$dynamic_css .= Sanitization::build_css_rule('padding', $faq_question_padding);
-		$dynamic_css .= Sanitization::build_css_rule('font-size', $faq_question_font_size);
-		$dynamic_css .= '}';
+		// Build CSS Variables Map
+		$css_vars = array(
+			'--faq-border-color'        => $settings['faq_item_border_color'],
+			'--faq-radius'              => Sanitization::escape_css_value($settings['faq_item_border_radius'], 'border-radius'),
+			'--faq-margin-bottom'       => Sanitization::escape_css_value($settings['faq_item_margin_bottom'], 'margin'),
+			'--faq-shadow'              => Sanitization::escape_css_value($settings['faq_item_box_shadow'], 'box-shadow'),
+			'--faq-q-bg'                => $settings['faq_question_bg_color'],
+			'--faq-q-bg-hover'          => $settings['faq_question_bg_hover'],
+			'--faq-q-text'              => $settings['faq_question_text_color'],
+			'--faq-a-text'              => $settings['faq_answer_text_color'],
+			'--faq-q-padding'           => Sanitization::escape_css_value($settings['faq_question_padding'], 'padding'),
+			'--faq-q-size'              => Sanitization::escape_css_value($settings['faq_question_font_size'], 'font-size'),
+			'--faq-icon-size'           => Sanitization::escape_css_value($settings['faq_icon_font_size'], 'font-size'),
+			'--faq-a-padding'           => Sanitization::escape_css_value($settings['faq_answer_padding'], 'padding'),
+			'--faq-a-max-height'        => Sanitization::escape_css_value($settings['faq_answer_max_height'], 'max-height'),
+			'--faq-speed'               => Sanitization::escape_css_value($settings['faq_transition_speed'], ''),
+		);
 
-		$dynamic_css .= '.faq-question:hover {';
-		$dynamic_css .= Sanitization::build_css_rule('background-color', $faq_question_bg_hover);
-		$dynamic_css .= '}';
+		// Generate CSS Variables block
+		$css_string = ":root {\n";
+		foreach ($css_vars as $var => $value) {
+			if (!empty($value)) {
+				$css_string .= "\t{$var}: {$value};\n";
+			}
+		}
+		$css_string .= "}\n";
 
-		$dynamic_css .= '.faq-icon {';
-		$dynamic_css .= Sanitization::build_css_rule('font-size', $faq_icon_font_size);
-		$dynamic_css .= Sanitization::build_css_rule('transition', 'transform ' . $faq_transition_speed . ' ease');
-		$dynamic_css .= '}';
+		// Allow filtering the CSS variables
+		$css_string = apply_filters('dynos_faq_css_variables', $css_string, $css_vars);
 
-		$dynamic_css .= '.faq-answer {';
-		$dynamic_css .= Sanitization::build_css_rule('color', $faq_answer_text);
-		$dynamic_css .= Sanitization::build_css_rule('transition', 'max-height ' . $faq_transition_speed . ' ease-out, padding ' . $faq_transition_speed . ' ease-out');
-		$dynamic_css .= '}';
-
-		$dynamic_css .= '.faq-answer.show {';
-		$dynamic_css .= Sanitization::build_css_rule('max-height', $faq_answer_max_height);
-		$dynamic_css .= Sanitization::build_css_rule('padding', $faq_answer_padding);
-		$dynamic_css .= '}';
-
-		// Allow filtering the CSS
-		$dynamic_css = apply_filters('dynos_faq_dynamic_css', $dynamic_css, $options);
-
-		wp_add_inline_style('sos-faqs-accordion', $dynamic_css);
+		wp_add_inline_style('sos-faqs-accordion', $css_string);
 	}
 }

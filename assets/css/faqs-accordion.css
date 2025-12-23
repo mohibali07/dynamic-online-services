@@ -1,28 +1,52 @@
 /**
  * FAQs Accordion Styles
- * Mobile-First Design
+ * Mobile-First Design with RTL Support, Accessibility & Dark Mode
  */
+
+:root {
+
+	/* Default Fallbacks */
+	--faq-border-color: #ddd;
+	--faq-radius: 8px;
+	--faq-margin-bottom: 15px;
+	--faq-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+	--faq-q-bg: #f7f7f7;
+	--faq-q-bg-hover: #eee;
+	--faq-q-text: #333;
+	--faq-a-text: #333;
+
+	--faq-q-padding: 15px 20px;
+	--faq-q-size: 1.15rem;
+	--faq-icon-size: 1.5rem;
+
+	--faq-a-padding: 20px;
+	--faq-a-max-height: 500px;
+
+	--faq-speed: 0.4s;
+}
 
 .service-faqs-accordion {
 	width: 100%;
-	margin: 0 auto;
+	margin-inline: auto;
 	container-type: inline-size;
 	container-name: faq-container;
 }
 
 .faq-item {
-	border: 1px solid var(--wp--preset--color--gray-300, #ddd);
-	border-radius: 8px;
-	margin-bottom: 15px;
+	border: 1px solid var(--faq-border-color);
+	border-radius: var(--faq-radius);
+	margin-bottom: var(--faq-margin-bottom);
 	overflow: hidden;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	box-shadow: var(--faq-shadow);
 }
 
 .faq-question {
-	background-color: var(--wp--preset--color--gray-100, #f7f7f7);
-	padding: 15px 20px;
+	background-color: var(--faq-q-bg);
+	padding: var(--faq-q-padding);
 	margin: 0;
-	font-size: 1.15rem;
+	font-size: var(--faq-q-size);
+	color: var(--faq-q-text);
 	cursor: pointer;
 	position: relative;
 	display: flex;
@@ -30,52 +54,95 @@
 	align-items: center;
 	transition: background-color 0.2s ease;
 	min-height: 50px;
+	text-align: start;
 
 	/* Ensure > 44px touch target */
 	-webkit-tap-highlight-color: transparent;
-
-	/* Remove blue highlight on mobile */
 }
 
 /* Hover-only enhancement */
 @media (hover: hover) {
 
 	.faq-question:hover {
-		background-color: var(--wp--preset--color--gray-200, #eee);
+		background-color: var(--faq-q-bg-hover);
 	}
 }
 
 .faq-icon {
-	font-size: 1.5rem;
-	transition: transform 0.3s ease;
+	font-size: var(--faq-icon-size);
+	transition: transform var(--faq-speed) ease;
 	font-weight: 700;
 	color: var(--wp--preset--color--primary, #007cba);
 	margin-inline-start: 15px;
-
-	/* Spacing from text */
 	flex-shrink: 0;
 }
 
 .faq-question.active .faq-icon {
+
+	/* This rotation might need adjustment for RTL if using an arrow that points strictly right.
+	   Usually + will rotate to x 45deg which is direction agnostic.
+	   If using chevron-right, RTL needs flipping. Assuming agnostic/plus for now or font icon handling direction. */
 	transform: rotate(45deg);
 }
 
 .faq-answer {
-	padding: 0 20px;
+	padding-inline: 0;
+
+	/* Animated padding usually tricky, handle via explicit properties */
+	padding-block: 0;
+
 	max-height: 0;
 	overflow: hidden;
-	transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+	transition: max-height var(--faq-speed) ease-out, padding var(--faq-speed) ease-out;
 	background: #fff;
+	color: var(--faq-a-text);
 }
 
 .faq-answer.show {
-	max-height: 1000px;
-
-	/* Allow for more content on mobile stacking */
-	padding: 20px;
+	max-height: var(--faq-a-max-height);
+	padding: var(--faq-a-padding);
 }
 
-/* Container Queries */
+/* ============================================
+   Accessibility - Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+
+	.faq-icon,
+	.faq-answer,
+	.faq-question {
+		transition: none !important;
+	}
+}
+
+/* ============================================
+   Accessibility - Focus Styles
+   ============================================ */
+.faq-question:focus-visible {
+	outline: 3px solid var(--wp--preset--color--primary, #007cba);
+	outline-offset: -3px;
+
+	/* Inside border */
+	z-index: 10;
+}
+
+/* ============================================
+   High Contrast Support
+   ============================================ */
+@media (prefers-contrast: high) {
+
+	.faq-item {
+		border: 2px solid currentcolor;
+	}
+
+	.faq-question {
+		border-bottom: 1px solid currentcolor;
+	}
+}
+
+/* ============================================
+   Container Queries
+   ============================================ */
 @container faq-container (max-width: 480px) {
 
 	.faq-question {

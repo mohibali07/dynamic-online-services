@@ -1,52 +1,63 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from './pages/LoginPage';
+import { CourseEditorPage } from './pages/CourseEditorPage';
+import AxeBuilder from '@axe-core/playwright';
 
 test.describe( 'Course Management', () => {
+	let loginPage: LoginPage;
+	let courseEditorPage: CourseEditorPage;
+
 	test.beforeEach( async ( { page } ) => {
+		loginPage = new LoginPage( page );
+		courseEditorPage = new CourseEditorPage( page );
+
 		// Login
-		await page.goto( '/wp-login.php' );
-		await page.fill( '#user_login', process.env.WP_USERNAME || 'admin' );
-		await page.fill( '#user_pass', process.env.WP_PASSWORD || 'password' );
-		await page.click( '#wp-submit' );
-		await expect( page.locator( '#wpadminbar' ) ).toBeVisible();
+		await loginPage.goto();
+		await loginPage.login();
 	} );
 
-	test( 'should create and publish a new course', async ( { page } ) => {
+	test( 'should create and publish a new course and pass accessibility checks', async ( {
+		page,
+	} ) => {
 		// Navigate to Add New Course
-		await page.goto( '/wp-admin/post-new.php?post_type=courses' );
+		await courseEditorPage.gotoAddNew();
 
-		// Close welcome guide if present (common in WP)
-		const welcomeGuide = page.locator(
-			'button[aria-label="Close welcome guide"]'
-		);
-		if ( await welcomeGuide.isVisible() ) {
-			await welcomeGuide.click();
-		}
+		// Accessibility Check: Editor Page
+		const accessibilityScanResults = await new AxeBuilder( { page } )
+			.withTags( [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa' ] )
+			.exclude( '#wpadminbar' ) // Exclude admin bar if it causes known issues
+			.exclude( '.score-text' ) // Exclude potential SEO/Readability score elements in editor
+			.analyze();
+
+		expect( accessibilityScanResults.violations ).toEqual( [] );
 
 		// Enter title
 		const title = `Test Course ${ Date.now() }`;
-		await page.fill( '#post-title-0', title );
+		await courseEditorPage.fillTitle( title );
 
-		// Enter content (using paragraph block)
-		await page.click( '.block-editor-default-block-appender__content' );
-		await page.keyboard.type( 'This is a test course description.' );
+		// Enter content
+		await courseEditorPage.addContent(
+			'This is a test course description.'
+		);
 
 		// Publish
-		await page.click( '.editor-post-publish-panel__toggle' );
-		// Confirm publish (double check potentially needed)
-		await page.click( '.editor-post-publish-button' );
+		await courseEditorPage.publish();
 
-		// Verify published message
-		await expect(
-			page.locator( '.components-snackbar', { hasText: 'published' } )
-		).toBeVisible();
+		// Verify published
+		await courseEditorPage.verifyPublished();
 
 		// View post
-		const viewPostLink = page.locator( '.components-snackbar a', {
-			hasText: 'View Course',
-		} );
-		await viewPostLink.click();
+		await courseEditorPage.viewPublishedCourse();
 
 		// Verify frontend
 		await expect( page.locator( 'h1' ) ).toContainText( title );
+
+		// Accessibility Check: Frontend Single Course
+		const frontendScanResults = await new AxeBuilder( { page } )
+			.withTags( [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa' ] )
+			.exclude( '#wpadminbar' )
+			.analyze();
+
+		expect( frontendScanResults.violations ).toEqual( [] );
 	} );
 } );

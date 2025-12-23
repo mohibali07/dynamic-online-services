@@ -92,24 +92,10 @@ class PostTypeTest extends TestCase
      */
     public function test_updated_messages_returns_array(): void
     {
-        \WP_Mock::userFunction('get_post')
-            ->andReturn((object) ['ID' => 1, 'post_date' => '2025-01-01 00:00:00']);
-
-        \WP_Mock::userFunction('get_post_type_object')
-            ->with('services')
-            ->andReturn((object) ['name' => 'services']);
-
-        \WP_Mock::userFunction('__')
-            ->andReturn('Service updated.');
-
-        \WP_Mock::userFunction('__')
-            ->andReturn('Service updated.');
+        $this->setup_updated_messages_mocks();
 
         \WP_Mock::userFunction('wp_post_revision_title')
             ->andReturn('Revision');
-
-        \WP_Mock::userFunction('date_i18n')
-            ->andReturn('Jan 1, 2025');
 
         $post_type = new ServicePostType('services');
         $messages = $post_type->updated_messages([]);
@@ -125,6 +111,25 @@ class PostTypeTest extends TestCase
     {
         $_GET['revision'] = '123abc'; // Malicious input
 
+        $this->setup_updated_messages_mocks();
+
+        \WP_Mock::userFunction('wp_post_revision_title')
+            ->with(123, false) // Should be sanitized to 123
+            ->andReturn('Revision');
+
+        $post_type = new ServicePostType('services');
+        $messages = $post_type->updated_messages([]);
+
+        $this->assertIsArray($messages);
+
+        unset($_GET['revision']);
+    }
+
+    /**
+     * Helper to setup common mocks for updated_messages tests.
+     */
+    private function setup_updated_messages_mocks(): void
+    {
         \WP_Mock::userFunction('get_post')
             ->andReturn((object) ['ID' => 1, 'post_date' => '2025-01-01 00:00:00']);
 
@@ -135,21 +140,7 @@ class PostTypeTest extends TestCase
         \WP_Mock::userFunction('__')
             ->andReturn('Service updated.');
 
-        \WP_Mock::userFunction('__')
-            ->andReturn('Service updated.');
-
-        \WP_Mock::userFunction('wp_post_revision_title')
-            ->with(123, false) // Should be sanitized to 123
-            ->andReturn('Revision');
-
         \WP_Mock::userFunction('date_i18n')
             ->andReturn('Jan 1, 2025');
-
-        $post_type = new ServicePostType('services');
-        $messages = $post_type->updated_messages([]);
-
-        $this->assertIsArray($messages);
-
-        unset($_GET['revision']);
     }
 }

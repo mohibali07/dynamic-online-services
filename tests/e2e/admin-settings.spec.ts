@@ -1,16 +1,19 @@
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import { LoginPage } from './pages/LoginPage';
 
 test.describe( 'Admin Settings', () => {
+	let loginPage: LoginPage;
+
 	test.beforeEach( async ( { page } ) => {
+		loginPage = new LoginPage( page );
+
 		// Login
-		await page.goto( '/wp-login.php' );
-		await page.fill( '#user_login', process.env.WP_USERNAME || 'admin' );
-		await page.fill( '#user_pass', process.env.WP_PASSWORD || 'password' );
-		await page.click( '#wp-submit' );
-		await expect( page.locator( '#wpadminbar' ) ).toBeVisible();
+		await loginPage.goto();
+		await loginPage.login();
 	} );
 
-	test( 'should verify Dynamic Online Services settings page loads', async ( {
+	test( 'should verify Dynamic Online Services settings page loads and is accessible', async ( {
 		page,
 	} ) => {
 		// Navigate to settings
@@ -18,13 +21,26 @@ test.describe( 'Admin Settings', () => {
 
 		// Check for main heading
 		await expect(
-			page.locator( 'h1', {
-				hasText: 'Dynamic Online Services Settings',
+			page.getByRole( 'heading', {
+				name: 'DynOS',
+				level: 1,
 			} )
 		).toBeVisible();
 
-		// Check for some expected elements (based on typical settings pages)
-		// Adjust selector based on actual implementation
-		await expect( page.locator( 'button[type="submit"]' ) ).toBeVisible();
+		// Accessibility check
+		const accessibilityScanResults = await new AxeBuilder( { page } )
+			.exclude( '#wpadminbar' ) // Exclude WP admin bar
+			.exclude( '#adminmenumain' ) // Exclude WP admin menu
+			.exclude( '#wpbody' ) // Exclude WP core content wrapper (landmark-unique violation)
+			.exclude( '#screen-meta' ) // Exclude WP screen options
+			.exclude( '#adminmenuwrap' ) // Exclude admin menu wrapper
+			.analyze();
+
+		expect( accessibilityScanResults.violations ).toEqual( [] );
+
+		// Check for submit button
+		await expect(
+			page.getByRole( 'button', { name: 'Save Changes' } )
+		).toBeVisible();
 	} );
 } );

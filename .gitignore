@@ -51,6 +51,7 @@ vendor/
 *.log
 .DS_Store
 .vscode/
+!.vscode/extensions.json
 .idea/
 playwright-report/
 test-results/
