@@ -9,6 +9,7 @@ import CardSettings from './components/CardSettings';
 import FaqSettings from './components/FaqSettings';
 import GeneralSettings from './components/GeneralSettings';
 import WhatsAppSettings from './components/WhatsAppSettings';
+import MarketingSettings from './components/MarketingSettings';
 import LoadingSkeleton from './components/LoadingSkeleton';
 import SuccessAnimation from './components/SuccessAnimation';
 
@@ -122,6 +123,12 @@ const SettingsApp = () => {
 			label: __( 'WhatsApp Widget', 'dynamic-online-services' ),
 			icon: 'whatsapp',
 			component: WhatsAppSettings,
+		},
+		{
+			id: TABS.MARKETING,
+			label: __( 'Marketing', 'dynamic-online-services' ),
+			icon: 'megaphone',
+			component: MarketingSettings,
 		},
 	];
 

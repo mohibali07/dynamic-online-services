@@ -55,11 +55,11 @@ if ( ! function_exists( 'dynos_validate_term_object' ) ) {
 }
 
 // Include classes
-require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-images.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-acf.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-admin-notices.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-screen.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/helpers/class-shortcode-attributes.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/helpers/Images.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/helpers/Acf.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/helpers/AdminNotices.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/helpers/Screen.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/helpers/ShortcodeAttributes.php';
 
 if ( ! function_exists( 'dynos_validate_attachment_id' ) ) {
 	function dynos_validate_attachment_id( $attachment_id ) {

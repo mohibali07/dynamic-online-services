@@ -1,0 +1,234 @@
+/**
+ * WhatsApp Styles
+ *
+ * @package Dynamic_Online_Services
+ */
+
+:root {
+
+	/* Fallbacks */
+	--whatsapp-bg: #25d366;
+	--whatsapp-icon: #fff;
+	--whatsapp-offset-x: 20px;
+	--whatsapp-offset-y: 20px;
+	--whatsapp-z-index: 9999;
+}
+
+.dynos-whatsapp-wrapper[data-draggable="true"] {
+	cursor: move;
+	touch-action: none;
+	/* Prevent scrolling while dragging */
+}
+
+.dynos-whatsapp-button {
+	position: fixed;
+	width: 60px;
+	height: 60px;
+	background-color: var(--whatsapp-bg);
+	color: var(--whatsapp-icon);
+	border-radius: 50%;
+	text-align: center;
+	font-size: 30px;
+	box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+	z-index: var(--whatsapp-z-index);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	transition: transform 0.3s ease;
+
+	/* Positioning */
+	inset-block-end: var(--whatsapp-offset-y);
+	inset-inline-end: var(--whatsapp-offset-x);
+}
+
+/* Position overrides handled by classes if needed,
+   but defaulting to 'right' (inline-end) is improved by Logical Props */
+
+.dynos-position-left .dynos-whatsapp-button {
+	inset-inline-end: auto;
+	inset-inline-start: var(--whatsapp-offset-x);
+}
+
+.dynos-whatsapp-button:hover {
+	transform: scale(1.1);
+}
+
+.dynos-offline {
+	filter: grayscale(100%);
+}
+
+.dynos-whatsapp-cta {
+	position: absolute;
+	inset-block-end: 70px;
+	width: 200px;
+	background: #fff;
+	color: #333;
+	padding: 10px;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	font-size: 14px;
+	line-height: 1.4;
+
+	inset-inline-end: 0;
+
+	animation: dynosFadeIn 0.5s;
+	display: none;
+
+	/* Hidden by default, toggled by JS */
+}
+
+.dynos-position-left .dynos-whatsapp-cta {
+	inset-inline-start: 0;
+	inset-inline-end: auto;
+}
+
+.dynos-cta-close {
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline-end: 5px;
+	font-size: 16px;
+	cursor: pointer;
+	color: #999;
+}
+
+.dynos-whatsapp-icon {
+	width: 35px;
+	height: 35px;
+	fill: currentcolor;
+}
+
+/* Agent Modal Styles */
+.dynos-agent-modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 10000;
+	display: none;
+	justify-content: center;
+	align-items: center;
+}
+
+.dynos-agent-modal {
+	background: #fff;
+	width: 90%;
+	max-width: 400px;
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+	position: relative;
+	max-height: 80vh;
+	overflow-y: auto;
+}
+
+.dynos-agent-header {
+	font-weight: 700;
+	font-size: 18px;
+	margin-bottom: 15px;
+	text-align: center;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 10px;
+	color: #333;
+}
+
+.dynos-agent-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.dynos-agent-item {
+	display: flex;
+	align-items: center;
+	padding: 10px;
+	border: 1px solid #eee;
+	border-radius: 8px;
+	text-decoration: none;
+	color: #333;
+	transition: background 0.2s;
+}
+
+.dynos-agent-item:hover {
+	background: #f9f9f9;
+}
+
+.dynos-agent-avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: #ddd;
+	margin-inline-end: 12px;
+	object-fit: cover;
+}
+
+.dynos-agent-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.dynos-agent-name {
+	font-weight: 700;
+	font-size: 14px;
+}
+
+.dynos-agent-label {
+	font-size: 12px;
+	color: #666;
+}
+
+.dynos-modal-close {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	font-size: 24px;
+	cursor: pointer;
+	color: #999;
+}
+
+@keyframes dynosFadeIn {
+
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (min-width: 769px) {
+
+	.dynos-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (max-width: 768px) {
+
+	.dynos-hide-mobile {
+		display: none !important;
+	}
+}
+
+/* Accessibility */
+.dynos-whatsapp-button:focus-visible {
+	outline: 3px solid var(--whatsapp-bg);
+	outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.dynos-whatsapp-button {
+		transition: none;
+	}
+
+	.dynos-whatsapp-button:hover {
+		transform: none;
+	}
+
+	.dynos-whatsapp-cta {
+		animation: none;
+	}
+}

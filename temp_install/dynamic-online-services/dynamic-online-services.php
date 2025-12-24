@@ -4,7 +4,7 @@
  * Plugin URI:        http://aabtaab.com/
  * Description:       A custom plugin for managing dynamic online services and their categories with a combined, sortable selection field and customizable styles.
  * Version:           1.1.3
- * Requires at least: 6.9
+ * Requires at least: 6.7
  * Requires PHP:      8.3
  * Author:            Techmire Solutions
  * Author URI:        http://techmiresolutions.com/
@@ -75,12 +75,15 @@ if (!defined('DYNOS_MIN_PHP_VERSION')) {
  * @since 1.1.0
  */
 if (!defined('DYNOS_MIN_WP_VERSION')) {
-	define('DYNOS_MIN_WP_VERSION', '6.9');
+	define('DYNOS_MIN_WP_VERSION', '6.7');
 }
 
 
 // Load Autoloader.
-require_once DYNOS_PLUGIN_DIR . 'includes/class-autoloader.php';
+if (file_exists(DYNOS_PLUGIN_DIR . 'vendor/autoload.php')) {
+	require_once DYNOS_PLUGIN_DIR . 'vendor/autoload.php';
+}
+require_once DYNOS_PLUGIN_DIR . 'includes/Autoloader.php';
 \TechmireSolutions\DynamicOnlineServices\Autoloader::run();
 
 // Check requirements before loading plugin.
@@ -89,8 +92,8 @@ if (!\TechmireSolutions\DynamicOnlineServices\Core\Requirements::check()) {
 }
 
 // Register activation, deactivation, and uninstall hooks.
-require_once DYNOS_PLUGIN_DIR . 'includes/core/class-activator.php';
-require_once DYNOS_PLUGIN_DIR . 'includes/core/class-uninstaller.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/core/Activator.php';
+require_once DYNOS_PLUGIN_DIR . 'includes/core/Uninstaller.php';
 
 register_activation_hook(__FILE__, array('\TechmireSolutions\DynamicOnlineServices\Core\Activator', 'activate'));
 register_deactivation_hook(__FILE__, array('\TechmireSolutions\DynamicOnlineServices\Core\Deactivator', 'deactivate'));

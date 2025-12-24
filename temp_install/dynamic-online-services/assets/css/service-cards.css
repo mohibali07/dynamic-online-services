@@ -1,0 +1,224 @@
+/**
+ * Service Cards Styles
+ * Mobile-First Design with RTL Support, Accessibility & Dark Mode
+ */
+
+:root {
+
+	/* Default Fallbacks */
+	--card-bg: #fff;
+	--card-title-color: #333;
+	--card-description-color: #666;
+	--card-btn-bg: #007cba;
+	--card-btn-text: #fff;
+	--card-btn-hover-bg: #fff;
+	--card-btn-hover-text: #007cba;
+	--card-font-family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen-sans, ubuntu, cantarell, "Helvetica Neue", sans-serif;
+
+	/* Dimensions & Spacing */
+	--card-grid-min-width: 260px;
+	--card-col-gap: 20px;
+	--card-row-gap: 40px;
+	--card-radius: 18px;
+	--card-height: 400px;
+	--card-img-height: 232px;
+	--card-content-height: 200px;
+	--card-padding-top: 24px;
+	--card-padding-sides: 10px;
+	--card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	--card-hover-transform: translateY(-5px);
+	--card-hover-transition: 0.2s;
+
+	/* Typography */
+	--card-title-size: 1.25rem;
+	--card-desc-size: 0.9rem;
+	--card-btn-size: 0.9rem;
+}
+
+.service-card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(var(--card-grid-min-width), 1fr));
+	gap: var(--card-row-gap) var(--card-col-gap);
+	list-style: none;
+	padding: 0;
+	margin: 0;
+
+	container-type: inline-size;
+	container-name: services-grid;
+}
+
+.service-card {
+	border-radius: var(--card-radius);
+	box-shadow: var(--card-shadow);
+	transition: transform var(--card-hover-transition) ease;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: var(--card-height);
+	background: var(--card-bg);
+	position: relative;
+	overflow: hidden;
+
+	/* Ensure content stays within radius */
+}
+
+/* Hover Effect */
+.service-card:hover {
+	transform: var(--card-hover-transform);
+}
+
+.service-card-image-link {
+	display: block;
+	height: var(--card-img-height);
+	border-radius: var(--card-radius);
+
+	/* Fallback/Safety */
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.service-card-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	z-index: 1;
+}
+
+.service-card-content {
+	padding-block-start: var(--card-padding-top);
+	padding-block-end: var(--card-padding-top);
+	padding-inline: var(--card-padding-sides);
+
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+
+	/* Negative margin to pull content up if needed, or remove if design changes.
+	   Keeping logic similar to PHP build but using vars. */
+
+	/* margin-top: -16px; removed for cleaner flow, can be re-added via var if needed */
+
+	border-radius: 0 0 var(--card-radius) var(--card-radius);
+	align-items: center;
+	background: var(--card-bg);
+	color: var(--card-title-color);
+	font-family: var(--card-font-family), sans-serif;
+
+	z-index: 2;
+}
+
+.service-card-title {
+	font-size: var(--card-title-size);
+	margin-block-start: 0;
+	margin-block-end: 10px;
+	text-decoration: none;
+	text-align: center;
+	line-height: 1.3;
+	color: var(--card-title-color);
+}
+
+.service-card-title a {
+	text-decoration: none;
+	transition: color 0.2s ease;
+	color: inherit;
+	padding-block: 5px;
+	display: block;
+}
+
+.service-card-title a:hover {
+	color: var(--card-title-hover-color, var(--card-btn-text));
+}
+
+.service-card-description {
+	font-size: var(--card-desc-size);
+	text-align: center;
+	margin-block-end: 20px;
+	flex-grow: 1;
+	line-height: 1.5;
+	color: var(--card-description-color);
+}
+
+.service-card-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-block: 12px;
+	padding-inline: 28px;
+
+	text-decoration: none;
+	border-radius: 6px;
+	font-size: var(--card-btn-size);
+	font-weight: 500;
+	transition: background-color 0.2s, color 0.2s;
+	width: auto;
+	margin-block-start: auto;
+
+	background-color: var(--card-btn-bg);
+	color: var(--card-btn-text) !important;
+
+	/* Force override user agent styles */
+	min-height: 44px;
+
+	/* A11y Touch Target */
+}
+
+.service-card-link:hover {
+	background-color: var(--card-btn-hover-bg) !important;
+	color: var(--card-btn-hover-text) !important;
+}
+
+/* ============================================
+   Accessibility - Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+
+	.service-card {
+		transition: none !important;
+	}
+
+	.service-card:hover {
+		transform: none !important;
+	}
+}
+
+/* ============================================
+   Accessibility - Focus Styles
+   ============================================ */
+.service-card a:focus-visible {
+	outline: 3px solid var(--card-btn-bg);
+	outline-offset: 4px;
+	border-radius: 4px;
+}
+
+/* ============================================
+   High Contrast Mode Support
+   ============================================ */
+@media (prefers-contrast: high) {
+
+	.service-card {
+		border: 2px solid currentcolor;
+	}
+
+	.service-card-link {
+		border: 2px solid currentcolor;
+	}
+}
+
+/* ============================================
+   Container Queries
+   ============================================ */
+@container services-grid (max-width: 480px) {
+
+	.service-card-content {
+		padding-inline: 15px;
+
+		/* Slightly more breathing room on mobile */
+	}
+
+	/* Adjust image height for very small cards if needed */
+	.service-card-image-link,
+	.service-card-image {
+		height: 200px;
+	}
+}

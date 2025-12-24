@@ -12,6 +12,7 @@ export const TABS = {
 	CARDS: 'cards',
 	FAQS: 'faqs',
 	WHATSAPP: 'whatsapp',
+	MARKETING: 'marketing',
 };
 
 /**

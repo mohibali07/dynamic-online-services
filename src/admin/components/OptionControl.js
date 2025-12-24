@@ -28,7 +28,7 @@ import PropTypes from 'prop-types';
  * @param {Function} props.onChange  Callback when value changes.
  * @param {Array}    [props.options] Optional options for 'select' type.
  */
-const OptionControl = ( {
+const OptionControl = ({
 	label,
 	help,
 	type,
@@ -36,25 +36,26 @@ const OptionControl = ( {
 	settings,
 	onChange,
 	options,
-} ) => {
-	const value = settings[ optionKey ];
-	const [ showPopover, setShowPopover ] = useState( false );
+}) => {
+	const value = settings[optionKey];
+	const [showPopover, setShowPopover] = useState(false);
 
-	const handleChange = ( newValue ) => {
-		onChange( {
+	const handleChange = (newValue) => {
+		onChange({
 			...settings,
-			[ optionKey ]: newValue,
-		} );
+			[optionKey]: newValue,
+		});
 	};
 
 	const renderControl = () => {
-		switch ( type ) {
+		switch (type) {
 			case 'toggle':
 			case 'checkbox':
 				return (
 					<ToggleControl
-						checked={ !! value }
-						onChange={ handleChange }
+						checked={!!value}
+						onChange={handleChange}
+						__nextHasNoMarginBottom
 					/>
 				);
 			case 'color':
@@ -62,18 +63,18 @@ const OptionControl = ( {
 					<div className="dynos-color-picker-trigger">
 						<Button
 							className="dynos-color-swatch"
-							style={ { backgroundColor: value } }
-							onClick={ () => setShowPopover( ! showPopover ) }
-							aria-label={ __(
+							style={{ backgroundColor: value }}
+							onClick={() => setShowPopover(!showPopover)}
+							aria-label={__(
 								'Select color',
 								'dynamic-online-services'
-							) }
+							)}
 						/>
-						<code className="dynos-color-code">{ value }</code>
-						{ showPopover && (
+						<code className="dynos-color-code">{value}</code>
+						{showPopover && (
 							<Popover
 								position="bottom left"
-								onClose={ () => setShowPopover( false ) }
+								onClose={() => setShowPopover(false)}
 							>
 								<div className="dynos-popover-content">
 									<ColorPalette
@@ -102,79 +103,88 @@ const OptionControl = ( {
 												},
 											]
 										}
-										value={ value }
-										onChange={ handleChange }
+										value={value}
+										onChange={handleChange}
 										clearable
 									/>
 								</div>
 							</Popover>
-						) }
+						)}
 					</div>
 				);
 
 			case 'range':
 				return (
 					<RangeControl
-						value={ value }
-						onChange={ handleChange }
-						min={ 0 }
-						max={ 1 }
-						step={ 0.1 }
-						withInputField={ false }
+						value={value}
+						onChange={handleChange}
+						min={0}
+						max={1}
+						step={0.1}
+						withInputField={false}
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 					/>
 				);
 
 			case 'unit':
 				return (
 					<UnitControl
-						value={ value }
-						onChange={ handleChange }
-						units={ [
+						value={value}
+						onChange={handleChange}
+						units={[
 							{ value: 'px', label: 'px', default: 0 },
 							{ value: '%', label: '%', default: 0 },
 							{ value: 'vh', label: 'vh', default: 0 },
 							{ value: 'vw', label: 'vw', default: 0 },
 							{ value: 'rem', label: 'rem', default: 0 },
 							{ value: 'em', label: 'em', default: 0 },
-						] }
+						]}
 					/>
 				);
 			case 'select':
 				return (
 					<SelectControl
-						value={ value }
-						options={ options }
-						onChange={ handleChange }
+						value={value}
+						options={options}
+						onChange={handleChange}
 					/>
 				);
 			case 'textarea':
 				return (
 					<TextareaControl
-						value={ value }
-						onChange={ handleChange }
+						value={value}
+						onChange={handleChange}
+						__nextHasNoMarginBottom
 					/>
 				);
 			case 'number':
 				return (
 					<TextControl
 						type="number"
-						value={ value }
-						onChange={ handleChange }
+						value={value}
+						onChange={handleChange}
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 					/>
 				);
 			case 'tel':
 				return (
 					<TextControl
 						type="tel"
-						value={ value }
-						onChange={ handleChange }
+						value={value}
+						onChange={handleChange}
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 					/>
 				);
 			default:
 				return (
 					<TextControl
-						value={ value || '' }
-						onChange={ handleChange }
+						value={value || ''}
+						onChange={handleChange}
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 					/>
 				);
 		}
@@ -183,11 +193,11 @@ const OptionControl = ( {
 	return (
 		<div className="dynos-option-control">
 			<div className="dynos-control-header">
-				{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
-				<label className="dynos-control-label">{ label }</label>
-				{ help && <span className="dynos-control-help">{ help }</span> }
+				{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+				<label className="dynos-control-label">{label}</label>
+				{help && <span className="dynos-control-help">{help}</span>}
 			</div>
-			<div className="dynos-control-input">{ renderControl() }</div>
+			<div className="dynos-control-input">{renderControl()}</div>
 		</div>
 	);
 };
@@ -195,7 +205,7 @@ const OptionControl = ( {
 OptionControl.propTypes = {
 	label: PropTypes.string.isRequired,
 	help: PropTypes.string,
-	type: PropTypes.oneOf( [
+	type: PropTypes.oneOf([
 		'text',
 		'number',
 		'color',
@@ -206,15 +216,15 @@ OptionControl.propTypes = {
 		'tel',
 		'select',
 		'textarea',
-	] ),
+	]),
 	optionKey: PropTypes.string.isRequired,
 	settings: PropTypes.object.isRequired,
 	onChange: PropTypes.func.isRequired,
 	options: PropTypes.arrayOf(
-		PropTypes.shape( {
+		PropTypes.shape({
 			label: PropTypes.string,
 			value: PropTypes.string,
-		} )
+		})
 	),
 };
 

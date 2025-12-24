@@ -10,17 +10,17 @@ import PropTypes from 'prop-types';
  * @param {string}   props.activeTab    - Currently active tab.
  * @param {Function} props.setActiveTab - Function to change active tab.
  */
-const NavItem = ( { id, label, icon, activeTab, setActiveTab } ) => (
-	<Tooltip content={ label } position="right">
+const NavItem = ({ id, label, icon, activeTab, setActiveTab }) => (
+	<Tooltip content={label} placement="right">
 		<Button
 			type="button"
-			className={ `dynos-nav-item ${ activeTab === id ? 'active' : '' }` }
-			onClick={ () => setActiveTab( id ) }
-			aria-label={ label }
-			aria-current={ activeTab === id ? 'page' : undefined }
+			className={`dynos-nav-item ${activeTab === id ? 'active' : ''}`}
+			onClick={() => setActiveTab(id)}
+			aria-label={label}
+			aria-current={activeTab === id ? 'page' : undefined}
 		>
-			<Dashicon icon={ icon } />
-			{ label }
+			<Dashicon icon={icon} />
+			{label}
 		</Button>
 	</Tooltip>
 );
