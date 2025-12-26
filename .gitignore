@@ -1,0 +1,64 @@
+# 2025 Standard Vibe Coding .gitignore
+
+# THE SHIELD: Block Agent Noise
+
+# Google Antigravity & Agent Artifacts
+.antigravity/
+**/artifacts/
+**/plans/
+.agent/
+.history/
+
+# Media Blackout (Unless in assets)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+
+# Exception for documentation and plugin assets
+!docs/images/*.png
+!assets/**/*.png
+!assets/**/*.jpg
+!assets/**/*.jpeg
+!assets/**/*.gif
+!assets/**/*.svg
+!assets/**/*.webp
+
+# Security & Environment (Zero Trust)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets.json
+appsettings.Development.json
+
+# Dependencies (Sandbox Isolation)
+node_modules/
+.venv/
+__pycache__/
+vendor/
+
+# General Project Ignores
+/build/
+*.zip
+*.log
+.DS_Store
+.vscode/
+!.vscode/extensions.json
+.idea/
+playwright-report/
+test-results/
+
+# Debug artifacts (prevent tracking debug files)
+phpunit_debug.log
+debug_capture
+**/debug_*.log
+*_debug.log
+.phpunit.result.cache

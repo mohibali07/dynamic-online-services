@@ -1,0 +1,282 @@
+<?php
+/**
+ * Service Post Type
+ *
+ * @package Dynamic_Online_Services
+ * @subpackage Cpt
+ */
+
+declare(strict_types=1);
+
+namespace TechmireSolutions\DynamicOnlineServices\Cpt;
+
+use TechmireSolutions\DynamicOnlineServices\Interfaces\Registrable;
+
+if (!defined('ABSPATH')) {
+	exit;
+}
+
+/**
+ * Class ServicePostType
+ */
+class ServicePostType implements Registrable
+{
+
+
+	/**
+	 * Post type slug.
+	 *
+	 * @var string
+	 */
+	private readonly string $slug;
+
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $slug Post type slug.
+	 * @throws \InvalidArgumentException If slug is invalid.
+	 */
+	public function __construct(string $slug)
+	{
+		// Sanitize slug
+		$sanitized_slug = sanitize_title($slug);
+
+		// Validate slug is not empty
+		if (empty($sanitized_slug)) {
+			throw new \InvalidArgumentException(
+				'Post type slug cannot be empty'
+			);
+		}
+
+		// Validate slug length (WordPress limit is 20 characters)
+		if (strlen($sanitized_slug) > 20) {
+			throw new \InvalidArgumentException(
+				sprintf(
+					'Post type slug "%s" exceeds maximum length of 20 characters',
+					esc_html($sanitized_slug)
+				)
+			);
+		}
+
+		$this->slug = $sanitized_slug;
+	}
+
+	/**
+	 * Register the post type.
+	 *
+	 * @return void
+	 */
+	public function register(): void
+	{
+		add_action('init', array($this, 'register_post_type'));
+		add_filter('post_updated_messages', array($this, 'updated_messages'));
+	}
+
+	/**
+	 * Render the post type registration.
+	 *
+	 * @return void
+	 */
+	public function register_post_type(): void
+	{
+		$labels = $this->get_labels();
+		$args = $this->get_arguments($labels);
+
+		\register_post_type($this->slug, $args);
+	}
+
+	/**
+	 * Get post type labels.
+	 *
+	 * Labels are pulled from plugin settings and can be filtered.
+	 *
+	 * @return array<string, string>
+	 */
+	/**
+	 * Get post type labels.
+	 *
+	 * Labels are pulled from plugin settings and can be filtered.
+	 *
+	 * @return array<string, string>
+	 */
+	private function get_labels(): array
+	{
+		// Get settings for post type names
+		$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
+
+		// Get singular and plural names from settings with fallbacks
+		$singular_name = isset($options['service_cpt_singular_name']) && !empty($options['service_cpt_singular_name'])
+			? $options['service_cpt_singular_name']
+			: 'Service';
+		$plural_name = isset($options['service_cpt_plural_name']) && !empty($options['service_cpt_plural_name'])
+			? $options['service_cpt_plural_name']
+			: 'Services';
+
+		// Allow filtering for maximum flexibility
+		$singular_name = apply_filters('dynos_service_singular_name', $singular_name);
+		$plural_name = apply_filters('dynos_service_plural_name', $plural_name);
+
+		// phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralText -- Dynamic post type names from settings
+		return array(
+			'name' => _x($plural_name, 'Post Type General Name', 'dynamic-online-services'),
+			'singular_name' => _x($singular_name, 'Post Type Singular Name', 'dynamic-online-services'),
+			// phpcs:enable WordPress.WP.I18n.NonSingularStringLiteralText
+			'menu_name' => $plural_name,
+			'name_admin_bar' => $singular_name,
+			/* translators: %s: Plural name of the post type */
+			'archives' => sprintf(__('%s Archives', 'dynamic-online-services'), $plural_name),
+			/* translators: %s: Singular name of the post type */
+			'attributes' => sprintf(__('%s Attributes', 'dynamic-online-services'), $singular_name),
+			/* translators: %s: Singular name of the post type */
+			'parent_item_colon' => sprintf(__('Parent %s:', 'dynamic-online-services'), $singular_name),
+			/* translators: %s: Plural name of the post type */
+			'all_items' => sprintf(__('All %s', 'dynamic-online-services'), $plural_name),
+			/* translators: %s: Singular name of the post type */
+			'add_new_item' => sprintf(__('Add New %s', 'dynamic-online-services'), $singular_name),
+			'add_new' => __('Add New', 'dynamic-online-services'),
+			/* translators: %s: Singular name of the post type */
+			'new_item' => sprintf(__('New %s', 'dynamic-online-services'), $singular_name),
+			/* translators: %s: Singular name of the post type */
+			'edit_item' => sprintf(__('Edit %s', 'dynamic-online-services'), $singular_name),
+			/* translators: %s: Singular name of the post type */
+			'update_item' => sprintf(__('Update %s', 'dynamic-online-services'), $singular_name),
+			/* translators: %s: Singular name of the post type */
+			'view_item' => sprintf(__('View %s', 'dynamic-online-services'), $singular_name),
+			/* translators: %s: Plural name of the post type */
+			'view_items' => sprintf(__('View %s', 'dynamic-online-services'), $plural_name),
+			/* translators: %s: Singular name of the post type */
+			'search_items' => sprintf(__('Search %s', 'dynamic-online-services'), $singular_name),
+			'not_found' => __('Not found', 'dynamic-online-services'),
+			'not_found_in_trash' => __('Not found in Trash', 'dynamic-online-services'),
+			'featured_image' => __('Featured Image', 'dynamic-online-services'),
+			'set_featured_image' => __('Set featured image', 'dynamic-online-services'),
+			'remove_featured_image' => __('Remove featured image', 'dynamic-online-services'),
+			'use_featured_image' => __('Use as featured image', 'dynamic-online-services'),
+			/* translators: %s: Singular name (lowercase) of the post type */
+			'insert_into_item' => sprintf(__('Insert into %s', 'dynamic-online-services'), strtolower($singular_name)),
+			/* translators: %s: Singular name (lowercase) of the post type */
+			'uploaded_to_this_item' => sprintf(__('Uploaded to this %s', 'dynamic-online-services'), strtolower($singular_name)),
+			/* translators: %s: Plural name (lowercase) of the post type */
+			'items_list' => sprintf(__('%s list', 'dynamic-online-services'), $plural_name),
+			/* translators: %s: Plural name of the post type */
+			'items_list_navigation' => sprintf(__('%s list navigation', 'dynamic-online-services'), $plural_name),
+			/* translators: %s: Plural name (lowercase) of the post type */
+			'filter_items_list' => sprintf(__('Filter %s list', 'dynamic-online-services'), strtolower($plural_name)),
+		);
+	}
+
+	/**
+	 * Get post type arguments.
+	 *
+	 * @param array<string, string> $labels Post type labels.
+	 * @return array<string, mixed>
+	 */
+	private function get_arguments(array $labels): array
+	{
+		$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
+
+		$menu_position = isset($options['service_menu_position']) && '' !== $options['service_menu_position']
+			? (int) $options['service_menu_position']
+			: 5;
+
+		$menu_icon = isset($options['service_menu_icon']) && !empty($options['service_menu_icon'])
+			? $options['service_menu_icon']
+			: 'dashicons-admin-customizer';
+
+		// Get singular name for label
+		$singular_name = isset($options['service_cpt_singular_name']) && !empty($options['service_cpt_singular_name'])
+			? $options['service_cpt_singular_name']
+			: 'Service';
+
+		return array(
+			'label' => $singular_name,
+			'description' => __('Post Type Description', 'dynamic-online-services'),
+			'labels' => $labels,
+			'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'),
+			'hierarchical' => false,
+			'public' => true,
+			'show_ui' => true,
+			'show_in_menu' => true,
+			'menu_position' => $menu_position,
+			'menu_icon' => $menu_icon,
+			'show_in_admin_bar' => true,
+			'show_in_nav_menus' => true,
+			'can_export' => true,
+			'has_archive' => true,
+			'exclude_from_search' => false,
+			'publicly_queryable' => true,
+			'capability_type' => 'post',
+			'show_in_rest' => true,
+			'rewrite' => array(
+				'slug' => $this->slug . '/%services_category%',
+				'with_front' => false,
+			),
+		);
+	}
+
+	/**
+	 * Update messages.
+	 *
+	 * @param array<int, array<int, string>> $messages Post updated messages.
+	 * @return array<int, array<int, string>>
+	 */
+	public function updated_messages(array $messages): array
+	{
+		$post = get_post();
+		$post_type_object = get_post_type_object($this->slug);
+
+		// Return early if post type object doesn't exist or post is null
+		if (!$post_type_object || !$post) {
+			return $messages;
+		}
+
+		// Get singular name from settings
+		$options = \TechmireSolutions\DynamicOnlineServices\Helpers\Options::get();
+		$singular_name = isset($options['service_cpt_singular_name']) && !empty($options['service_cpt_singular_name'])
+			? $options['service_cpt_singular_name']
+			: 'Service';
+
+		// Sanitize revision ID if present.
+		$revision_id = filter_input(INPUT_GET, 'revision', FILTER_VALIDATE_INT);
+		$revision_id = $revision_id ? $revision_id : 0;
+
+		// Safe post date access with null check
+		$scheduled_date = '';
+		if (isset($post->post_date)) {
+			$scheduled_date = date_i18n(
+				__('M j, Y @ G:i', 'dynamic-online-services'),
+				strtotime($post->post_date)
+			);
+		}
+
+		/* translators: %s: Singular name of the post type */
+		$messages[$this->slug] = array(
+			0 => '', // Unused. Messages start at index 1.
+			/* translators: %s: Singular name of the post type */
+			1 => sprintf(__('%s updated.', 'dynamic-online-services'), $singular_name),
+			2 => __('Custom field updated.', 'dynamic-online-services'),
+			3 => __('Custom field deleted.', 'dynamic-online-services'),
+			/* translators: %s: Singular name of the post type */
+			4 => sprintf(__('%s updated.', 'dynamic-online-services'), $singular_name),
+			/* translators: %1$s: Singular name, %2$s: date and time of the revision */
+			5 => $revision_id ? sprintf(__('%1$s restored to revision from %2$s', 'dynamic-online-services'), $singular_name, wp_post_revision_title($revision_id, false)) : false,
+			/* translators: %s: Singular name of the post type */
+			6 => sprintf(__('%s published.', 'dynamic-online-services'), $singular_name),
+			/* translators: %s: Singular name of the post type */
+			7 => sprintf(__('%s saved.', 'dynamic-online-services'), $singular_name),
+			/* translators: %s: Singular name of the post type */
+			8 => sprintf(__('%s submitted.', 'dynamic-online-services'), $singular_name),
+			9 => sprintf(
+				/* translators: 1: Service schedule date */
+				__('%1$s scheduled for: <strong>%2$s</strong>.', 'dynamic-online-services'),
+				$singular_name,
+				$scheduled_date
+			),
+			/* translators: %s: Singular name of the post type */
+			10 => sprintf(__('%s draft updated.', 'dynamic-online-services'), $singular_name),
+		);
+
+		return $messages;
+	}
+}

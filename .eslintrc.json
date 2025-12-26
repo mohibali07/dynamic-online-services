@@ -1,0 +1,45 @@
+{
+	"extends": [ "plugin:@wordpress/eslint-plugin/recommended" ],
+	"env": {
+		"browser": true,
+		"es2021": true,
+		"node": true
+	},
+	"globals": {
+		"jQuery": "readonly",
+		"dynosFaqsAdmin": "readonly",
+		"dynosTaxonomyMedia": "readonly",
+		"sosFaqsAdmin": "readonly",
+		"sosTaxonomyMedia": "readonly",
+		"$": "readonly"
+	},
+	"rules": {
+		"no-console": "warn",
+		"jsdoc/require-param-type": "off",
+		"jsdoc/check-tag-names": "off"
+	},
+	"overrides": [
+		{
+			"files": [ "**/__tests__/*.js", "**/*.test.js" ],
+			"env": {
+				"jest": true
+			}
+		},
+		{
+			"files": [ "tests/e2e/**/*.spec.ts", "tests/e2e/**/*.ts" ],
+			"extends": [ "plugin:@wordpress/eslint-plugin/recommended" ],
+			"rules": {
+				"no-console": "off"
+			},
+			"globals": {
+				"describe": "readonly",
+				"it": "readonly",
+				"expect": "readonly",
+				"beforeEach": "readonly",
+				"afterEach": "readonly",
+				"page": "readonly",
+				"browser": "readonly"
+			}
+		}
+	]
+}

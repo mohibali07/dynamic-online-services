@@ -1,0 +1,119 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "dynamic-online-services/hero-section",
+	"version": "1.0.0",
+	"title": "Hero Section (Pro)",
+	"category": "design",
+	"icon": "cover-image",
+	"description": "A powerful, dynamic Hero Section with parallax, shapes, and SEO optimization.",
+	"supports": {
+		"html": false,
+		"align": [ "full", "wide" ],
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		},
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": true
+		}
+	},
+	"attributes": {
+		"desktopImageId": {
+			"type": "number"
+		},
+		"desktopImageUrl": {
+			"type": "string"
+		},
+		"mobileImageId": {
+			"type": "number"
+		},
+		"mobileImageUrl": {
+			"type": "string"
+		},
+		"videoUrl": {
+			"type": "string"
+		},
+		"backgroundType": {
+			"type": "string",
+			"default": "image"
+		},
+		"overlayColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"overlayOpacity": {
+			"type": "number",
+			"default": 0.5
+		},
+		"title": {
+			"type": "string",
+			"default": "Welcome to Our Website"
+		},
+		"subtitle": {
+			"type": "string",
+			"default": "Add a catchy subtitle here"
+		},
+		"titleTag": {
+			"type": "string",
+			"default": "h1"
+		},
+		"btnPrimaryText": {
+			"type": "string",
+			"default": "Get Started"
+		},
+		"btnPrimaryUrl": {
+			"type": "string",
+			"default": "#"
+		},
+		"btnSecondaryText": {
+			"type": "string",
+			"default": "Learn More"
+		},
+		"btnSecondaryUrl": {
+			"type": "string",
+			"default": "#"
+		},
+		"enableParallax": {
+			"type": "boolean",
+			"default": false
+		},
+		"enableKenBurns": {
+			"type": "boolean",
+			"default": false
+		},
+		"shapeDivider": {
+			"type": "string",
+			"default": "none"
+		},
+		"minHeightDesktop": {
+			"type": "string",
+			"default": "600px"
+		},
+		"minHeightMobile": {
+			"type": "string",
+			"default": "400px"
+		},
+		"morningImageUrl": {
+			"type": "string"
+		},
+		"eveningImageUrl": {
+			"type": "string"
+		},
+		"eveningStartHour": {
+			"type": "number",
+			"default": 18
+		}
+	},
+	"textdomain": "dynamic-online-services",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}
